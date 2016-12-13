@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">EncuestasV3</string>
+    <string name="btnInicio">Inicio</string>
+    <string name="salir">Salir</string>
+    <string name="EncPendientes">Encuestas Pendientes</string>
+    <string name="FotosPendientes">Fotos Pendientes</string>
+    <string name="limpiar">Limpiar</string>
+    <string name="cambiarUser">Cambiar Usuario</string>
+</resources>

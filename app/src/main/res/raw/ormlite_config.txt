@@ -1,0 +1,202 @@
+#
+# generated on 2016/12/12 06:25:03
+#
+# --table-start--
+dataClass=com.popgroup.encuestasv3.Model.User
+tableName=user
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=nombre
+columnName=nombre
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.popgroup.encuestasv3.Model.Cliente
+tableName=cliente
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=id
+generatedId=true
+indexName=cliente_id_idx
+# --field-end--
+# --field-start--
+fieldName=nombre
+columnName=nombre
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.popgroup.encuestasv3.Model.TipoEncuesta
+tableName=tipoencuesta
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=encuesta
+columnName=encuesta
+# --field-end--
+# --field-start--
+fieldName=idArchivo
+columnName=idArchivo
+# --field-end--
+# --field-start--
+fieldName=idTienda
+columnName=idTienda
+# --field-end--
+# --field-start--
+fieldName=idEncuesta
+columnName=idEncuesta
+# --field-end--
+# --field-start--
+fieldName=numeroTel
+columnName=numero_tel
+# --field-end--
+# --field-start--
+fieldName=nombre
+columnName=nombre
+# --field-end--
+# --field-start--
+fieldName=idProyecto
+columnName=idProyecto
+# --field-end--
+# --field-start--
+fieldName=Idestablecimiento
+columnName=idEstablecimiento
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.popgroup.encuestasv3.Model.Proyecto
+tableName=proyecto
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=nombre
+columnName=nombre
+# --field-end--
+# --field-start--
+fieldName=idproyecto
+columnName=idproyecto
+# --field-end--
+# --field-start--
+fieldName=cliente
+columnName=cliente
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.popgroup.encuestasv3.Model.CatMaster
+tableName=catmaster
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=idTienda
+columnName=idTienda
+# --field-end--
+# --field-start--
+fieldName=nombre
+columnName=nombre
+# --field-end--
+# --field-start--
+fieldName=idArchivo
+columnName=idArchivo
+# --field-end--
+# --field-start--
+fieldName=idEncuesta
+columnName=idENCUESTA
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.popgroup.encuestasv3.Model.Preguntas
+tableName=preguntas
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=id
+generatedId=true
+indexName=preguntas_id_idx
+# --field-end--
+# --field-start--
+fieldName=idPregunta
+columnName=idpregunta
+# --field-end--
+# --field-start--
+fieldName=pregunta
+columnName=pregunta
+# --field-end--
+# --field-start--
+fieldName=multiple
+columnName=multiple
+# --field-end--
+# --field-start--
+fieldName=orden
+columnName=orden
+# --field-end--
+# --field-start--
+fieldName=idEncuesta
+columnName=idEncuesta
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.popgroup.encuestasv3.Model.Respuestas
+tableName=respuestas
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=id
+generatedId=true
+indexName=respuestas_id_idx
+# --field-end--
+# --field-start--
+fieldName=idPregunta
+columnName=idpregunta
+# --field-end--
+# --field-start--
+fieldName=idRespuesta
+columnName=idrespuesta
+# --field-end--
+# --field-start--
+fieldName=respuesta
+columnName=respuesta
+# --field-end--
+# --field-start--
+fieldName=sigPregunta
+columnName=sigPregunta
+# --field-end--
+# --field-start--
+fieldName=respLibre
+columnName=respuestaLibre
+# --field-end--
+# --field-start--
+fieldName=idEncuesta
+columnName=idEncuesta
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
