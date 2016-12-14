@@ -7,14 +7,15 @@ import static com.popgroup.encuestasv3.Model.Proyecto.NOMBRE;
 
 /**
  * Created by jesus.hernandez on 12/12/16.
+ * modelo proyecto
  */
 @DatabaseTable
 public class Proyecto {
 
-    public static final String ID="id";
-    public static final String NOMBRE = "nombre";
-    public static final String IDPROYECTO = "idproyecto";
-    public static final String CLIENTE = "cliente";
+    private static final String ID="id";
+    private static final String NOMBRE = "nombre";
+    private static final String IDPROYECTO = "idproyecto";
+    private static final String CLIENTE = "cliente";
 
     @DatabaseField(generatedId = true ,columnName = ID)
     private int id;
@@ -30,6 +31,11 @@ public class Proyecto {
 
     public Proyecto(){}
 
+    public Proyecto(String idproyecto, String nombre) {
+        this.idproyecto = idproyecto;
+        this.nombre = nombre;
+    }
+
     public int getId() {
         return id;
     }
@@ -38,9 +44,7 @@ public class Proyecto {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getNombre() { return nombre; }
 
     public void setNombre(String nombre) {
         this.nombre = nombre;

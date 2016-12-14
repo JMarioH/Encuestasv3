@@ -12,10 +12,10 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:typeface="monospace"
-        android:text="Proyecto" />
+        android:text="@string/proyecto" />
 
 
-    <ListView android:id="@+id/LstOpciones"
+    <ListView android:id="@+id/listProyectos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"/>

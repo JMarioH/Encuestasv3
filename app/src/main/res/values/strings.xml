@@ -6,4 +6,6 @@
     <string name="FotosPendientes">Fotos Pendientes</string>
     <string name="limpiar">Limpiar</string>
     <string name="cambiarUser">Cambiar Usuario</string>
+    <string name="tipoEncuestas">Tipo de Encuesta</string>
+    <string name="proyecto">Proyecto</string>
 </resources>
