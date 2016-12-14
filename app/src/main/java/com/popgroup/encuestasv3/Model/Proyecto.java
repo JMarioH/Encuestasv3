@@ -3,8 +3,6 @@ package com.popgroup.encuestasv3.Model;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import static com.popgroup.encuestasv3.Model.Proyecto.NOMBRE;
-
 /**
  * Created by jesus.hernandez on 12/12/16.
  * modelo proyecto
