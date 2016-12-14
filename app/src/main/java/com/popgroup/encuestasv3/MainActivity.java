@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
             user = (User) dao.queryForId(1);
             dao.clearObjectCache();
 
-            dao = getmDBHelper().getClienteDao();
+           /* dao = getmDBHelper().getClienteDao();
             cliente = (Cliente) dao.queryForId(1);
             dao.clearObjectCache();
 
@@ -154,26 +154,26 @@ public class MainActivity extends AppCompatActivity {
             dao.clearObjectCache();
 
             dao = getmDBHelper().getCatMasterDao();
-            /*where().eq(CatMaster.IDTIENDA,"168045")*/
+            *//*where().eq(CatMaster.IDTIENDA,"168045")*//*
             arrayCatMaster = (ArrayList<CatMaster>) dao.queryBuilder().distinct().selectColumns("nombre").query();
             Log.e(TAG, "arrayListTipo catmaster : " + dao.queryForAll().size());
             dao.clearObjectCache();
 
             dao = getmDBHelper().getPregutasDao();
-            /*where().eq(CatMaster.IDTIENDA,"168045")*/
+            *//*where().eq(CatMaster.IDTIENDA,"168045")*//*
             arrayPreguntas = (ArrayList<Preguntas>) dao.queryForAll();
             Log.e(TAG, "arrayPreguntas num : " + dao.queryForAll().size());
             dao.clearObjectCache();
 
             dao = getmDBHelper().getRespuestasDao();
-            /*where().eq(CatMaster.IDTIENDA,"168045")*/
+            *//*where().eq(CatMaster.IDTIENDA,"168045")*//*
             arrayRespuestas = (ArrayList<Respuestas>) dao.queryForAll();
             Log.e(TAG, "arrayRespuestas num : " + dao.queryForAll().size());
-            dao.clearObjectCache();
+            dao.clearObjectCache();*/
 
 
 
-            if (user == null) {
+            /*if (user == null) {
                 Log.e(TAG, "Ningún usuario con id = 1");
             } else {
                 Log.e(TAG, "Recuperado usuario con id = 1: " + user.getNombre());
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                     String nombre = item.getNombre();
                     String idProyecto = item.getIdProyecto();
                     String idEstablecimiento = item.getIdestablecimiento();
-                  /*  Log.e(TAG, "id : " + id);
+                  *//*  Log.e(TAG, "id : " + id);
                     Log.e(TAG, "encuesta : " + encuesta);
                     Log.e(TAG, "idarchivo : " + idArchivo);
                     Log.e(TAG, "idTienda : " + idTienda);
@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, "usuario : " + usuario);
                     Log.e(TAG, "Nombre : " + nombre);
                     Log.e(TAG, "idProyecto : " + idProyecto);
-                    Log.e(TAG, "idEstablecimiento : " + idEstablecimiento);*/
+                    Log.e(TAG, "idEstablecimiento : " + idEstablecimiento);*//*
                     stringLog = stringLog + "\ntipo encuesta :" + encuesta;
                 }
             }
@@ -238,13 +238,13 @@ public class MainActivity extends AppCompatActivity {
                     int multiple = item.getMultiple();
                     int orden = item.getOrden();
                     int idencuesta = item.getIdEncuesta();
-/*
+*//*
                     Log.e(TAG, "id : " + id);
                     Log.e(TAG, "idPregunta : " + idPregunta);
                     Log.e(TAG, "pregunta : " + pregunta);
                     Log.e(TAG, "multiple : " + multiple);
                     Log.e(TAG, "orden : " + orden);
-                    Log.e(TAG, "idEncuesta : " + idencuesta);*/
+                    Log.e(TAG, "idEncuesta : " + idencuesta);*//*
                 }
             }
 
@@ -258,15 +258,15 @@ public class MainActivity extends AppCompatActivity {
                     String respLibre = item.getRespLibre();
                     int idencuesta = item.getIdEncuesta();
 
-                 /*   Log.e(TAG, "id : " + id);
+                 *//*   Log.e(TAG, "id : " + id);
                     Log.e(TAG, "idPregunta : " + idPregunta);
                     Log.e(TAG, "idRespuesta : " + idRespuesta);
                     Log.e(TAG, "respuesta : " + respuesta);
                     Log.e(TAG, "sigPregunta : " + sigPregunta);
                     Log.e(TAG, "respLibre : " + respLibre);
-                    Log.e(TAG, "idEncuesta : " + idencuesta);*/
+                    Log.e(TAG, "idEncuesta : " + idencuesta);*//*
                 }
-            }
+            }*/
 
           //  txtLog.setText("Data " + stringLog);
 

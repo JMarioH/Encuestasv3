@@ -2,9 +2,7 @@ package com.popgroup.encuestasv3;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +15,8 @@ import android.widget.Toast;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
-import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.Cliente;
 import com.popgroup.encuestasv3.Model.Proyecto;
-import com.popgroup.encuestasv3.Model.TipoEncuesta;
 import com.popgroup.encuestasv3.Model.User;
 
 import java.sql.SQLException;
@@ -75,7 +71,6 @@ public class Proyectos extends AppCompatActivity {
           //  proyecto = (Proyecto) dao.queryForId(1);
             proyectoList = (List<Proyecto>) dao.queryBuilder().distinct().selectColumns("nombre").where().in("cliente",nomCliente).query();
             dao.clearObjectCache();
-
             for (Proyecto item : proyectoList) {
                arrayProyectos.add(item.getNombre()  );
             }

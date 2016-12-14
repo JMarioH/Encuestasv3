@@ -19,6 +19,7 @@
         <activity android:name=".MainActivity"/>
         <activity android:name=".Proyectos"/>
         <activity android:name=".TipoEncuestas"/>
+        <activity android:name=".Encuestas"/>
     </application>
 
 </manifest>
