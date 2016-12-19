@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:icon="@drawable/ic_menu_options"
+        android:showAsAction="collapseActionView"
+        android:id="@+id/menuSalir"
+        android:title="Salir"
+        tools:ignore="AppCompatResource"></item>
+    <item android:icon="@drawable/ic_menu_options"
+        android:showAsAction="collapseActionView"
+        android:id="@+id/menuInicio"
+        android:title="Inicio"
+        tools:ignore="AppCompatResource"></item>
+</menu>

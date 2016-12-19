@@ -3,7 +3,9 @@ package com.popgroup.encuestasv3;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -23,6 +25,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static com.popgroup.encuestasv3.R.id.text;
+import static com.popgroup.encuestasv3.R.id.txtTitle;
+
 /**
  * Created by jesus.hernandez on 13/12/16.
  * Selecciona el proyecto
@@ -32,22 +40,37 @@ public class Proyectos extends AppCompatActivity {
     public String TAG= getClass().getSimpleName();
     Bundle bundle;
 
-    public ListView listProyectos;
     public List<Proyecto> proyectoList;
     public List<Cliente> clienteList;
     public ArrayAdapter<String> adapter;
     public ArrayList<String> arrayProyectos;
+    public ArrayList<User> arrayUsers;
     Proyecto proyecto;
     Cliente cliente;
-    User user;
     public DBHelper mDBHelper;
     Dao dao;
-    String nomCliente = "";
-    String usuario  = "";
+    public String nomCliente = "";
+    public String usuario  = "";
+
+    public ListView listProyectos;
+    Toolbar toolbar;
+    @BindView(R.id.txtTitle)
+    TextView txtTitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activty_proyectos);
+        ButterKnife.bind(this);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        if (getSupportActionBar() != null) // Habilitar up button
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        txtTitle.setText("Encuestas");
+        txtTitle.setTextSize(18);
+        txtTitle.setTextColor(getBaseContext().getResources().getColor(R.color.colorTextPrimary));
+        setSupportActionBar(toolbar);
 
         bundle = new Bundle();
         arrayProyectos = new ArrayList<>();
@@ -56,8 +79,11 @@ public class Proyectos extends AppCompatActivity {
         try {
 
             dao = getmDBHelper().getUserDao();
-            user = (User) dao.queryForId(1);
-            usuario = user.getNombre();
+            arrayUsers = (ArrayList<User>) dao.queryForAll();
+            for (User  item : arrayUsers){
+                usuario = item.getNombre();
+            }
+
             dao.clearObjectCache();
 
             dao = getmDBHelper().getClienteDao();
@@ -79,7 +105,7 @@ public class Proyectos extends AppCompatActivity {
         }
 
 
-        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,arrayProyectos){
+        adapter = new ArrayAdapter<String>(this,R.layout.simple_list_item,arrayProyectos){
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -87,11 +113,13 @@ public class Proyectos extends AppCompatActivity {
                 View view = super.getView(position,convertView,parent);
                 TextView textView  = (TextView) view.findViewById(android.R.id.text1);
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP,16);
+                textView.setGravity(Gravity.CENTER);
                 return view;
             }
         };
         listProyectos = (ListView) findViewById(R.id.listProyectos);
         listProyectos.setAdapter(adapter);
+
         listProyectos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -117,7 +145,6 @@ public class Proyectos extends AppCompatActivity {
                 intent.putExtras(bundle);
                 startActivity(intent);
 
-                Toast.makeText(getBaseContext(),"proyecto seleccionado " + id + "value " + value,Toast.LENGTH_SHORT).show();
             }
         });
    }

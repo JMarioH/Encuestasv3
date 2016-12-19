@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="fill_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorBackgound"
-    tools:context=".Encuestas">
-
+    android:orientation="vertical"
+    tools:context=".TipoEncuestas">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:background="@color/colorBackgoundHeader"
         android:elevation="4dp">
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:gravity="center"
             style="@style/textTittle"
-            android:text="Encuestas" />
+            android:text="@string/tipoEncuestas" />
     </LinearLayout>
 
     <LinearLayout
@@ -30,12 +28,12 @@
         android:layout_marginTop="120dp"
         android:layout_marginBottom="56dp">
 
-    <ListView android:id="@+id/listEncuestas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginTop="24dp" />
+        <ListView android:id="@+id/listTipoEnc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"/>
     </LinearLayout>
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -54,3 +52,4 @@
             />
     </android.support.v7.widget.Toolbar>
 </RelativeLayout>
+

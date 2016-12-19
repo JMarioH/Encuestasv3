@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -31,6 +33,8 @@ import org.json.JSONObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
@@ -40,13 +44,26 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 public class Login extends AppCompatActivity{
     String TAG = getClass().getSimpleName();
+
     ProgressDialog pDialog;
-    EditText editUser,editPassword;
+    Toolbar toolbar;
+
+    TextView txtTitle ;
+    @BindView(R.id.editUser)
+    EditText editUser;
+
+    @BindView(R.id.editPassword)
+    EditText editPassword;
+
+    @BindView(R.id.btnLogin)
     Button btnLogin;
+
     Bundle bundle;
     public String usuario ;
     public String password;
     public String URL;
+    public String bandera;
+
     ArrayList<NameValuePair> data;
     Constantes constantes;
     DBHelper mDBHelper;
@@ -55,51 +72,64 @@ public class Login extends AppCompatActivity{
     Boolean conectionAvailable = false;
 
     User user;
-
+    ArrayList<User> arrayUser;
+    String usuarioAct;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        if (getSupportActionBar() != null) // Habilitar up button
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        txtTitle = (TextView) toolbar.findViewById(R.id.txtTitle);
+        txtTitle.setText("Encuestas");
+        txtTitle.setTextSize(18);
+        txtTitle.setTextColor(getBaseContext().getResources().getColor(R.color.colorTextPrimary));
+        setSupportActionBar(toolbar);
+
+
         constantes = new Constantes();
         bundle = new Bundle();
         connectivity = new Connectivity();
         user = new User();
+
         try {
-
             dao = getmDBHelper().getUserDao();
-            user = (User) dao.queryForId(1);
-            dao.clearObjectCache();
+            arrayUser = (ArrayList<User>) dao.queryForAll();
+            dao.queryForAll();
+            for(User item :arrayUser){
+                usuarioAct = item.getNombre();
 
-        }catch (SQLException e){
+            }
+
+            if(usuarioAct!= null){
+                Intent intent = new Intent(this,MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        if(user!=null){
-            Intent i = new Intent(this,MainActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
-        }
+            URL = constantes.getIPWBService();
 
-        URL = constantes.getIPWBService();
-        editUser = (EditText) findViewById(R.id.editUser);
-        editPassword = (EditText) findViewById(R.id.editPassword);
-        btnLogin = (Button) findViewById(R.id.btnLogin);
-        usuario = editUser.getText().toString();
-        password = editPassword.getText().toString();
-
-
-
-        btnLogin.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                connectivity = new Connectivity();
-                conectionAvailable = connectivity.isConnected(getBaseContext());
-                if(conectionAvailable) {
-                    new LoginAsynck().execute();
-                }else{
-                    Toast.makeText(Login.this,"Debe conectarse a un red primero!",Toast.LENGTH_LONG).show();
+            btnLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    connectivity = new Connectivity();
+                    conectionAvailable = connectivity.isConnected(getBaseContext());
+                    usuario = editUser.getText().toString();
+                    password = editPassword.getText().toString();
+                    Log.e(TAG, "user  : " + usuario);
+                    if (conectionAvailable) {
+                        new LoginAsynck().execute();
+                    } else {
+                        Toast.makeText(Login.this, "Debe conectarse a un red primero!", Toast.LENGTH_LONG).show();
+                    }
                 }
-            }
-        });
+            });
 
     }
     public class LoginAsynck extends AsyncTask<String,String,String> {
@@ -121,6 +151,7 @@ public class Login extends AppCompatActivity{
             pDialog.hide();
             if(res.equals("1")){
                 try {
+                    Log.e(TAG,"create usuario " + usuario);
                     dao = getmDBHelper().getUserDao();
                     User user = new User();
                     user.setNombre(usuario);
@@ -145,6 +176,7 @@ public class Login extends AppCompatActivity{
             data.add(new BasicNameValuePair("f", "login"));
             data.add(new BasicNameValuePair("usuario", usuario));
             data.add(new BasicNameValuePair("password", password));
+            Log.e(TAG,"data " +data);
             try{
                 ServiceHandler jsonParser = new ServiceHandler();
                 String jsonRes = jsonParser.makeServiceCall(URL, ServiceHandler.POST, data);

@@ -8,4 +8,9 @@
     <string name="cambiarUser">Cambiar Usuario</string>
     <string name="tipoEncuestas">Tipo de Encuesta</string>
     <string name="proyecto">Proyecto</string>
+    <string name="seleccione">Seleccione</string>
+    <string name="siguiente">Siguiente</string>
+    <string name="pregunta">¿Pregunta.?</string>
+    <string name="respuesta">Respuesta</string>
+    <string name="CambiarUsr">Cambiar de usuario</string>
 </resources>

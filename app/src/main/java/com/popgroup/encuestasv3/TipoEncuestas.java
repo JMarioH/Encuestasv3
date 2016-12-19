@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,9 +26,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static android.R.attr.id;
 import static android.R.attr.value;
 import static android.os.Build.VERSION_CODES.M;
+import static com.popgroup.encuestasv3.R.id.toolbar;
+import static com.popgroup.encuestasv3.R.id.txtTitle;
 
 /**
  * Created by jesus.hernandez on 14/12/16.
@@ -36,7 +43,9 @@ public class TipoEncuestas extends AppCompatActivity {
     String TAG = getClass().getSimpleName();
     Bundle bundle;
     String usuario,cliente,idproyecto;
-
+    Toolbar  toolbar;
+    @BindView(R.id.txtTitle)
+    TextView txtTitle;
     TipoEncuesta tipoEncuesta;
     ArrayList<TipoEncuesta> arrayTipoEnc;
     ArrayList<String> arrayEncuestas;
@@ -53,6 +62,17 @@ public class TipoEncuestas extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tipo_encuestas);
+        ButterKnife.bind(this);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        if (getSupportActionBar() != null) // Habilitar up button
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        txtTitle.setText("Encuestas");
+        txtTitle.setTextSize(18);
+        txtTitle.setTextColor(getBaseContext().getResources().getColor(R.color.colorTextPrimary));
+        setSupportActionBar(toolbar);
+
         bundle = new Bundle();
         Bundle extras = getIntent().getExtras();
 
@@ -73,19 +93,19 @@ public class TipoEncuestas extends AppCompatActivity {
                 arrayEncuestas.add(item.getEncuesta());
                 Log.e(TAG,"a :" + item.getEncuesta());
             }
-
             dao.clearObjectCache();
         } catch (SQLException e) {
             Log.i(TAG,"error",e);
         }
 
 
-        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_activated_1,arrayEncuestas){
+        adapter = new ArrayAdapter<String>(this,R.layout.simple_list_item,arrayEncuestas){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position,convertView,parent);
                 TextView textView  = (TextView) view.findViewById(android.R.id.text1);
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP,16);
+                textView.setGravity(Gravity.CENTER);
                 return view;
 
             }
@@ -109,6 +129,7 @@ public class TipoEncuestas extends AppCompatActivity {
                             .and().eq("nombre",cliente)
                             .and().eq("encuesta",adapterView.getAdapter().getItem(i).toString())
                             .query();
+
                     for (TipoEncuesta item:arrayTipoEnc){
                         idArchivoSel = item.getIdArchivo();
                         idEncuestaSel = item.getIdEncuesta();

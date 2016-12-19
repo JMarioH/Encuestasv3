@@ -3,12 +3,11 @@ package com.popgroup.encuestasv3;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,17 +25,21 @@ import com.popgroup.encuestasv3.Model.TipoEncuesta;
 import com.popgroup.encuestasv3.Model.User;
 import com.popgroup.encuestasv3.Utility.Connectivity;
 
+import org.w3c.dom.Text;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
+import static com.popgroup.encuestasv3.R.id.toolbar;
 
 public class MainActivity extends AppCompatActivity {
     String TAG = getClass().getSimpleName();
+    Toolbar toolbar;
     Dao dao;
+    Bundle bundle;
     private DBHelper mDBHelper;
     User user;
     Cliente cliente;
@@ -52,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<CatMaster> arrayCatMaster;
     ArrayList<Preguntas> arrayPreguntas;
     ArrayList<Respuestas> arrayRespuestas;
+    ArrayList<User> arrayUser;
 
     @BindView(R.id.btnCambiarUser)
     Button btnCambiarUser;
@@ -72,29 +76,45 @@ public class MainActivity extends AppCompatActivity {
     String mUsuario;
     boolean connectionAvailable;
 
+    TextView txtTitle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+         toolbar.setTitle("");
+        if (getSupportActionBar() != null) // Habilitar up button
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        txtTitle = (TextView) toolbar.findViewById(R.id.txtTitle);
+        txtTitle.setText("Encuestas");
+        txtTitle.setTextSize(18);
+        txtTitle.setTextColor(getBaseContext().getResources().getColor(R.color.colorTextPrimary));
+        setSupportActionBar(toolbar);
+
+        bundle = new Bundle();
         btnCambiarUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //revisamos si existe un telefono logeado
             try {
                 dao = getmDBHelper().getUserDao();
-                user = (User) dao.queryForId(1);
+                arrayUser = (ArrayList<User>) dao.queryForAll();
+                for (User item : arrayUser){
+                    mUsuario  = item.getNombre();
+                    Log.e(TAG,"usuarios : " +item.getNombre());
+                }
+
                 dao.clearObjectCache();
 
             }catch (SQLException e){
                 e.printStackTrace();
             }
-            if(user!=null){
-                Toast.makeText(MainActivity.this,"existe telefono " ,Toast.LENGTH_LONG).show();
+            if(arrayUser.size()>0){
                 showAlert();
             }else{
-
                 Intent i = new Intent(MainActivity.this,Login.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
@@ -107,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
                 iniciarProceso();
             }
         });
-
         btnEncPendientes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
                 fotosPendientes();
             }
         });
-
         btnSalir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,140 +155,16 @@ public class MainActivity extends AppCompatActivity {
             catMaster = new CatMaster();
 
             dao = getmDBHelper().getUserDao();
-            user = (User) dao.queryForId(1);
-            dao.clearObjectCache();
+            arrayUser = (ArrayList<User>) dao.queryForAll();
+            for (User item : arrayUser){
+                mUsuario  = item.getNombre();
+                Log.e(TAG,"usuarios : " +item.getNombre());
+            }
 
-           /* dao = getmDBHelper().getClienteDao();
-            cliente = (Cliente) dao.queryForId(1);
-            dao.clearObjectCache();
-
-            dao = getmDBHelper().getProyectoDao();
-            proyecto = (Proyecto) dao.queryForId(1);
-            dao.clearObjectCache();
-
-            dao = getmDBHelper().getTipoEncDao();
-            arrayListTipoEnc = (ArrayList<TipoEncuesta>) dao.queryBuilder().distinct().selectColumns("encuesta").query();
-            Log.e(TAG, "arrayListTipo Encuesta : " + dao.queryForAll().size());
-            dao.clearObjectCache();
-
-            dao = getmDBHelper().getCatMasterDao();
-            *//*where().eq(CatMaster.IDTIENDA,"168045")*//*
-            arrayCatMaster = (ArrayList<CatMaster>) dao.queryBuilder().distinct().selectColumns("nombre").query();
-            Log.e(TAG, "arrayListTipo catmaster : " + dao.queryForAll().size());
-            dao.clearObjectCache();
-
-            dao = getmDBHelper().getPregutasDao();
-            *//*where().eq(CatMaster.IDTIENDA,"168045")*//*
-            arrayPreguntas = (ArrayList<Preguntas>) dao.queryForAll();
-            Log.e(TAG, "arrayPreguntas num : " + dao.queryForAll().size());
-            dao.clearObjectCache();
-
-            dao = getmDBHelper().getRespuestasDao();
-            *//*where().eq(CatMaster.IDTIENDA,"168045")*//*
-            arrayRespuestas = (ArrayList<Respuestas>) dao.queryForAll();
-            Log.e(TAG, "arrayRespuestas num : " + dao.queryForAll().size());
-            dao.clearObjectCache();*/
-
-
-
-            /*if (user == null) {
-                Log.e(TAG, "Ningún usuario con id = 1");
-            } else {
-                Log.e(TAG, "Recuperado usuario con id = 1: " + user.getNombre());
-                mUsuario = user.getNombre().toString();
+            if(arrayUser.size()>0) {
                 txtUser.setText(mUsuario);
             }
-            if (cliente == null) {
-                Log.e(TAG, "Ningún usuario con id = 1");
-            } else {
-                Log.e(TAG, "Recuperado cliente con id = 1: " + cliente.getNombre());
-                stringLog = "\n" + cliente.getNombre();
-            }
-            if (proyecto == null) {
-                Log.e(TAG, "Ningún proyecto con id = 1");
-            } else {
-                Log.e(TAG, "Recuperado proyecto con id = 1: " + proyecto.getNombre());
-                stringLog = "\n" + proyecto.getNombre();
-            }
-
-            if (arrayListTipoEnc.size() > 0) {
-                for (TipoEncuesta item : arrayListTipoEnc) {
-                    int id = item.getId();
-                    String encuesta = item.getEncuesta();
-                    String idArchivo = item.getIdArchivo();
-                    String idTienda = item.getIdTienda();
-                    String idEncuesta = item.getIdEncuesta();
-                    String usuario = item.getNumerTel();
-                    String nombre = item.getNombre();
-                    String idProyecto = item.getIdProyecto();
-                    String idEstablecimiento = item.getIdestablecimiento();
-                  *//*  Log.e(TAG, "id : " + id);
-                    Log.e(TAG, "encuesta : " + encuesta);
-                    Log.e(TAG, "idarchivo : " + idArchivo);
-                    Log.e(TAG, "idTienda : " + idTienda);
-                    Log.e(TAG, "idEncuesta : " + idEncuesta);
-                    Log.e(TAG, "usuario : " + usuario);
-                    Log.e(TAG, "Nombre : " + nombre);
-                    Log.e(TAG, "idProyecto : " + idProyecto);
-                    Log.e(TAG, "idEstablecimiento : " + idEstablecimiento);*//*
-                    stringLog = stringLog + "\ntipo encuesta :" + encuesta;
-                }
-            }
-
-            if (arrayCatMaster.size() > 0) {
-                for (CatMaster item : arrayCatMaster) {
-                    int id = item.getId();
-                    String idtienda = item.getIdTienda();
-                    String nombre = item.getNombre();
-                    String idArchivo = item.getIdArchivo();
-                    String idEncuesta = item.getIdEncuesta();
-                    Log.e(TAG, "Nombre : " + nombre);
-
-                    stringLog = stringLog + "\n cat_master :" + nombre;
-                }
-            }
-
-            if (arrayPreguntas.size() > 0) {
-                for (Preguntas item : arrayPreguntas) {
-                    int id = item.getId();
-                    int idPregunta = item.getIdPregunta();
-                    String pregunta = item.getPregunta();
-                    int multiple = item.getMultiple();
-                    int orden = item.getOrden();
-                    int idencuesta = item.getIdEncuesta();
-*//*
-                    Log.e(TAG, "id : " + id);
-                    Log.e(TAG, "idPregunta : " + idPregunta);
-                    Log.e(TAG, "pregunta : " + pregunta);
-                    Log.e(TAG, "multiple : " + multiple);
-                    Log.e(TAG, "orden : " + orden);
-                    Log.e(TAG, "idEncuesta : " + idencuesta);*//*
-                }
-            }
-
-            if (arrayRespuestas.size() > 0) {
-                for (Respuestas item : arrayRespuestas) {
-                    int id = item.getId();
-                    int idPregunta = item.getIdPregunta();
-                    int idRespuesta = item.getIdRespuesta();
-                    String respuesta = item.getRespuesta();
-                    String sigPregunta = item.getSigPregunta();
-                    String respLibre = item.getRespLibre();
-                    int idencuesta = item.getIdEncuesta();
-
-                 *//*   Log.e(TAG, "id : " + id);
-                    Log.e(TAG, "idPregunta : " + idPregunta);
-                    Log.e(TAG, "idRespuesta : " + idRespuesta);
-                    Log.e(TAG, "respuesta : " + respuesta);
-                    Log.e(TAG, "sigPregunta : " + sigPregunta);
-                    Log.e(TAG, "respLibre : " + respLibre);
-                    Log.e(TAG, "idEncuesta : " + idencuesta);*//*
-                }
-            }*/
-
-          //  txtLog.setText("Data " + stringLog);
-
-
+            dao.clearObjectCache();
 
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
@@ -332,7 +226,45 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Si",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+
+                        try { // recuperamos los datos de la base de datos
+                            dao = getmDBHelper().getUserDao();
+                            dao.deleteBuilder().delete();
+                            dao.clearObjectCache();
+
+                            dao = getmDBHelper().getProyectoDao();
+                            dao.deleteBuilder().delete();
+                            dao.clearObjectCache();
+
+                            dao = getmDBHelper().getClienteDao();
+                            dao.deleteBuilder().delete();
+                            dao.clearObjectCache();
+
+                            dao = getmDBHelper().getTipoEncDao();
+                            dao.deleteBuilder().delete();
+                            dao.clearObjectCache();
+
+                            dao = getmDBHelper().getCatMasterDao();
+                            dao.deleteBuilder().delete();
+                            dao.clearObjectCache();
+
+                            dao = getmDBHelper().getPregutasDao();
+                            dao.deleteBuilder().delete();
+                            dao.clearObjectCache();
+
+                            dao = getmDBHelper().getRespuestasDao();
+                            dao.deleteBuilder().delete();
+                            dao.clearObjectCache();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
                         dialog.dismiss();
+                        bundle.putString("bandera","1");
+                        Intent intent = new Intent(getBaseContext(), Login.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
                     }
                 });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE,"Cancelar",new DialogInterface.OnClickListener(){
@@ -366,5 +298,11 @@ public class MainActivity extends AppCompatActivity {
         }else{
             showMessage();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
     }
 }
