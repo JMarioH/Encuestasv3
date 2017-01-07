@@ -98,6 +98,7 @@ public class ServiceHandler {
             }
             is.close();
             response = sb.toString();
+            reader.close();
         } catch (Exception e) {
             Log.e("Buffer Error", "Error: " + e.toString());
         }

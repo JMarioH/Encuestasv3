@@ -5,6 +5,8 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
 
+import static com.popgroup.encuestasv3.Model.RespuestasCuestionario.FLAG;
+
 /**
  * Created by jesus.hernandez on 12/12/16.
  */
@@ -15,7 +17,8 @@ public class CatMaster implements Serializable {
     public static final String IDTIENDA = "idTienda";
     public static final String NOMBRE = "nombre";
     public static final String IDARCHIVO = "idArchivo";
-    public static final String IDENCUESTA = "idENCUESTA";
+    public static final String IDENCUESTA = "idEncuesta";
+    public static final String  FLAG = "flag";
 
     @DatabaseField(generatedId = true, columnName = ID)
     private int id;
@@ -31,6 +34,9 @@ public class CatMaster implements Serializable {
 
     @DatabaseField(columnName = IDENCUESTA)
     private String idEncuesta;
+
+    @DatabaseField(columnName = FLAG)
+    private Boolean flag;
 
     public CatMaster(){}
 
@@ -72,5 +78,13 @@ public class CatMaster implements Serializable {
 
     public void setIdEncuesta(String idEncuesta) {
         this.idEncuesta = idEncuesta;
+    }
+
+    public Boolean getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Boolean flag) {
+        this.flag = flag;
     }
 }

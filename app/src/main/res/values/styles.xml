@@ -7,7 +7,6 @@
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
     <style name="textTittle">
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:textSize">16sp</item>
@@ -16,11 +15,21 @@
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:textSize">14sp</item>
     </style>
-
     <style name="mButton" >
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:textSize">12sp</item>
         <item name="android:background">@drawable/background_selector</item>
     </style>
+    <style name="mEditText">
+        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:textColorHint">@color/colorTextPrimary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:background">@drawable/shape_edit</item>
+    </style>
 
+    <style name="mButtonCuestionario" >
+        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:background">@drawable/shape_button</item>
+    </style>
 </resources>

@@ -32,7 +32,7 @@ public class AsynckPreguntas extends AsyncTask<String, String, String> {
     private ArrayList<NameValuePair> data;
     private String telefono;
     Context mContext;
-    Preguntas preguntas;
+
     private DBHelper mDBHelper;
     ArrayList<Preguntas> arrayPreguntas;
     Dao dao;
@@ -60,12 +60,12 @@ public class AsynckPreguntas extends AsyncTask<String, String, String> {
             ServiceHandler jsonParser = new ServiceHandler();
             String jsonRes = jsonParser.makeServiceCall(URL, ServiceHandler.POST, data);
             JSONArray jsonArray = new JSONArray(jsonRes);
+            JSONObject jsonObject = new JSONObject();
+            for(int x = 0 ; x < jsonArray.length(); x++ ){
 
-            for(int x = 0 ; x < jsonArray.length();x++ ){
-                JSONObject jsonObject = new JSONObject();
                 jsonObject = jsonArray.getJSONObject(x);
                 try {
-                    preguntas = new Preguntas();
+                    Preguntas preguntas = new Preguntas();
                     preguntas.setIdPregunta(jsonObject.getInt("idPregunta"));
                     preguntas.setPregunta(jsonObject.getString("pregunta"));
                     preguntas.setMultiple(jsonObject.getInt("multiple"));
@@ -74,7 +74,7 @@ public class AsynckPreguntas extends AsyncTask<String, String, String> {
 
                     dao = getmDBHelper().getPregutasDao();
                     dao.create(preguntas);
-
+                    dao.clearObjectCache();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

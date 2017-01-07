@@ -61,6 +61,7 @@ public class AsynckCatMaster extends AsyncTask<String,String,String>{
         try{
             ServiceHandler jsonParser = new ServiceHandler();
             String jsonRes = jsonParser.makeServiceCall(URL, ServiceHandler.POST, data);
+
             JSONArray jsonArray = new JSONArray(jsonRes);
 
             for(int x = 0 ; x < jsonArray.length();x++ ){
@@ -72,6 +73,7 @@ public class AsynckCatMaster extends AsyncTask<String,String,String>{
                     catMaster.setNombre(jsonObject.getString("nombre"));
                     catMaster.setIdArchivo(jsonObject.getString("idArchivo"));
                     catMaster.setIdEncuesta(jsonObject.getString("idEncuesta"));
+                    catMaster.setFlag(true);
                     dao = getmDBHelper().getCatMasterDao();
                     dao.create(catMaster);
 

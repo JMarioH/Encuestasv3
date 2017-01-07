@@ -1,6 +1,7 @@
 package com.popgroup.encuestasv3;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -119,11 +122,12 @@ public class TipoEncuestas extends AppCompatActivity {
               //  Toast.makeText(getBaseContext(),"tipo seleccionado " + id + "value " + value,Toast.LENGTH_SHORT).show();
                 String idArchivoSel = null;
                 String idEncuestaSel = null;
+                String idTienda = null;
                 try {
                     //obtenemos el idarchivo y idencuesta de la encuesta seleccionada
                     dao = getmDBHelper().getTipoEncDao();
                     arrayTipoEnc = (ArrayList<TipoEncuesta>) dao.queryBuilder().distinct()
-                            .selectColumns("idArchivo","idEncuesta")
+                            .selectColumns("idArchivo","idEncuesta","idTienda")
                             .where().eq("numero_tel",usuario)
                             .and().eq("idProyecto",idproyecto)
                             .and().eq("nombre",cliente)
@@ -133,6 +137,7 @@ public class TipoEncuestas extends AppCompatActivity {
                     for (TipoEncuesta item:arrayTipoEnc){
                         idArchivoSel = item.getIdArchivo();
                         idEncuestaSel = item.getIdEncuesta();
+                        idTienda = item.getIdTienda();
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -140,9 +145,11 @@ public class TipoEncuestas extends AppCompatActivity {
 
                 Log.e(TAG,"idArchivo " + idArchivoSel);
                 Log.e(TAG,"idEncuesta " + idEncuestaSel);
+                Log.e(TAG,"idTienda" + idTienda);
 
                 bundle.putString("idArchivo",idArchivoSel);
                 bundle.putString("idEncuesta",idEncuestaSel);
+                bundle.putString("idTienda",idTienda);
                 bundle.putString("usuario",usuario);
 
                 Intent intent = new Intent(TipoEncuestas.this,Encuestas.class);
@@ -168,5 +175,26 @@ public class TipoEncuestas extends AppCompatActivity {
             OpenHelperManager.releaseHelper();
             mDBHelper = null;
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.menuInicio) {
+            //Display Toast
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
+        }else if(id== R.id.menuSalir){
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+
     }
 }

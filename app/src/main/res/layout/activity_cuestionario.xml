@@ -29,7 +29,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="100dp"
         android:layout_marginBottom="56dp"
         android:padding="24dp"
         android:orientation="vertical">
@@ -39,17 +39,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:background="@color/colorAccent"
-            android:hint="@string/respuesta"
+            android:padding="4dp"
+            style="@style/mEditText"
             android:inputType="text"
             android:visibility="invisible"
-            android:textSize="18sp" />
-
+            />
         <Button
             android:id="@+id/btnOpc"
-            android:layout_width="match_parent"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="12dp"
+            style="@style/mButtonCuestionario"
             android:visibility="invisible"
             android:text="@string/seleccione" />
 
@@ -58,17 +59,18 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginTop="12dp"
-            android:background="@color/colorAccent"
+            android:popupBackground="@color/colorBackgoundHeader"
+            android:background="@color/colorBackgoundHeader"
             android:visibility="invisible"
             android:focusableInTouchMode="true" />
 
         <Button
             android:id="@+id/btnSiguiente"
-            android:layout_width="match_parent"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="12dp"
-            android:textColor="@color/colorTextPrimary"
-            android:background="@color/colorBackgoundHeader"
+            style="@style/mButtonCuestionario"
             android:text="@string/siguiente" />
 
         <TextView
@@ -76,25 +78,21 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="" />
-
     </LinearLayout>
-
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_alignParentBottom="true"
         android:background="?attr/colorPrimary"
+        android:layout_alignParentBottom="true"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <TextView
             android:id="@+id/txtTitle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:textColor="@color/colorTextPrimary"
-            />
+            android:textColor="@color/colorTextPrimary" />
     </android.support.v7.widget.Toolbar>
-
 </RelativeLayout>

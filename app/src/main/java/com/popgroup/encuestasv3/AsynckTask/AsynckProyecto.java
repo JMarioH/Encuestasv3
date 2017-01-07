@@ -10,6 +10,7 @@ import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Model.Proyecto;
 import com.popgroup.encuestasv3.Model.TipoEncuesta;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,19 +61,23 @@ public class AsynckProyecto extends AsyncTask<String,String,String> {
         try{
             ServiceHandler serviceHandler = new ServiceHandler();
             String response = serviceHandler.makeServiceCall(URL,ServiceHandler.POST,data);
-            JSONObject jsonObject = new JSONObject(response);
-            JSONObject result = jsonObject.getJSONObject("result");
 
-            proyecto = new Proyecto();
-            proyecto.setNombre(result.getString("proyecto"));
-            proyecto.setIdproyecto(result.getString("idProyecto"));
-            proyecto.setCliente(result.getString("cliente"));
-            try {
-                dao = getmDBHelper().getProyectoDao();
-                dao.create(proyecto);
-            }catch (SQLException e ){
-                Log.i(TAG,"no se pudo guardar el proyecto en la base de datos",e);
-                e.printStackTrace();
+            JSONArray jsonArray = new JSONArray(response);
+
+            for(int x = 0 ; x < jsonArray.length();x++ ){
+                JSONObject jsonObject = new JSONObject();
+                jsonObject = jsonArray.getJSONObject(x);
+                proyecto = new Proyecto();
+                proyecto.setNombre(jsonObject.getString("proyecto"));
+                proyecto.setIdproyecto(jsonObject.getString("idProyecto"));
+                proyecto.setCliente(jsonObject.getString("cliente"));
+                try {
+                    dao = getmDBHelper().getProyectoDao();
+                    dao.create(proyecto);
+                }catch (SQLException e ){
+                    Log.i(TAG,"no se pudo guardar el proyecto en la base de datos",e);
+                    e.printStackTrace();
+                }
             }
 
 

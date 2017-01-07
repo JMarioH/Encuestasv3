@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_alignParentTop="true"
+        android:elevation="4dp"
         android:background="@color/colorBackgoundHeader"
         android:gravity="center"
         android:orientation="vertical">
@@ -22,25 +23,17 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/CambiarUsr"
-            android:textColor="@color/colorTextPrimary"
-            android:textSize="18sp" />
+            style="@style/textTittle" />
 
     </LinearLayout>
-
-    <View
-        android:id="@+id/viewLine"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/header"
-        android:background="@color/colorAccent" />
 
     <LinearLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/footer"
-        android:layout_below="@id/viewLine"
-        android:layout_margin="16dp"
+        android:padding="16dp"
+        android:layout_below="@id/header"
         android:orientation="vertical">
 
         <android.support.design.widget.TextInputLayout
@@ -80,10 +73,10 @@
         </android.support.design.widget.TextInputLayout>
         <Button
             android:id="@+id/btnLogin"
-            android:layout_width="match_parent"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
-            android:background="@color/colorBackgoundHeader"
-            android:textColor="@color/colorTextPrimary"
+            android:layout_gravity="center"
+            style="@style/mButtonCuestionario"
             android:layout_marginTop="42dp"
             android:text="Login" />
 
@@ -99,10 +92,9 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <TextView
                 android:id="@+id/txtTitle"

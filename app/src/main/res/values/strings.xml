@@ -13,4 +13,7 @@
     <string name="pregunta">¿Pregunta.?</string>
     <string name="respuesta">Respuesta</string>
     <string name="CambiarUsr">Cambiar de usuario</string>
+    <string name="maximoFotos">Número de fotos maximo 5</string>
+    <string name="tomarFoto">Tomar Foto</string>
+    <string name="terminarEnc">¿Terminar la encuesta?</string>
 </resources>

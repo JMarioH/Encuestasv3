@@ -3,9 +3,11 @@ package com.popgroup.encuestasv3.DataBase;
 import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
 import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.Cliente;
+import com.popgroup.encuestasv3.Model.GeoLocalizacion;
 import com.popgroup.encuestasv3.Model.Preguntas;
 import com.popgroup.encuestasv3.Model.Proyecto;
 import com.popgroup.encuestasv3.Model.Respuestas;
+import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
 import com.popgroup.encuestasv3.Model.TipoEncuesta;
 import com.popgroup.encuestasv3.Model.User;
 
@@ -24,7 +26,7 @@ public class OrmliteDatabaseConfigUtil extends OrmLiteConfigUtil {
      */
     private static final Class<?>[] classes = new Class[] {User.class , Cliente.class,
             TipoEncuesta.class, Proyecto.class, CatMaster.class,
-            Preguntas.class, Respuestas.class};
+            Preguntas.class, Respuestas.class, RespuestasCuestionario.class, GeoLocalizacion.class};
 
 
     /**

@@ -63,9 +63,7 @@ public class Respuestas implements Serializable {
         return idRespuesta;
     }
 
-    public void setIdRespuesta(int idRespuesta) {
-        this.idRespuesta = idRespuesta;
-    }
+    public void setIdRespuesta(int idRespuesta) { this.idRespuesta = idRespuesta; }
 
     public String getRespuesta() {
         return respuesta;

@@ -2,24 +2,31 @@ package com.popgroup.encuestasv3.DataBase;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.design.widget.TabLayout;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.field.DataPersister;
+import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.table.TableUtils;
 import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.Cliente;
+import com.popgroup.encuestasv3.Model.GeoLocalizacion;
 import com.popgroup.encuestasv3.Model.Preguntas;
 import com.popgroup.encuestasv3.Model.Proyecto;
 import com.popgroup.encuestasv3.Model.Respuestas;
+import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
 import com.popgroup.encuestasv3.Model.TipoEncuesta;
 import com.popgroup.encuestasv3.Model.User;
 import com.popgroup.encuestasv3.R;
 
+import java.sql.SQLDataException;
 import java.sql.SQLException;
 
 public class DBHelper extends OrmLiteSqliteOpenHelper {
@@ -35,6 +42,8 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
     private Dao<CatMaster,Integer> catMastersDao= null;
     private Dao<Preguntas,Integer> pregutasDao = null;
     private Dao<Respuestas,Integer> respuestasDao = null;
+    private Dao<RespuestasCuestionario,Integer> respuestasCuestioanrioDao = null;
+    private Dao<GeoLocalizacion,Integer> geosDao = null;
 
     private RuntimeExceptionDao<User,Integer> userRuntime = null;
     private RuntimeExceptionDao<Cliente,Integer> clienteRuntime = null;
@@ -43,7 +52,8 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
     private RuntimeExceptionDao<CatMaster,Integer> catMastersRuntime = null;
     private RuntimeExceptionDao<Preguntas,Integer> preguntasRuntime = null;
     private RuntimeExceptionDao<Respuestas,Integer> respuestasRuntime = null;
-
+    private RuntimeExceptionDao<RespuestasCuestionario,Integer> respuestasCuestionaroiRuntime = null;
+    private RuntimeExceptionDao<GeoLocalizacion,Integer> geosRuntime = null;
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
@@ -58,6 +68,8 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, CatMaster.class);
             TableUtils.createTable(connectionSource, Preguntas.class);
             TableUtils.createTable(connectionSource, Respuestas.class);
+            TableUtils.createTable(connectionSource,RespuestasCuestionario.class);
+            TableUtils.createTable(connectionSource,GeoLocalizacion.class);
         } catch (SQLException e) {
             Log.i(DBHelper.class.getName(), "no se pudo crear la base" , e);
             throw  new RuntimeException(e);
@@ -75,6 +87,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, CatMaster.class, true);
             TableUtils.dropTable(connectionSource, Preguntas.class,true);
             TableUtils.dropTable(connectionSource, Respuestas.class,true);
+            TableUtils.dropTable(connectionSource,RespuestasCuestionario.class,true);
             onCreate(database, connectionSource);
         } catch (SQLException e) {
           Log.e(DBHelper.class.getName(), "Can't drop databases", e);
@@ -179,6 +192,32 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         return respuestasRuntime;
     }
 
+    public Dao<RespuestasCuestionario,Integer> getRespuestasCuestioanrioDao() throws SQLException{
+        if(respuestasCuestioanrioDao == null){
+            respuestasCuestioanrioDao = getDao(RespuestasCuestionario.class);
+        }
+        return respuestasCuestioanrioDao;
+    }
+    public RuntimeExceptionDao<RespuestasCuestionario,Integer> getRespuestasCuestionaroiRuntime(){
+        if (respuestasCuestionaroiRuntime == null){
+            respuestasCuestionaroiRuntime = getRuntimeExceptionDao(RespuestasCuestionario.class);
+        }
+        return respuestasCuestionaroiRuntime;
+    }
+
+    public Dao<GeoLocalizacion , Integer> getGeosDao() throws SQLException{
+        if(geosDao == null){
+            geosDao = getDao(GeoLocalizacion.class);
+        }
+        return  geosDao;
+    }
+
+    public RuntimeExceptionDao<GeoLocalizacion , Integer> getGeosRuntime(){
+        if(geosRuntime == null){
+            geosRuntime = getRuntimeExceptionDao(GeoLocalizacion.class);
+        }
+        return geosRuntime;
+    }
     @Override
     public void close() {
         super.close();
@@ -196,9 +235,10 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         preguntasRuntime = null;
         respuestasDao = null;
         respuestasRuntime = null;
+        respuestasCuestioanrioDao = null;
+        respuestasCuestionaroiRuntime = null;
+        geosDao = null;
+        geosRuntime = null;
     }
-
-
-
 }
 
