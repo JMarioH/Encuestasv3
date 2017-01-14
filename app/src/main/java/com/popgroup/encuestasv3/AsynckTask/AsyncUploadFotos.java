@@ -18,8 +18,9 @@ import static com.popgroup.encuestasv3.R.string.respuesta;
 
 /**
  * Created by jesus.hernandez on 02/01/17.
+ * sube las fotos
  */
-class AsyncUploadFotos extends AsyncTask<Void, Void, Boolean> {
+public class AsyncUploadFotos extends AsyncTask<Void, Void, Boolean> {
 
     public ProgressDialog pDialog ;
     private Context context ;
@@ -45,16 +46,6 @@ class AsyncUploadFotos extends AsyncTask<Void, Void, Boolean> {
     }
 
     @Override
-    protected void onPostExecute(Boolean s) {
-        super.onPostExecute(s);
-        pDialog.hide();
-        pDialog.dismiss();
-        if(s) {
-            Toast.makeText(context, "Fotos enviadas correctamente", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-    @Override
     protected Boolean doInBackground(Void... params) {
         Boolean respuesta = false;
         constantes = new Constantes();
@@ -77,6 +68,16 @@ class AsyncUploadFotos extends AsyncTask<Void, Void, Boolean> {
             e.printStackTrace();
         }
         return respuesta;
+    }
+    @Override
+    protected void onPostExecute(Boolean s) {
+        super.onPostExecute(s);
+        pDialog.hide();
+        pDialog.dismiss();
+        if(s) {
+            Toast.makeText(context, "Fotos enviadas correctamente", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }
 

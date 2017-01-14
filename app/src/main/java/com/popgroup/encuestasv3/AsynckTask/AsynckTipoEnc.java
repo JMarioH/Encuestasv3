@@ -21,6 +21,7 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 /**
  * Created by jesus.hernandez on 08/12/16.
+ * descarga los tipos de encuestas
  */
 
 public class AsynckTipoEnc  extends AsyncTask<String,String,String> {

@@ -22,6 +22,7 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 /**
  * Created by jesus.hernandez on 12/12/16.
+ * descarga los datos del catmaster
  */
 
 public class AsynckCatMaster extends AsyncTask<String,String,String>{

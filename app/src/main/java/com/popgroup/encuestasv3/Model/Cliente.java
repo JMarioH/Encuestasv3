@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 /**
  * Created by jesus.hernandez on 08/12/16.
+ * modelo cliente
  */
 @DatabaseTable
 public class Cliente{
@@ -23,14 +24,12 @@ public class Cliente{
 
     public Cliente() {
     }
-
     public int getId() {
         return id;
     }
     public void setId(int id) {
         this.id = id;
     }
-
     public String getNombre() {
         return nombre;
     }

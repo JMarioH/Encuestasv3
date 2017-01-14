@@ -14,6 +14,7 @@ import android.provider.Settings;
 
 /**
  * Created by jesus.hernandez on 08/12/16.
+ * clase para obtener la geolocalizacion
  */
 
 public class GPSTracker extends Service implements LocationListener {

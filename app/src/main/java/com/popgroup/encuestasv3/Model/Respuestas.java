@@ -7,9 +7,10 @@ import java.io.Serializable;
 
 /**
  * Created by jesus.hernandez on 12/12/16.
+ * modelo base respuestas
  */
 @DatabaseTable
-public class Respuestas implements Serializable {
+public class Respuestas  {
 
     public static final String ID="id";
     public static final String IDPREGUNTA="idpregunta";

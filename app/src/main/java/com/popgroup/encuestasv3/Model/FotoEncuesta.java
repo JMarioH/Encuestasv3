@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Created by jesus.hernandez on 26/12/16.
+ * modelo foto encuesta
  */
 public class FotoEncuesta {
 

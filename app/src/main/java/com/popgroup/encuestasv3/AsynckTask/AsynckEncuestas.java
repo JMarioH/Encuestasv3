@@ -15,8 +15,10 @@ import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.MainActivity;
 import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.FotoEncuesta;
+import com.popgroup.encuestasv3.Model.Fotos;
 import com.popgroup.encuestasv3.Model.GeoLocalizacion;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
+import com.popgroup.encuestasv3.Utility.Connectivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,12 +27,12 @@ import org.json.JSONObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import cz.msebera.android.httpclient.HttpException;
 import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 /**
  * Created by jesus.hernandez on 26/12/16.
+ * envias las encuestas en el proceso normal
  */
 
 public class AsynckEncuestas extends AsyncTask<String,String,String>{
@@ -58,7 +60,8 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
     private ArrayList<String> arrayFotos , arrayNomFoto;
     private ArrayList<NameValuePair> datosPost;
     private JSONArray jsonFotos;
-
+    Connectivity connectivity;
+    Boolean validaConexion;
     public AsynckEncuestas(Context context, String idEncuesta ,String idEstablecimiento, String idTienda ,String usuario) {
         this.mContext = context;
         this.mEncuesta = idEncuesta;
@@ -84,62 +87,72 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
         URL = constantes.getIPWBSetService();
         mDBHelper = OpenHelperManager.getHelper(mContext,DBHelper.class);
         ArrayList<GeoLocalizacion> arrayGeos;
+        connectivity = new Connectivity();
+        validaConexion = connectivity.isConnected(mContext);
+        if(validaConexion) {
 
-        try {
-            dao = getmDBHelper().getGeosDao();
-            arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder().selectColumns("latitud","longitud")
-                    .where().eq("idEncuesta",mEncuesta).and().eq("idEstablecimiento",mTienda).query();
-            Log.e(TAG,"arrayGEOS"+ arrayGeos.size());
-            for(GeoLocalizacion item :arrayGeos){
-                latitud =  item.getLatitud();
-                longitud = item.getLongitud();
-            }
-            dao.clearObjectCache();
-            dao = getmDBHelper().getRespuestasCuestioanrioDao();
-            dao.clearObjectCache(); // limpiamos el cache de de la base de datos
-
-            arrayResultados =(ArrayList<RespuestasCuestionario>) dao.queryBuilder()
-                    .selectColumns("id","idEncuesta","fecha","idTienda","idPregunta","idRespuesta","respuestaLibre","idArchivo")
-                    .where().eq("idEncuesta",mEncuesta)
-                    .and().eq("idTienda",mTienda).query();
-            data = new ArrayList<>();
-            jsonArray = new JSONArray();
-
-            Log.e(TAG,"numrows : " + arrayResultados.size());
-            for (RespuestasCuestionario item :arrayResultados){
-                jsonObject = new JSONObject();
-                jsonObject.put("idEncuesta",item.getIdEncuesta());
-                jsonObject.put("idEstablecimiento",mEstablecimiento);
-                jsonObject.put("idTienda",mTienda);
-                jsonObject.put("usuario",mUsuario);
-                jsonObject.put("idPregunta",item.getIdPregunta());
-                jsonObject.put("idRespuesta",item.getIdRespuesta());
-                jsonObject.put("abierta",item.getRespuestLibre());
-                jsonObject.put("latitud",latitud);
-                jsonObject.put("longitud",longitud);
-                jsonObject.put("fecha",item.getFecha());
-                jsonArray.put(jsonObject);
-             }
-            Log.e(TAG,"jsonArray" + jsonArray);
-            data.add(new BasicNameValuePair("setEncuestas",jsonArray.toString()));
             try {
-                ServiceHandler serviceHandler = new ServiceHandler();
-                String response = serviceHandler.makeServiceCall(URL, ServiceHandler.POST, data);
-                JSONObject jsonObject = new JSONObject(response);
-                JSONObject result = jsonObject.getJSONObject("result");
-                success = result.getString("success").toString();
-                Log.e(TAG, "success : " + success);
-                return success;
-            }catch (Exception e){
-                e.printStackTrace();
-                success = "0";
-                return success;
-            }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+                dao = getmDBHelper().getGeosDao();
+                arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder().selectColumns("latitud", "longitud")
+                        .where().eq("idEncuesta", mEncuesta).and().eq("idEstablecimiento", mTienda).query();
+
+                for (GeoLocalizacion item : arrayGeos) {
+                    latitud = item.getLatitud();
+                    longitud = item.getLongitud();
+                }
+
+                dao.clearObjectCache();
+                dao = getmDBHelper().getRespuestasCuestioanrioDao();
+                dao.clearObjectCache(); // limpiamos el cache de de la base de datos
+
+                arrayResultados = (ArrayList<RespuestasCuestionario>) dao.queryBuilder()
+                        .selectColumns("id", "idEncuesta", "fecha", "idTienda", "idPregunta", "idRespuesta", "respuestaLibre", "idArchivo")
+                        .where().eq("idEncuesta", mEncuesta)
+                        .and().eq("idTienda", mTienda)
+                        .and().eq("idEstablecimiento", mEstablecimiento)
+                        .query();
+
+                data = new ArrayList<>();
+                jsonArray = new JSONArray();
+
+                for (RespuestasCuestionario item : arrayResultados) {
+
+                    jsonObject = new JSONObject();
+                    jsonObject.put("idEncuesta", item.getIdEncuesta());
+                    jsonObject.put("idEstablecimiento", mEstablecimiento);
+                    jsonObject.put("idTienda", mTienda);
+                    jsonObject.put("usuario", mUsuario);
+                    jsonObject.put("idPregunta", item.getIdPregunta());
+                    jsonObject.put("idRespuesta", item.getIdRespuesta());
+                    jsonObject.put("abierta", item.getRespuestLibre());
+                    jsonObject.put("latitud", latitud);
+                    jsonObject.put("longitud", longitud);
+                    jsonObject.put("fecha", item.getFecha());
+                    jsonArray.put(jsonObject);
+                }
+
+                data.add(new BasicNameValuePair("setEncuestas", jsonArray.toString()));
+                try {
+                    ServiceHandler serviceHandler = new ServiceHandler();
+                    String response = serviceHandler.makeServiceCall(URL, ServiceHandler.POST, data);
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONObject result = jsonObject.getJSONObject("result");
+                    success = result.getString("success").toString();
+
+                    return success;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    success = "0";
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else{
+            success= "0";
         }
         return success;
     }
@@ -167,7 +180,9 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
             try { // borramos la encuesta enviada
                 dao = getmDBHelper().getRespuestasCuestioanrioDao();
                 DeleteBuilder<RespuestasCuestionario,Integer> deleteBuilder = dao.deleteBuilder();
-                deleteBuilder.where().eq("idEncuesta",mEncuesta).and().eq("idTienda",mTienda);
+                deleteBuilder.where().eq("idEncuesta",mEncuesta)
+                        .and().eq("idTienda",mTienda)
+                        .and().eq("idEstablecimiento",mEstablecimiento);
                 deleteBuilder.delete();
                 dao.clearObjectCache();
             } catch (SQLException e) {
@@ -178,14 +193,16 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             mContext.startActivity(i);
         }else{
+            // datos guaradados localmente
             try {
                 //cambiamos el estatus de las respuestas
                 dao = getmDBHelper().getRespuestasCuestioanrioDao();
                 UpdateBuilder<RespuestasCuestionario, Integer> updateBuilder = dao.updateBuilder();
-                updateBuilder.updateColumnValue("flag", true);
-                updateBuilder.where().eq("idTienda", mEstablecimiento).and().eq("idEncuesta", mEncuesta);
+                updateBuilder.updateColumnValue("flag",true);
+                updateBuilder.where().eq("idEstablecimiento", mEstablecimiento).and().eq("idEncuesta", mEncuesta);
                 updateBuilder.update();
                 dao.clearObjectCache();
+                guardaFotos();
 
             }catch (SQLException e){
                 e.printStackTrace();
@@ -216,7 +233,6 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
             arrayFotos = fotoEncuesta.getArrayFotos(); // array de base64 de las fotos
             jsonFotos = new JSONArray();
             datosPost = new ArrayList<>();
-
             for (x = 0 ; x < arrayFotos.size(); x++) {
                 nomArchivo = mEncuesta + "_" + mEstablecimiento + "_" + fotoEncuesta.getNombre().get(x) + "_" + x + ".jpg";
                 base64 = fotoEncuesta.getArrayFotos().get(x);
@@ -233,11 +249,37 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
                     e.printStackTrace();
                 }
             }
-            Log.e(TAG,"jsonFotos" + jsonFotos);
-            Log.e(TAG,"numFotosJson " + jsonFotos.length());
-
             datosPost.add(new BasicNameValuePair("subeFotos", jsonFotos.toString()));
+            // envio de fotos
             new AsyncUploadFotos(mContext, datosPost).execute();
+
+        }
+    }
+
+    public void guardaFotos(){
+
+        int x = 0 ;
+        ArrayList<String> arrayBase64;
+        if(fotoEncuesta.getNombre()!=null ){
+            arrayBase64 = fotoEncuesta.getArrayFotos();
+            try {
+                dao = getmDBHelper().getFotosDao();
+                for (x= 0 ; x <arrayBase64.size() ; x++ ){
+                    Fotos Objfotos = new Fotos();
+                    nomArchivo = mEncuesta + "_" + mEstablecimiento + "_" + fotoEncuesta.getNombre().get(x) + "_" + x + ".jpg";
+                    base64 = fotoEncuesta.getArrayFotos().get(x);
+
+                    Objfotos.setIdEstablecimiento(Integer.parseInt(mEstablecimiento));
+                    Objfotos.setIdEncuesta(Integer.parseInt(mEncuesta));
+                    Objfotos.setNombre(fotoEncuesta.getNombre().get(x));
+                    Objfotos.setBase64(base64);
+                    dao.create(Objfotos);
+                }
+                dao.clearObjectCache();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
         }
     }

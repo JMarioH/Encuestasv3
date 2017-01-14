@@ -148,7 +148,7 @@ public class Login extends AppCompatActivity{
             pDialog.hide();
             if(res.equals("1")){
                 try {
-                    Log.e(TAG,"create usuario " + usuario);
+
                     dao = getmDBHelper().getUserDao();
                     User user = new User();
                     user.setNombre(usuario);
@@ -173,16 +173,13 @@ public class Login extends AppCompatActivity{
             data.add(new BasicNameValuePair("f", "login"));
             data.add(new BasicNameValuePair("usuario", usuario));
             data.add(new BasicNameValuePair("password", password));
-            Log.e(TAG,"data " +data);
+
             try{
                 ServiceHandler jsonParser = new ServiceHandler();
                 String jsonRes = jsonParser.makeServiceCall(URL, ServiceHandler.POST, data);
                 JSONObject jsonObject = new JSONObject(jsonRes);
                 JSONObject result = jsonObject.getJSONObject("result");
                 success = result.getString("logstatus").toString();
-                //TODO todas las peticiones aqui
-
-                Log.e(TAG,"logstatus"+success);
                 if(success.equals("1")) {
                     new AsynckCliente(Login.this, usuario).execute();
                     new AsynckProyecto(Login.this, usuario).execute();
@@ -232,7 +229,10 @@ public class Login extends AppCompatActivity{
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
         }else if(id== R.id.menuSalir){
-            finish();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
 

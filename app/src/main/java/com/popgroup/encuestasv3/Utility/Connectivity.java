@@ -7,6 +7,7 @@ import android.telephony.TelephonyManager;
 
 /**
  * Created by jesus.hernandez on 08/12/16.
+ * clase para validar tipo de conexiones y disponibilidad
  */
 public class Connectivity {
     /**

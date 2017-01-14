@@ -9,6 +9,7 @@ import static com.popgroup.encuestasv3.Model.RespuestasCuestionario.FLAG;
 
 /**
  * Created by jesus.hernandez on 12/12/16.
+ * modelo Catmaster
  */
 @DatabaseTable
 public class CatMaster implements Serializable {

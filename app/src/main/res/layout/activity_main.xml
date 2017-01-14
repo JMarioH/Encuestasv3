@@ -77,7 +77,8 @@
             android:layout_gravity="center"
             style="@style/mButton"
             android:layout_marginTop="12dp"
-            android:text="@string/EncPendientes" />
+            android:text="@string/EncPendientes"
+            android:visibility="invisible"/>
 
         <Button
             android:id="@+id/btnFotosPendientes"
@@ -87,9 +88,8 @@
             android:layout_gravity="center"
             style="@style/mButton"
             android:layout_marginTop="12dp"
-            android:text="@string/FotosPendientes" />
-
-
+            android:text="@string/FotosPendientes"
+            android:visibility="invisible"/>
     </LinearLayout>
 
     <android.support.v7.widget.Toolbar

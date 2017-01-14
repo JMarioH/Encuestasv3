@@ -20,6 +20,7 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 /**
  * Created by jesus.hernandez on 08/12/16.
+ * descarga los clientes
  */
 
 public class AsynckCliente extends AsyncTask<String, String, String> {
@@ -36,12 +37,10 @@ public class AsynckCliente extends AsyncTask<String, String, String> {
 
     public AsynckCliente() {
     }
-
     public AsynckCliente(Context context, String telefono) {
         this.telefono = telefono;
         this.mContext = context;
     }
-
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -63,7 +62,6 @@ public class AsynckCliente extends AsyncTask<String, String, String> {
             String jsonRes = jsonParser.makeServiceCall(URL, ServiceHandler.POST, data);
             JSONObject jsonObject = new JSONObject(jsonRes);
             JSONObject result = jsonObject.getJSONObject("result");
-          //  success = result.getString("cliente");
             try {
                 dao = getmDBHelper().getClienteDao();
                 cliente = new Cliente();

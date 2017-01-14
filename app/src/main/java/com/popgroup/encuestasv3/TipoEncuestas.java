@@ -52,9 +52,6 @@ public class TipoEncuestas extends AppCompatActivity {
     TipoEncuesta tipoEncuesta;
     ArrayList<TipoEncuesta> arrayTipoEnc;
     ArrayList<String> arrayEncuestas;
-    List<TipoEncuesta> listTipoEncuesta;
-
-
     ArrayAdapter<String> adapter;
     ListView listView;
 
@@ -75,32 +72,30 @@ public class TipoEncuestas extends AppCompatActivity {
         txtTitle.setTextSize(18);
         txtTitle.setTextColor(getBaseContext().getResources().getColor(R.color.colorTextPrimary));
         setSupportActionBar(toolbar);
-
         bundle = new Bundle();
         Bundle extras = getIntent().getExtras();
 
         usuario = extras.getString("usuario");
         cliente = extras.getString("cliente");
         idproyecto = extras.getString("idproyecto");
-        Log.e(TAG,"usuario" + usuario);
-        Log.e(TAG,"cliente" + cliente);
-        Log.e(TAG,"idproyecto" + idproyecto);
 
+        Log.e(TAG,"usuario " + usuario);
+        Log.e(TAG,"cliente " + cliente);
+        Log.e(TAG,"idProyecto " + idproyecto);
         arrayEncuestas = new ArrayList<>();
         //recupermos los tipo de encuesta de la base de datos
         try {
             dao = getmDBHelper().getTipoEncDao();
             //arrayTipoEnc = (ArrayList<TipoEncuesta>)dao.queryForAll();
-            arrayTipoEnc = (ArrayList<TipoEncuesta>)dao.queryBuilder().distinct().selectColumns("encuesta").where().eq("numero_tel",usuario).and().eq("idProyecto",idproyecto).and().eq("nombre",cliente).query();
+            arrayTipoEnc = (ArrayList<TipoEncuesta>) dao.queryBuilder().selectColumns("encuesta").where().eq("numero_tel",usuario).and().eq("idProyecto",idproyecto).query();
+            Log.e(TAG,"arrayTipoEnc" + arrayTipoEnc.size());
             for (TipoEncuesta item : arrayTipoEnc){
                 arrayEncuestas.add(item.getEncuesta());
-                Log.e(TAG,"a :" + item.getEncuesta());
             }
             dao.clearObjectCache();
         } catch (SQLException e) {
             Log.i(TAG,"error",e);
         }
-
 
         adapter = new ArrayAdapter<String>(this,R.layout.simple_list_item,arrayEncuestas){
             @Override
@@ -130,7 +125,6 @@ public class TipoEncuestas extends AppCompatActivity {
                             .selectColumns("idArchivo","idEncuesta","idTienda")
                             .where().eq("numero_tel",usuario)
                             .and().eq("idProyecto",idproyecto)
-                            .and().eq("nombre",cliente)
                             .and().eq("encuesta",adapterView.getAdapter().getItem(i).toString())
                             .query();
 
@@ -142,10 +136,6 @@ public class TipoEncuestas extends AppCompatActivity {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                Log.e(TAG,"idArchivo " + idArchivoSel);
-                Log.e(TAG,"idEncuesta " + idEncuestaSel);
-                Log.e(TAG,"idTienda" + idTienda);
 
                 bundle.putString("idArchivo",idArchivoSel);
                 bundle.putString("idEncuesta",idEncuestaSel);
@@ -181,7 +171,6 @@ public class TipoEncuestas extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu,menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -192,7 +181,10 @@ public class TipoEncuestas extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
         }else if(id== R.id.menuSalir){
-            finish();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
 

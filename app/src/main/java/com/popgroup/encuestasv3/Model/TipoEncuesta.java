@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 /**
  * Created by jesus.hernandez on 08/12/16.
+ * modelo base timpoe encuestas
  */
 @DatabaseTable
 public class TipoEncuesta implements Serializable{

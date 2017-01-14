@@ -27,6 +27,9 @@ import android.widget.TextView;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Model.GeoEstatica;
 import com.popgroup.encuestasv3.Model.GeoLocalizacion;
@@ -35,6 +38,7 @@ import com.popgroup.encuestasv3.Model.Respuestas;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
 import com.popgroup.encuestasv3.Utility.GPSTracker;
 
+import java.net.IDN;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -48,6 +52,7 @@ import static android.R.attr.id;
 
 /**
  * Created by jesus.hernandez on 14/12/16.
+ * clase principal para responder el cuestionario y recorrer las preguntas
  */
 public class Cuestionario extends AppCompatActivity{
 
@@ -97,6 +102,7 @@ public class Cuestionario extends AppCompatActivity{
     Boolean spinnerRespuesta = false;
     String tipoResp = "";
     String fecha = "";
+    int idpregunta = 0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +132,7 @@ public class Cuestionario extends AppCompatActivity{
         usuario = extras.getString("usuario").toString();
         numPregunta = extras.getString("numPregunta").toString();
         numRespuesta = extras.getString("numRespuesta").toString();
-        Log.e(TAG,"bundle : numPregunta "+ numPregunta);
+
         // creanos de nuevo las variables del bundle
         bundle.putString("idEncuesta",idEncuesta);
         bundle.putString("encuesta",encuesta);
@@ -134,6 +140,13 @@ public class Cuestionario extends AppCompatActivity{
         bundle.putString("idEstablecimiento",idEstablecimiento);
         bundle.putString("idArchivo",idArchivo);
         bundle.putString("usuario",usuario);
+
+        Log.e(TAG,"idEncuesta "+idEncuesta);
+        Log.e(TAG,"encuesta "+encuesta);
+        Log.e(TAG,"idTienda "+idTienda);
+        Log.e(TAG,"idEstablecimiento  "+  idEstablecimiento);
+        Log.e(TAG,"idArchivo "+ idArchivo);
+        Log.e(TAG,"usuario "+ usuario);
         preguntas = new Preguntas();
        //checamos si tenemos los permisos para usar el GPS
         int permisoUbicacion = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -174,37 +187,37 @@ public class Cuestionario extends AppCompatActivity{
             try {
                 arrayPreguntas = new ArrayList<Preguntas>();
                 dao = getmDBHelper().getPregutasDao();
+
                 arrayPreguntas = (ArrayList<Preguntas>) dao.queryBuilder()
                         .selectColumns("idpregunta","pregunta","multiple","orden","idEncuesta")
                         .where().eq("idpregunta",numPregunta)
                         .and().eq("idEncuesta",idEncuesta)
                         .query();
-
                 dao.clearObjectCache();
+
                 //recuperamos las preguntas para este cuestionario
                 for (Preguntas item :arrayPreguntas) {
 
-                    Log.e(TAG,"arrayPreguntas idPregunta : " + item.getIdPregunta());
-                    Log.e(TAG,"arrayPreguntas tipoPregunta : " + item.getMultiple());
-
                     String pregunta = item.getPregunta();
-                    final int idpregunta = item.getIdPregunta();
+                    idpregunta = item.getIdPregunta();
+                    Log.w(TAG,"idpregunta " + idpregunta);
+                    Log.w(TAG,"idEncuesta " + idEncuesta);
                     // seteamos las preguntas  . . .
                     txtPregunta.setText(pregunta);
                     //armamos el array de respuetas para cada pregunta
-                    arrayRespuestas = new ArrayList<>();
 
+                    arrayRespuestas = new ArrayList<>();
                     dao = getmDBHelper().getRespuestasDao();
                     arrayRespuestas = (ArrayList<Respuestas>) dao.queryBuilder()
                             .selectColumns("idpregunta","idrespuesta","respuesta","sigPregunta","respuestaLibre","idEncuesta")
                             .where().eq("idpregunta",idpregunta)
-                            .and().eq("idEncuesta",idEncuesta)
-                            .query();
+                            .and().eq("idEncuesta",idEncuesta).query();
                     dao.clearObjectCache();
-
+                    Log.w(TAG,"arrayRespuestas :" + arrayRespuestas.size());
                     final ArrayList arrayResp = new ArrayList<String>();
                     final ArrayList arrayOpcCombo = new ArrayList<String>();
                     for (final Respuestas resp : arrayRespuestas){ // armamos las opciones para cada tipo de pregunta
+
                         if(resp.getIdRespuesta()==1875){
                             tipoResp = "1";
                             editRespLibre.setVisibility(View.VISIBLE);
@@ -291,13 +304,14 @@ public class Cuestionario extends AppCompatActivity{
                         respCuestionario.setIdPregunta(numPregunta);
                         respCuestionario.setIdRespuesta(numRespuesta);
                         respCuestionario.setIdTienda(idTienda);
+                        respCuestionario.setIdEstablecimiento(idEstablecimiento);
                         respCuestionario.setRespuestLibre(respuestaLibre);
                         dao.create(respCuestionario);
                         dao.clearObjectCache();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                    Log.e(TAG,"pregunta siguiente " +  numPregunta );
+
                     Intent intent = new Intent(getBaseContext(), Cuestionario.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     intent.putExtras(bundle);
@@ -379,6 +393,7 @@ public class Cuestionario extends AppCompatActivity{
                         respCuestionario.setIdRespuesta(idResp);
                         respCuestionario.setIdTienda(idTienda);
                         respCuestionario.setRespuestLibre(false);
+                        respCuestionario.setIdEstablecimiento(idEstablecimiento);
                         dao.create(respCuestionario);
                         dao.clearObjectCache();
 
@@ -445,30 +460,19 @@ public class Cuestionario extends AppCompatActivity{
         });
         alertDialog.show();
     }
-    private DBHelper getmDBHelper(){
-        if (mDBHelper == null) {
-            mDBHelper = OpenHelperManager.getHelper(this, DBHelper.class);
-        }
-        return mDBHelper;
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mDBHelper != null) {
-            OpenHelperManager.releaseHelper();
-            mDBHelper = null;
-        }
-    }
+
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Log.e(TAG,"onkeyDown" + numPregunta);
             Bundle extras = getIntent().getExtras();
             numPregunta = extras.getString("numPregunta");
+
             try {
-                Log.e(TAG,"delete pregunta :  "+numPregunta);
+                dao = getmDBHelper().getRespuestasCuestioanrioDao();
                 DeleteBuilder<RespuestasCuestionario, Integer> deleteBuilder = dao.deleteBuilder();
                 deleteBuilder.where().eq("idpregunta", numPregunta);
                 deleteBuilder.delete();
+                dao.clearObjectCache();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -519,9 +523,26 @@ public class Cuestionario extends AppCompatActivity{
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
         }else if(id== R.id.menuSalir){
-            finish();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
 
+    }
+    private DBHelper getmDBHelper(){
+        if (mDBHelper == null) {
+            mDBHelper = OpenHelperManager.getHelper(this, DBHelper.class);
+        }
+        return mDBHelper;
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mDBHelper != null) {
+            OpenHelperManager.releaseHelper();
+            mDBHelper = null;
+        }
     }
 }

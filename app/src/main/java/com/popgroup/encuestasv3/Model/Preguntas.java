@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 /**
  * Created by jesus.hernandez on 12/12/16.
+ * modelo base preguntas
  */
 @DatabaseTable
 public class Preguntas implements Serializable {

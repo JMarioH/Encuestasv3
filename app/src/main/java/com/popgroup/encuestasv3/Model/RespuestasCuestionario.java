@@ -3,6 +3,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 /**
  * Created by jesus.hernandez on 20/12/16.
+ * modelo base respuestas del cuestionario
  */
 @DatabaseTable
 public class RespuestasCuestionario {
@@ -11,6 +12,7 @@ public class RespuestasCuestionario {
     public static final String IDENCUESTA = "idEncuesta";
     public static final String FECHA = "fecha";
     public static final String IDTIENDA = "idTienda";
+    public static final String IDESTABLECIMIENTO = "idEstablecimiento";
     public static final String IDPREGUNTA = "idPregunta";
     public static final String IDRESPUESTA = "idRespuesta";
     public static final String RESPUESTALIBRE = "respuestaLibre";
@@ -25,6 +27,8 @@ public class RespuestasCuestionario {
     private String fecha;
     @DatabaseField(columnName = IDTIENDA)
     private String  idTienda;
+    @DatabaseField(columnName = IDESTABLECIMIENTO)
+    private String idEstablecimiento;
     @DatabaseField(columnName = IDPREGUNTA)
     private String idPregunta;
     @DatabaseField(columnName = IDRESPUESTA)
@@ -65,6 +69,14 @@ public class RespuestasCuestionario {
 
     public String getIdTienda() {
         return idTienda;
+    }
+
+    public String getIdEstablecimiento() {
+        return idEstablecimiento;
+    }
+
+    public void setIdEstablecimiento(String idEstablecimiento) {
+        this.idEstablecimiento = idEstablecimiento;
     }
 
     public void setIdTienda(String idTienda) {

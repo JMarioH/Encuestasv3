@@ -6,36 +6,38 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.popgroup.encuestasv3.AsynckTask.AsyncUploadFotos;
+import com.popgroup.encuestasv3.AsynckTask.AsynckEncPendientes;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.Cliente;
-import com.popgroup.encuestasv3.Model.GeoLocalizacion;
-import com.popgroup.encuestasv3.Model.Preguntas;
+import com.popgroup.encuestasv3.Model.Fotos;
 import com.popgroup.encuestasv3.Model.Proyecto;
-import com.popgroup.encuestasv3.Model.Respuestas;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
 import com.popgroup.encuestasv3.Model.TipoEncuesta;
 import com.popgroup.encuestasv3.Model.User;
 import com.popgroup.encuestasv3.Utility.Connectivity;
 
-import org.w3c.dom.Text;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.NameValuePair;
+import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     TipoEncuesta tipoEncuesta;
     CatMaster catMaster;
     RespuestasCuestionario respuestasCuestionario;
+    ArrayList<Fotos> fotosPendientes;
     ArrayList<RespuestasCuestionario> encuestasPendientes;
     ArrayList<User> arrayUser;
 
@@ -74,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         if (getSupportActionBar() != null) // Habilitar up button
@@ -99,18 +101,28 @@ public class MainActivity extends AppCompatActivity {
             arrayUser = (ArrayList<User>) dao.queryForAll();
             for (User item : arrayUser){
                 mUsuario  = item.getNombre();
-                Log.e(TAG,"usuarios : " +item.getNombre());
-            }
 
+            }
             if(arrayUser.size()>0) {
                 txtUser.setText(mUsuario);
             }
             dao.clearObjectCache();
 
             dao = getmDBHelper().getRespuestasCuestioanrioDao();
-            encuestasPendientes = (ArrayList<RespuestasCuestionario>) dao.queryForAll();
-            Log.e(TAG,"Encuestas Pendientes : " + encuestasPendientes.size());
+            encuestasPendientes = (ArrayList<RespuestasCuestionario>) dao.queryBuilder().where().eq("flag",true).query();
+
             dao.clearObjectCache();
+
+            dao = getmDBHelper().getFotosDao();
+            fotosPendientes = (ArrayList<Fotos>) dao.queryForAll();
+            dao.clearObjectCache();
+
+            if(encuestasPendientes.size() > 0 ){
+                btnEncPendientes.setVisibility(View.VISIBLE);
+            }
+            if(fotosPendientes.size()>0){
+                btnFotosPendientes.setVisibility(View.VISIBLE);
+            }
 
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
@@ -124,9 +136,8 @@ public class MainActivity extends AppCompatActivity {
                     arrayUser = (ArrayList<User>) dao.queryForAll();
                     for (User item : arrayUser){
                         mUsuario  = item.getNombre();
-                        Log.e(TAG,"usuarios : " +item.getNombre());
-                    }
 
+                    }
                     dao.clearObjectCache();
 
                 }catch (SQLException e){
@@ -141,21 +152,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
         btnInicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 iniciarProceso();
             }
         });
-
         btnEncPendientes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 encuestasPendientes();
             }
         });
-
         btnFotosPendientes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -184,21 +192,59 @@ public class MainActivity extends AppCompatActivity {
         a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(a);
     }
-
     public void encuestasPendientes(){
         Connectivity  connectivity = new Connectivity();
-        connectionAvailable = connectivity.isConnected(this);
+        connectionAvailable = connectivity.isConnectedWifi(this);
         if(connectionAvailable){
-            Toast.makeText(this,"sicronizar encuestas ",Toast.LENGTH_LONG).show();
+            new AsynckEncPendientes(this,mUsuario,encuestasPendientes.size()).execute();
         }else{
             showMessage();
         }
     }
     public void fotosPendientes(){
         Connectivity  connectivity = new Connectivity();
-        connectionAvailable = connectivity.isConnected(this);
+        connectionAvailable = connectivity.isConnectedWifi(this);
+        JSONArray jsonFotos;
+        ArrayList<NameValuePair> datosPost = null;
         if(connectionAvailable){
-            Toast.makeText(this,"sicronizar fotos ",Toast.LENGTH_LONG).show();
+            try {
+                dao = getmDBHelper().getFotosDao();
+                fotosPendientes =(ArrayList<Fotos>) dao.queryForAll();
+                String nomArchivo;
+                int j = 0;
+                jsonFotos = new JSONArray();
+                for (int x = 0; x < fotosPendientes.size(); x++) {
+                    datosPost = new ArrayList<>();
+                    JSONObject jsonFoto = new JSONObject();
+                    try {
+                        nomArchivo = fotosPendientes.get(x).getIdEncuesta() + "_" + fotosPendientes.get(x).getIdEstablecimiento() + "_" + fotosPendientes.get(x).getNombre() + "_" + x + ".jpg";
+                        jsonFoto.put("idEstablecimiento", fotosPendientes.get(x).getIdEstablecimiento());
+                        jsonFoto.put("idEncuesta", fotosPendientes.get(x).getIdEncuesta());
+                        jsonFoto.put("nombreFoto", nomArchivo.toString());
+                        jsonFoto.put("base64", fotosPendientes.get(x).getBase64());
+                        jsonFotos.put(jsonFoto);
+                        j++;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                datosPost.add(new BasicNameValuePair("subeFotos", jsonFotos.toString()));
+                new AsyncUploadFotos(this, datosPost).execute();
+                if (j == fotosPendientes.size()) {
+
+                    dao = getmDBHelper().getFotosDao();
+                    DeleteBuilder<Fotos,Integer> deleteBuilder = dao.deleteBuilder();
+                    deleteBuilder.delete();
+                    dao.clearObjectCache();
+
+                    btnFotosPendientes.setVisibility(View.GONE);
+                }
+
+                dao.clearObjectCache();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         }else{
             showMessage();
         }
@@ -247,7 +293,6 @@ public class MainActivity extends AppCompatActivity {
                             dao.deleteBuilder().delete();
                             dao.clearObjectCache();
 
-
                             dao = getmDBHelper().getRespuestasCuestioanrioDao();
                             dao.deleteBuilder().delete();
                             dao.clearObjectCache();
@@ -255,7 +300,6 @@ public class MainActivity extends AppCompatActivity {
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
-
                         dialog.dismiss();
                         bundle.putString("bandera","1");
                         Intent intent = new Intent(getBaseContext(), Login.class);
@@ -282,10 +326,8 @@ public class MainActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 });
-
         alertDialog.show();
     }
-
     public void iniciarProceso(){
         boolean existenDatos = true;
         if(existenDatos){
@@ -296,16 +338,13 @@ public class MainActivity extends AppCompatActivity {
             showMessage();
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu,menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
         if (id == R.id.menuInicio) {
             //Display Toast
@@ -313,9 +352,11 @@ public class MainActivity extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
         }else if(id== R.id.menuSalir){
-            onBackPressed();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
-
     }
 }

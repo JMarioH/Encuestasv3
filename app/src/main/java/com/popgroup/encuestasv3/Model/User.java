@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 /**
  * Created by jesus.hernandez on 08/12/16.
+ * modelo usuario para la aplicacion
  */
 @DatabaseTable
 public class User {

@@ -3,6 +3,7 @@ package com.popgroup.encuestasv3.DataBase;
 import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
 import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.Cliente;
+import com.popgroup.encuestasv3.Model.Fotos;
 import com.popgroup.encuestasv3.Model.GeoLocalizacion;
 import com.popgroup.encuestasv3.Model.Preguntas;
 import com.popgroup.encuestasv3.Model.Proyecto;
@@ -17,6 +18,7 @@ import java.sql.SQLException;
 
 /**
  * Created by jesus.hernandez on 09/12/16.
+ * archivo de configuracion ormlite
  */
 
 public class OrmliteDatabaseConfigUtil extends OrmLiteConfigUtil {
@@ -26,7 +28,7 @@ public class OrmliteDatabaseConfigUtil extends OrmLiteConfigUtil {
      */
     private static final Class<?>[] classes = new Class[] {User.class , Cliente.class,
             TipoEncuesta.class, Proyecto.class, CatMaster.class,
-            Preguntas.class, Respuestas.class, RespuestasCuestionario.class, GeoLocalizacion.class};
+            Preguntas.class, Respuestas.class, RespuestasCuestionario.class, GeoLocalizacion.class, Fotos.class};
 
 
     /**

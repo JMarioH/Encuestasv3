@@ -22,6 +22,7 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 /**
  * Created by jesus.hernandez on 12/12/16.
+ * descar el proyecto
  */
 
 public class AsynckProyecto extends AsyncTask<String,String,String> {
@@ -75,14 +76,14 @@ public class AsynckProyecto extends AsyncTask<String,String,String> {
                     dao = getmDBHelper().getProyectoDao();
                     dao.create(proyecto);
                 }catch (SQLException e ){
-                    Log.i(TAG,"no se pudo guardar el proyecto en la base de datos",e);
+
                     e.printStackTrace();
                 }
             }
 
 
         }catch (JSONException e ){
-            Log.i(TAG,"no se pudo crear el objeto json",e);
+
             e.printStackTrace();
         }
         return null;

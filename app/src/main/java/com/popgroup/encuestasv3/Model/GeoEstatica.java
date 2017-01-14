@@ -4,6 +4,7 @@ import android.util.Log;
 
 /**
  * Created by jesus.hernandez on 16/12/16.
+ * modelo geos
  */
 
 public class GeoEstatica {

@@ -5,6 +5,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * Created by jesus.hernandez on 20/12/16.
+ * modelo base de datos geolocalizacion
  */
 @DatabaseTable
 public class GeoLocalizacion {

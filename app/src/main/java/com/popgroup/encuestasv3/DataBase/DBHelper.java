@@ -1,22 +1,17 @@
 package com.popgroup.encuestasv3.DataBase;
 
-
 import android.content.Context;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.design.widget.TabLayout;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.j256.ormlite.field.DataPersister;
-import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.table.TableUtils;
 import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.Cliente;
+import com.popgroup.encuestasv3.Model.Fotos;
 import com.popgroup.encuestasv3.Model.GeoLocalizacion;
 import com.popgroup.encuestasv3.Model.Preguntas;
 import com.popgroup.encuestasv3.Model.Proyecto;
@@ -24,9 +19,7 @@ import com.popgroup.encuestasv3.Model.Respuestas;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
 import com.popgroup.encuestasv3.Model.TipoEncuesta;
 import com.popgroup.encuestasv3.Model.User;
-import com.popgroup.encuestasv3.R;
 
-import java.sql.SQLDataException;
 import java.sql.SQLException;
 
 public class DBHelper extends OrmLiteSqliteOpenHelper {
@@ -44,6 +37,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
     private Dao<Respuestas,Integer> respuestasDao = null;
     private Dao<RespuestasCuestionario,Integer> respuestasCuestioanrioDao = null;
     private Dao<GeoLocalizacion,Integer> geosDao = null;
+    private Dao<Fotos,Integer> fotosDao = null;
 
     private RuntimeExceptionDao<User,Integer> userRuntime = null;
     private RuntimeExceptionDao<Cliente,Integer> clienteRuntime = null;
@@ -54,6 +48,8 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
     private RuntimeExceptionDao<Respuestas,Integer> respuestasRuntime = null;
     private RuntimeExceptionDao<RespuestasCuestionario,Integer> respuestasCuestionaroiRuntime = null;
     private RuntimeExceptionDao<GeoLocalizacion,Integer> geosRuntime = null;
+    private RuntimeExceptionDao<Fotos,Integer> fotosRuntime = null;
+
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
@@ -70,6 +66,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Respuestas.class);
             TableUtils.createTable(connectionSource,RespuestasCuestionario.class);
             TableUtils.createTable(connectionSource,GeoLocalizacion.class);
+            TableUtils.createTable(connectionSource,Fotos.class);
         } catch (SQLException e) {
             Log.i(DBHelper.class.getName(), "no se pudo crear la base" , e);
             throw  new RuntimeException(e);
@@ -88,6 +85,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, Preguntas.class,true);
             TableUtils.dropTable(connectionSource, Respuestas.class,true);
             TableUtils.dropTable(connectionSource,RespuestasCuestionario.class,true);
+            TableUtils.dropTable(connectionSource, Fotos.class,true);
             onCreate(database, connectionSource);
         } catch (SQLException e) {
           Log.e(DBHelper.class.getName(), "Can't drop databases", e);
@@ -218,6 +216,20 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         }
         return geosRuntime;
     }
+
+    public Dao<Fotos,Integer> getFotosDao() throws SQLException{
+        if(fotosDao == null){
+            fotosDao = getDao(Fotos.class);
+        }
+        return fotosDao;
+    }
+
+    public RuntimeExceptionDao<Fotos,Integer> getFotosRuntime(){
+        if(fotosRuntime == null ){
+            fotosRuntime = getRuntimeExceptionDao(Fotos.class);
+        }
+        return fotosRuntime;
+    }
     @Override
     public void close() {
         super.close();
@@ -239,6 +251,8 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         respuestasCuestionaroiRuntime = null;
         geosDao = null;
         geosRuntime = null;
+        fotosDao = null;
+        fotosRuntime = null;
     }
 }
 

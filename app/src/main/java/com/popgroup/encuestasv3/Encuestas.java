@@ -82,7 +82,7 @@ public class Encuestas extends AppCompatActivity {
             arrayCatmaster = (ArrayList<CatMaster>) dao.queryBuilder().distinct().selectColumns("nombre")
                     .where().eq("idArchivo",idArchivoSel).and().eq("flag",true).query();
             for(CatMaster item:arrayCatmaster){
-                Log.e(TAG,"item encuestas : "+item.getNombre());
+
                 arrayEnc.add(item.getNombre());
             }
 
@@ -183,7 +183,10 @@ public class Encuestas extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
         }else if(id== R.id.menuSalir){
-            finish();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
 

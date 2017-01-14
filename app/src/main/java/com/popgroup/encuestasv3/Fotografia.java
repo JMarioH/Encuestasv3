@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +38,7 @@ import butterknife.ButterKnife;
 
 /**
  * Created by jesus.hernandez on 21/12/16.
+ *  captura la fotografia para esta version de la aplicacion
  */
 public class Fotografia  extends AppCompatActivity {
     private String TAG = getClass().getSimpleName();
@@ -47,7 +47,6 @@ public class Fotografia  extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.txtTitle)
     TextView txtTitle;
-
     @BindView(R.id.btnFoto)
     Button btnFoto;
     @BindView(R.id.btnSiguiente)
@@ -141,7 +140,7 @@ public class Fotografia  extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         try {
-            Log.e(TAG,"delete pregunta :  " + numPregunta);
+
             DeleteBuilder<RespuestasCuestionario, Integer> deleteBuilder = dao.deleteBuilder();
             deleteBuilder.where().eq("idpregunta", numPregunta);
             deleteBuilder.delete();
@@ -185,6 +184,11 @@ public class Fotografia  extends AppCompatActivity {
                     String nombreFoto =  String.valueOf(System.currentTimeMillis()); // nombre del archivo
                     banderaFotoTomada = true;
                     Bitmap newBitmap = redimensionarIMG(bitmap,200,300);
+
+                    Bitmap bitMapEnvio = redimensionarIMG(bitmap,768,1024);
+                    ByteArrayOutputStream mbytes = new ByteArrayOutputStream();
+                    bitMapEnvio.compress(Bitmap.CompressFormat.JPEG,50,mbytes);
+
                     if (arrayFotos.size() == 0) {
                         imgView1.setImageBitmap(newBitmap);
                     }else if(arrayFotos.size() == 1){
@@ -196,11 +200,12 @@ public class Fotografia  extends AppCompatActivity {
                     }else if(arrayFotos.size() ==4){
                         imgView5.setImageBitmap(newBitmap);
                     }
+
                     String fname = nombreFoto + ".jpg";
                     File fileFinal = new File(file, fname);
                     if (fileFinal.exists()) fileFinal.delete();
 
-                    byteArray = bytes.toByteArray();
+                    byteArray = mbytes.toByteArray();
                     ba1 = Base64.encodeToString(byteArray, Base64.DEFAULT);
                     arrayFotos.add(ba1);
                     arrayNombrefoto.add(nombreFoto);
@@ -252,7 +257,10 @@ public class Fotografia  extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
         }else if(id== R.id.menuSalir){
-            finish();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

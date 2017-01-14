@@ -21,6 +21,7 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
 /**
  * Created by jesus.hernandez on 07/12/16.
+ * handler para enviar por http
  */
 public class ServiceHandler {
 

@@ -22,6 +22,7 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 /**
  * Created by jesus.hernandez on 12/12/16.
+ * descarga el catalago de preguntas
  */
 
 public class AsynckPreguntas extends AsyncTask<String, String, String> {
@@ -62,7 +63,6 @@ public class AsynckPreguntas extends AsyncTask<String, String, String> {
             JSONArray jsonArray = new JSONArray(jsonRes);
             JSONObject jsonObject = new JSONObject();
             for(int x = 0 ; x < jsonArray.length(); x++ ){
-
                 jsonObject = jsonArray.getJSONObject(x);
                 try {
                     Preguntas preguntas = new Preguntas();
@@ -78,7 +78,6 @@ public class AsynckPreguntas extends AsyncTask<String, String, String> {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
             }
             return success;
         }catch (JSONException e) {

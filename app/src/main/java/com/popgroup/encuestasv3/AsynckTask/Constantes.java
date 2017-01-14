@@ -2,6 +2,7 @@ package com.popgroup.encuestasv3.AsynckTask;
 
 /**
  * Created by jesus.hernandez on 07/12/16.
+ * variables de los webservices
  */
 
 public class Constantes {

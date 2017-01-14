@@ -1,9 +1,11 @@
 package com.popgroup.encuestasv3;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -98,7 +100,9 @@ public class Proyectos extends AppCompatActivity {
 
             dao = getmDBHelper().getProyectoDao();
           //  proyecto = (Proyecto) dao.queryForId(1);
-            proyectoList = (List<Proyecto>) dao.queryBuilder().distinct().selectColumns("nombre").where().in("cliente",nomCliente).query();
+          //  proyectoList = (List<Proyecto>) dao.queryBuilder().distinct().selectColumns("nombre").where().in("cliente",nomCliente).query();
+            proyectoList = (List<Proyecto>) dao.queryForAll();
+            Log.e(TAG,"proyecto list " + proyectoList.size());
             dao.clearObjectCache();
             for (Proyecto item : proyectoList) {
                arrayProyectos.add(item.getNombre()  );
@@ -128,11 +132,13 @@ public class Proyectos extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String value = adapterView.getAdapter().getItem(i).toString();
                 String  id = null;
+                Log.e(TAG,"value " + value);
                 try {
                     dao = getmDBHelper().getProyectoDao();
                     proyectoList = (List<Proyecto>) dao.queryBuilder().distinct().selectColumns("idProyecto").where().in("nombre",value).query();
                     for (Proyecto item : proyectoList){
                         id = item.getIdproyecto();
+                        Log.e(TAG,"id proyecto " + id);
                     }
                     dao.clearObjectCache();
 
@@ -182,7 +188,10 @@ public class Proyectos extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
         }else if(id== R.id.menuSalir){
-            finish();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
 

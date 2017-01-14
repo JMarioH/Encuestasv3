@@ -21,6 +21,7 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 /**
  * Created by jesus.hernandez on 12/12/16.
+ * descarga el catalogo de respuestas
  */
 public class AsynckRespuestas extends AsyncTask<String,String,String>{
     private String TAG = getClass().getSimpleName();
