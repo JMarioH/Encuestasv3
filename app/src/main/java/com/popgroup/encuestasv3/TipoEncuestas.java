@@ -1,15 +1,18 @@
 package com.popgroup.encuestasv3;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +25,10 @@ import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
+import com.popgroup.encuestasv3.Model.Proyecto;
+import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
 import com.popgroup.encuestasv3.Model.TipoEncuesta;
 
 import java.sql.SQLException;
@@ -54,7 +60,6 @@ public class TipoEncuestas extends AppCompatActivity {
     ArrayList<String> arrayEncuestas;
     ArrayAdapter<String> adapter;
     ListView listView;
-
     DBHelper mDBHelper;
     Dao dao;
 
@@ -79,76 +84,77 @@ public class TipoEncuestas extends AppCompatActivity {
         cliente = extras.getString("cliente");
         idproyecto = extras.getString("idproyecto");
 
-        Log.e(TAG,"usuario " + usuario);
-        Log.e(TAG,"cliente " + cliente);
-        Log.e(TAG,"idProyecto " + idproyecto);
         arrayEncuestas = new ArrayList<>();
-        //recupermos los tipo de encuesta de la base de datos
-        try {
-            dao = getmDBHelper().getTipoEncDao();
-            //arrayTipoEnc = (ArrayList<TipoEncuesta>)dao.queryForAll();
-            arrayTipoEnc = (ArrayList<TipoEncuesta>) dao.queryBuilder().selectColumns("encuesta").where().eq("numero_tel",usuario).and().eq("idProyecto",idproyecto).query();
-            Log.e(TAG,"arrayTipoEnc" + arrayTipoEnc.size());
-            for (TipoEncuesta item : arrayTipoEnc){
-                arrayEncuestas.add(item.getEncuesta());
-            }
-            dao.clearObjectCache();
-        } catch (SQLException e) {
-            Log.i(TAG,"error",e);
-        }
 
-        adapter = new ArrayAdapter<String>(this,R.layout.simple_list_item,arrayEncuestas){
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position,convertView,parent);
-                TextView textView  = (TextView) view.findViewById(android.R.id.text1);
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP,16);
-                textView.setGravity(Gravity.CENTER);
-                return view;
+            //recupermos los tipo de encuesta de la base de datos
+            try {
+                dao = getmDBHelper().getTipoEncDao();
+                //arrayTipoEnc = (ArrayList<TipoEncuesta>)dao.queryForAll();
+                arrayTipoEnc = (ArrayList<TipoEncuesta>) dao.queryBuilder().distinct().selectColumns("encuesta").where().eq("numero_tel", usuario).and().eq("idProyecto", idproyecto).query();
 
-            }
-        };
-
-        listView = (ListView) findViewById(R.id.listTipoEnc);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-              //  Toast.makeText(getBaseContext(),"tipo seleccionado " + id + "value " + value,Toast.LENGTH_SHORT).show();
-                String idArchivoSel = null;
-                String idEncuestaSel = null;
-                String idTienda = null;
-                try {
-                    //obtenemos el idarchivo y idencuesta de la encuesta seleccionada
-                    dao = getmDBHelper().getTipoEncDao();
-                    arrayTipoEnc = (ArrayList<TipoEncuesta>) dao.queryBuilder().distinct()
-                            .selectColumns("idArchivo","idEncuesta","idTienda")
-                            .where().eq("numero_tel",usuario)
-                            .and().eq("idProyecto",idproyecto)
-                            .and().eq("encuesta",adapterView.getAdapter().getItem(i).toString())
-                            .query();
-
-                    for (TipoEncuesta item:arrayTipoEnc){
-                        idArchivoSel = item.getIdArchivo();
-                        idEncuestaSel = item.getIdEncuesta();
-                        idTienda = item.getIdTienda();
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                for (TipoEncuesta item : arrayTipoEnc) {
+                    arrayEncuestas.add(item.getEncuesta());
                 }
-
-                bundle.putString("idArchivo",idArchivoSel);
-                bundle.putString("idEncuesta",idEncuestaSel);
-                bundle.putString("idTienda",idTienda);
-                bundle.putString("usuario",usuario);
-
-                Intent intent = new Intent(TipoEncuestas.this,Encuestas.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                dao.clearObjectCache();
+            } catch (SQLException e) {
+                Log.i(TAG, "error", e);
             }
-        });
 
+        if(arrayEncuestas.size()>0) {
+            adapter = new ArrayAdapter<String>(this, R.layout.simple_list_item, arrayEncuestas) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+                    textView.setGravity(Gravity.CENTER);
+                    return view;
+
+                }
+            };
+
+            listView = (ListView) findViewById(R.id.listTipoEnc);
+            listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    //  Toast.makeText(getBaseContext(),"tipo seleccionado " + id + "value " + value,Toast.LENGTH_SHORT).show();
+                    String idArchivoSel = null;
+                    String idEncuestaSel = null;
+                    String idTienda = null;
+                    try {
+                        //obtenemos el idarchivo y idencuesta de la encuesta seleccionada
+                        dao = getmDBHelper().getTipoEncDao();
+                        arrayTipoEnc = (ArrayList<TipoEncuesta>) dao.queryBuilder().distinct()
+                                .selectColumns("idArchivo", "idEncuesta", "idTienda")
+                                .where().eq("numero_tel", usuario)
+                                .and().eq("idProyecto", idproyecto)
+                                .and().eq("encuesta", adapterView.getAdapter().getItem(i).toString())
+                                .query();
+                        dao.clearObjectCache();
+                        for (TipoEncuesta item : arrayTipoEnc) {
+                            idArchivoSel = item.getIdArchivo();
+                            idEncuestaSel = item.getIdEncuesta();
+                            idTienda = item.getIdTienda();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                    bundle.putString("idArchivo", idArchivoSel);
+                    bundle.putString("idEncuesta", idEncuestaSel);
+                    bundle.putString("idTienda", idTienda);
+                    bundle.putString("usuario", usuario);
+
+                    Intent intent = new Intent(TipoEncuestas.this, Encuestas.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+        }else{
+            showMessage();
+        }
     }
 
     private DBHelper getmDBHelper() {
@@ -189,4 +195,41 @@ public class TipoEncuestas extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
 
     }
+
+    public void showMessage(){
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Mensaje");
+        alertDialog.setMessage("No hay encuestas disponibles.. ");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent intent = new Intent(TipoEncuestas.this, Proyectos.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                Intent intent = new Intent(TipoEncuestas.this, Proyectos.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        alertDialog.show();
+    }
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent intent = new Intent(this, Proyectos.class);
+            startActivity(intent);
+        }
+        super.onKeyDown(keyCode, event);
+        return true;
+    }
+
 }

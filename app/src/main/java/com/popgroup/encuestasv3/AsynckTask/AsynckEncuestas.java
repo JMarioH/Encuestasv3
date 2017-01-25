@@ -1,9 +1,10 @@
 package com.popgroup.encuestasv3.AsynckTask;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,17 +25,30 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
+import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.NameValuePair;
+import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.entity.UrlEncodedFormEntity;
+import cz.msebera.android.httpclient.client.methods.HttpPost;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 /**
  * Created by jesus.hernandez on 26/12/16.
  * envias las encuestas en el proceso normal
  */
-
 public class AsynckEncuestas extends AsyncTask<String,String,String>{
     private String TAG = getClass().getSimpleName();
     private ProgressDialog progressDialog;
@@ -57,11 +71,13 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
     String latitud = null,longitud = null;
     FotoEncuesta fotoEncuesta = new FotoEncuesta().getInstace();
     private String nomArchivo,base64;
+    private byte [] bytefoto;
     private ArrayList<String> arrayFotos , arrayNomFoto;
     private ArrayList<NameValuePair> datosPost;
     private JSONArray jsonFotos;
     Connectivity connectivity;
     Boolean validaConexion;
+
     public AsynckEncuestas(Context context, String idEncuesta ,String idEstablecimiento, String idTienda ,String usuario) {
         this.mContext = context;
         this.mEncuesta = idEncuesta;
@@ -90,24 +106,20 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
         connectivity = new Connectivity();
         validaConexion = connectivity.isConnected(mContext);
         if(validaConexion) {
-
             try {
-
                 dao = getmDBHelper().getGeosDao();
                 arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder().selectColumns("latitud", "longitud")
                         .where().eq("idEncuesta", mEncuesta).and().eq("idEstablecimiento", mTienda).query();
-
                 for (GeoLocalizacion item : arrayGeos) {
                     latitud = item.getLatitud();
                     longitud = item.getLongitud();
                 }
-
                 dao.clearObjectCache();
                 dao = getmDBHelper().getRespuestasCuestioanrioDao();
                 dao.clearObjectCache(); // limpiamos el cache de de la base de datos
 
                 arrayResultados = (ArrayList<RespuestasCuestionario>) dao.queryBuilder()
-                        .selectColumns("id", "idEncuesta", "fecha", "idTienda", "idPregunta", "idRespuesta", "respuestaLibre", "idArchivo")
+                        .selectColumns("idEncuesta", "fecha", "idTienda","idEstablecimiento","idPregunta", "idRespuesta", "respuestaLibre", "idArchivo")
                         .where().eq("idEncuesta", mEncuesta)
                         .and().eq("idTienda", mTienda)
                         .and().eq("idEstablecimiento", mEstablecimiento)
@@ -121,17 +133,18 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
                     jsonObject = new JSONObject();
                     jsonObject.put("idEncuesta", item.getIdEncuesta());
                     jsonObject.put("idEstablecimiento", mEstablecimiento);
-                    jsonObject.put("idTienda", mTienda);
+                    jsonObject.put("idTienda", item.getIdTienda());
                     jsonObject.put("usuario", mUsuario);
                     jsonObject.put("idPregunta", item.getIdPregunta());
                     jsonObject.put("idRespuesta", item.getIdRespuesta());
                     jsonObject.put("abierta", item.getRespuestLibre());
                     jsonObject.put("latitud", latitud);
                     jsonObject.put("longitud", longitud);
-                    jsonObject.put("fecha", item.getFecha());
+                    jsonObject.put("fecha", item.getFecha().toString());
+
                     jsonArray.put(jsonObject);
                 }
-
+                grabar(jsonArray.toString());
                 data.add(new BasicNameValuePair("setEncuestas", jsonArray.toString()));
                 try {
                     ServiceHandler serviceHandler = new ServiceHandler();
@@ -145,7 +158,6 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
                     e.printStackTrace();
                     success = "0";
                 }
-
             } catch (SQLException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -162,7 +174,6 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
         super.onPostExecute(s);
         progressDialog.dismiss();
         progressDialog.hide();
-        Toast.makeText(mContext, "enviando datos ", Toast.LENGTH_LONG).show();
         try {
             // cambiamos el status de la lista de encuestas
             dao = getmDBHelper().getCatMasterDao();
@@ -171,11 +182,9 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
             updateBuilder.where().eq("idTienda",mEstablecimiento).and().eq("idEncuesta",mEncuesta);
             updateBuilder.update();
             dao.clearObjectCache();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         if (success.equals("1")) {
             try { // borramos la encuesta enviada
                 dao = getmDBHelper().getRespuestasCuestioanrioDao();
@@ -236,6 +245,7 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
             for (x = 0 ; x < arrayFotos.size(); x++) {
                 nomArchivo = mEncuesta + "_" + mEstablecimiento + "_" + fotoEncuesta.getNombre().get(x) + "_" + x + ".jpg";
                 base64 = fotoEncuesta.getArrayFotos().get(x);
+                bytefoto = fotoEncuesta.getArrayByte().get(x);
                 // agregamos las fotos ala base de datos ;
                 try {
                     JSONObject jsonObject = new JSONObject();
@@ -255,9 +265,7 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
 
         }
     }
-
     public void guardaFotos(){
-
         int x = 0 ;
         ArrayList<String> arrayBase64;
         if(fotoEncuesta.getNombre()!=null ){
@@ -268,11 +276,11 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
                     Fotos Objfotos = new Fotos();
                     nomArchivo = mEncuesta + "_" + mEstablecimiento + "_" + fotoEncuesta.getNombre().get(x) + "_" + x + ".jpg";
                     base64 = fotoEncuesta.getArrayFotos().get(x);
-
                     Objfotos.setIdEstablecimiento(Integer.parseInt(mEstablecimiento));
                     Objfotos.setIdEncuesta(Integer.parseInt(mEncuesta));
                     Objfotos.setNombre(fotoEncuesta.getNombre().get(x));
                     Objfotos.setBase64(base64);
+                   // Objfotos.setBytebase(fotoEncuesta.getArrayByte().get(x));
                     dao.create(Objfotos);
                 }
                 dao.clearObjectCache();
@@ -282,6 +290,37 @@ public class AsynckEncuestas extends AsyncTask<String,String,String>{
             }
 
         }
+    }
+    public void grabar(String contenido) {
+            File ubicacion = Environment.getExternalStorageDirectory();
+            File logFile = new File(ubicacion.getAbsolutePath(), mUsuario+".txt");
+            if (!logFile.exists())
+            {
+                try
+                {
+                    logFile.createNewFile();
+                }
+                catch (IOException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            try
+            {
+                //BufferedWriter for performance, true to set append to file flag
+                BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+                buf.append(contenido);
+                buf.newLine();
+                buf.close();
+            }
+            catch (IOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+
     }
 
 }

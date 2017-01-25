@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -196,4 +197,14 @@ public class Proyectos extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
 
     }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+        super.onKeyDown(keyCode, event);
+        return true;
+    }
 }
+

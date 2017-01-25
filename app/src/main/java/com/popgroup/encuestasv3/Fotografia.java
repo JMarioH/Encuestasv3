@@ -70,6 +70,7 @@ public class Fotografia  extends AppCompatActivity {
     Boolean banderaFotoTomada = false;
     public byte[] byteArray;
     ArrayList<String> arrayFotos , arrayNombrefoto;
+    ArrayList<byte []> arrayByte;
     String ba1;
     int numFotos = 0;
     FotoEncuesta fotoEncuesta;
@@ -110,6 +111,7 @@ public class Fotografia  extends AppCompatActivity {
 
         arrayFotos = new ArrayList<>();
         arrayNombrefoto = new ArrayList<>();
+        arrayByte= new ArrayList<>();
         fotoEncuesta = new FotoEncuesta().getInstace();
 
         btnSiguiente.setOnClickListener(new View.OnClickListener() {
@@ -156,8 +158,6 @@ public class Fotografia  extends AppCompatActivity {
     //Open
     public void open() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
         startActivityForResult(intent, 1);
     }
     //ActivityResult Method
@@ -166,21 +166,10 @@ public class Fotografia  extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
        if (resultCode == RESULT_OK) {
           if (requestCode == 1) {
-                String uri = Environment.getExternalStorageDirectory().toString();
-                File f = new File(uri);
-                for (File temp : f.listFiles()) {
-                    if (temp.getName().equals("temp.jpg")) {
-                        f = temp;
-                        break;
-                    }
-                }
                 try {
-                    Bitmap bitmap;
-                    BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-                    bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(),bitmapOptions);
+                    Bitmap bitmap = (Bitmap) data.getExtras().get("data");
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-                    File file = new File(Environment.getExternalStorageDirectory(), "/Encuesta/" + idEncuesta + "/" + idTienda); //   990456 / id_tiendaSeleccionada
                     String nombreFoto =  String.valueOf(System.currentTimeMillis()); // nombre del archivo
                     banderaFotoTomada = true;
                     Bitmap newBitmap = redimensionarIMG(bitmap,200,300);
@@ -201,14 +190,11 @@ public class Fotografia  extends AppCompatActivity {
                         imgView5.setImageBitmap(newBitmap);
                     }
 
-                    String fname = nombreFoto + ".jpg";
-                    File fileFinal = new File(file, fname);
-                    if (fileFinal.exists()) fileFinal.delete();
-
                     byteArray = mbytes.toByteArray();
                     ba1 = Base64.encodeToString(byteArray, Base64.DEFAULT);
                     arrayFotos.add(ba1);
                     arrayNombrefoto.add(nombreFoto);
+
                     if(arrayFotos.size() == 5){
                         fotoEncuesta.setIdEstablecimiento(idTienda);
                         fotoEncuesta.setIdEncuesta(idEncuesta);
@@ -216,14 +202,12 @@ public class Fotografia  extends AppCompatActivity {
                         fotoEncuesta.setArrayFotos(arrayFotos);
                         btnFoto.setVisibility(View.GONE);
                     }else{
-
                         fotoEncuesta.setIdEstablecimiento(idTienda);
                         fotoEncuesta.setIdEncuesta(idEncuesta);
                         fotoEncuesta.setNombre(arrayNombrefoto);
                         fotoEncuesta.setArrayFotos(arrayFotos);
-                    }
 
-                    Toast.makeText(Fotografia.this, "Foto guardada en el dispositivo !!", Toast.LENGTH_SHORT).show();
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();

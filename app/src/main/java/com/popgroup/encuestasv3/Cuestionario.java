@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -27,9 +28,6 @@ import android.widget.TextView;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.stmt.PreparedQuery;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.Where;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Model.GeoEstatica;
 import com.popgroup.encuestasv3.Model.GeoLocalizacion;
@@ -38,7 +36,6 @@ import com.popgroup.encuestasv3.Model.Respuestas;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
 import com.popgroup.encuestasv3.Utility.GPSTracker;
 
-import java.net.IDN;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,8 +44,6 @@ import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.R.attr.id;
 
 /**
  * Created by jesus.hernandez on 14/12/16.
@@ -66,6 +61,7 @@ public class Cuestionario extends AppCompatActivity{
     Bundle bundle;
     String idTienda,idEncuesta,idArchivo,idEstablecimiento,usuario ,encuesta,numRespuesta;
     String numPregunta = "0" ;
+    String respSpinner;
     Preguntas preguntas ;
     Respuestas respuestas;
 
@@ -141,12 +137,6 @@ public class Cuestionario extends AppCompatActivity{
         bundle.putString("idArchivo",idArchivo);
         bundle.putString("usuario",usuario);
 
-        Log.e(TAG,"idEncuesta "+idEncuesta);
-        Log.e(TAG,"encuesta "+encuesta);
-        Log.e(TAG,"idTienda "+idTienda);
-        Log.e(TAG,"idEstablecimiento  "+  idEstablecimiento);
-        Log.e(TAG,"idArchivo "+ idArchivo);
-        Log.e(TAG,"usuario "+ usuario);
         preguntas = new Preguntas();
        //checamos si tenemos los permisos para usar el GPS
         int permisoUbicacion = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -200,8 +190,6 @@ public class Cuestionario extends AppCompatActivity{
 
                     String pregunta = item.getPregunta();
                     idpregunta = item.getIdPregunta();
-                    Log.w(TAG,"idpregunta " + idpregunta);
-                    Log.w(TAG,"idEncuesta " + idEncuesta);
                     // seteamos las preguntas  . . .
                     txtPregunta.setText(pregunta);
                     //armamos el array de respuetas para cada pregunta
@@ -213,7 +201,6 @@ public class Cuestionario extends AppCompatActivity{
                             .where().eq("idpregunta",idpregunta)
                             .and().eq("idEncuesta",idEncuesta).query();
                     dao.clearObjectCache();
-                    Log.w(TAG,"arrayRespuestas :" + arrayRespuestas.size());
                     final ArrayList arrayResp = new ArrayList<String>();
                     final ArrayList arrayOpcCombo = new ArrayList<String>();
                     for (final Respuestas resp : arrayRespuestas){ // armamos las opciones para cada tipo de pregunta
@@ -228,7 +215,7 @@ public class Cuestionario extends AppCompatActivity{
                         }else{
                             if(item.getMultiple()==0){
                                 // RESPUESTAS DE OPCION MULTIPLE
-                             /*   Log.e(TAG,"respuestas opciones " );*/
+                                Log.e(TAG,"respuestas opciones " );
                                 tipoResp="2";
                                 spnOpciones.setVisibility(View.VISIBLE);
                                 arrayResp.add(resp.getRespuesta());
@@ -272,6 +259,9 @@ public class Cuestionario extends AppCompatActivity{
                     if (spinnerRespuesta != true) {
                         showMessage();
                         error = true;
+                    }else {
+                        numRespuesta = respSpinner;
+
                     }
                 }
                 if(tipoResp=="3") {
@@ -292,9 +282,9 @@ public class Cuestionario extends AppCompatActivity{
                 }
                 if(!error) {
                     // TODO guardamos las respuestas en la base de datos
-               if(!arrayOpcSelecionadas.isEmpty()) {
-                        onChangeOpcSelecionada();
-                    }
+                   if(!arrayOpcSelecionadas.isEmpty()) {
+                            onChangeOpcSelecionada();
+                        }
                     try {
                         dao = getmDBHelper().getRespuestasCuestioanrioDao();
                         respCuestionario = new RespuestasCuestionario();
@@ -346,7 +336,8 @@ public class Cuestionario extends AppCompatActivity{
             }
         };
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this,android.R.style.Theme_Material_Light_Dialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.MyDialogTheme);
+
         builder.setTitle("Respuestas");
 
         arreglo = new String[arrayResp.size()];
@@ -355,20 +346,19 @@ public class Cuestionario extends AppCompatActivity{
         }
         builder.setMultiChoiceItems(arreglo, chekedOpcion, coloursDialogListener);
         AlertDialog dialog = builder.create();
+
         dialog.show();
 
     }
     private void onChangeOpcSelecionada(){
         String valSelecionado= "";
         for (int i = 0; i < arrayOpcSelecionadas.size(); i++) {
-
             CharSequence value = arrayOpcSelecionadas.get(i);
             valSelecionado = String.valueOf(value);
         /*    Log.e(TAG,"Valor Seleccionado " + valSelecionado);*/
             stringBuilder.append(valSelecionado + " ,");
             //recuperamos los id de las respuestas seleccionadas
             arrayRespuestas = new ArrayList<>();
-
             String pregSig = null;
             String idResp = null;
             try {
@@ -379,7 +369,6 @@ public class Cuestionario extends AppCompatActivity{
                         .and().eq("idEncuesta",idEncuesta)
                         .query();
                 dao.clearObjectCache();
-
                 for (Respuestas respItem : arrayRespuestas) {
                     pregSig = respItem.getSigPregunta().toString();
                     idResp = String.valueOf(respItem.getIdRespuesta());
@@ -411,16 +400,16 @@ public class Cuestionario extends AppCompatActivity{
     }
     private void sppinerOpciones(ArrayList<String>arrayRespuestas , final int idPregSel) {
         arrayAdapter = new ArrayAdapter<String>(this, R.layout.simple_list_item, arrayRespuestas);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        arrayAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
         spnOpciones.setAdapter(arrayAdapter);
         spnOpciones.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 ArrayList<Respuestas> arrayRespSel = new ArrayList<>();
                 String value = adapterView.getAdapter().getItem(i).toString();
-
+                Log.e(TAG,"value spinner " + value) ;
                 try {
-                    dao = null;
+
                     dao = getmDBHelper().getRespuestasDao();
                     arrayRespSel = (ArrayList<Respuestas>) dao.queryBuilder()
                             .selectColumns("idrespuesta", "respuesta", "sigPregunta", "respuestaLibre", "idEncuesta")
@@ -429,10 +418,15 @@ public class Cuestionario extends AppCompatActivity{
                             .and().eq("idEncuesta", idEncuesta)
                             .query();
                     dao.clearObjectCache();
+
                     for (Respuestas itemSel : arrayRespSel){
-                        bundle.putString("numPregunta", itemSel.getSigPregunta().toString());
+
+                        bundle.putString("numPregunta", String.valueOf(itemSel.getSigPregunta()));
                         bundle.putString("numRespuesta", String.valueOf(itemSel.getIdRespuesta()));
+                        respSpinner = String.valueOf(itemSel.getIdRespuesta());
+
                     }
+
                 }catch (SQLException e){
                     e.printStackTrace();
                 }
@@ -463,14 +457,13 @@ public class Cuestionario extends AppCompatActivity{
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Log.e(TAG,"onkeyDown" + numPregunta);
             Bundle extras = getIntent().getExtras();
             numPregunta = extras.getString("numPregunta");
 
             try {
                 dao = getmDBHelper().getRespuestasCuestioanrioDao();
                 DeleteBuilder<RespuestasCuestionario, Integer> deleteBuilder = dao.deleteBuilder();
-                deleteBuilder.where().eq("idpregunta", numPregunta);
+                deleteBuilder.where().eq("idPregunta", numPregunta).and().eq("idEstablecimiento",idEstablecimiento);
                 deleteBuilder.delete();
                 dao.clearObjectCache();
             } catch (SQLException e) {
@@ -529,7 +522,6 @@ public class Cuestionario extends AppCompatActivity{
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
-
     }
     private DBHelper getmDBHelper(){
         if (mDBHelper == null) {

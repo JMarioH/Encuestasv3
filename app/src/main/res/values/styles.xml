@@ -9,7 +9,7 @@
     </style>
     <style name="textTittle">
         <item name="android:textColor">@color/colorTextPrimary</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
     <style name="textNormal">
         <item name="android:textColor">@color/colorTextPrimary</item>
@@ -18,7 +18,7 @@
     <style name="mButton" >
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:textSize">12sp</item>
-        <item name="android:background">@drawable/background_selector</item>
+        <item name="android:background">@drawable/shape_button_inicio</item>
     </style>
     <style name="mEditText">
         <item name="android:textColor">@color/colorTextPrimary</item>
@@ -32,4 +32,16 @@
         <item name="android:textSize">12sp</item>
         <item name="android:background">@drawable/shape_button</item>
     </style>
+    <style name="mButtonInicio" >
+        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:background">@drawable/shape_button_inicio</item>
+    </style>
+    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/colorBackgoundHeader</item>
+        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:textSize">16sp</item>
+
+    </style>
+
 </resources>

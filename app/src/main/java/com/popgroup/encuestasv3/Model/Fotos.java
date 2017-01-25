@@ -1,8 +1,10 @@
 package com.popgroup.encuestasv3.Model;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 
 import static com.popgroup.encuestasv3.Model.Fotos.BASE64;
+import static com.popgroup.encuestasv3.Model.Fotos.BYTEFOTO;
 import static com.popgroup.encuestasv3.Model.Fotos.ID;
 import static com.popgroup.encuestasv3.Model.Fotos.IDENCUESTA;
 import static com.popgroup.encuestasv3.Model.Fotos.IDESTABLECIMIENTO;
@@ -21,7 +23,7 @@ public class Fotos {
     public static final String IDENCUESTA = "idEncuesta";
     public static final String NOMBRE = "nombre";
     public static final String BASE64 = "base64";
-
+    public static final String BYTEFOTO = "byte";
     public Fotos(){}
 
     @DatabaseField(generatedId = true, index = true, columnName = ID)
@@ -39,6 +41,8 @@ public class Fotos {
     @DatabaseField(columnName = BASE64)
     private String base64;
 
+    @DatabaseField(columnName = BYTEFOTO , dataType = DataType.BYTE_ARRAY)
+    private byte[] bytebase;
 
     public int getIdEstablecimiento() {
         return idEstablecimiento;
@@ -70,5 +74,13 @@ public class Fotos {
 
     public void setBase64(String base64) {
         this.base64 = base64;
+    }
+
+    public byte[] getBytebase() {
+        return bytebase;
+    }
+
+    public void setBytebase(byte[] bytebase) {
+        this.bytebase = bytebase;
     }
 }

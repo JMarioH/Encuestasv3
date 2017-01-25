@@ -3,9 +3,9 @@ package com.popgroup.encuestasv3.AsynckTask;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.os.Environment;
+import android.view.View;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -20,11 +20,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 
 /**
  * Created by jesus.hernandez on 09/01/17.
@@ -103,17 +109,14 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
                 jsonObject.put("longitud",longitud);
                 jsonObject.put("fecha",resp.getFecha());
                 jsonArray.put(jsonObject);
-
             }
-
             data.add(new BasicNameValuePair("setEncuestas",jsonArray.toString()));
             ServiceHandler serviceHandler = new ServiceHandler();
             String response = serviceHandler.makeServiceCall(URL, ServiceHandler.POST, data);
             JSONObject jsonObject = new JSONObject(response);
             JSONObject result = jsonObject.getJSONObject("result");
+            grabar(jsonArray.toString());
             success = result.getString("success").toString();
-
-            success = "1";
             return success;
 
         } catch (SQLException e) {
@@ -138,12 +141,16 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
                 deleteBuilder.where().eq("flag",true);
                 deleteBuilder.delete();
                 dao.clearObjectCache();
+                Toast.makeText(mContext, "Error enviado pendientes. .", Toast.LENGTH_LONG).show();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }else{
             Toast.makeText(mContext, "Error enviado pendientes. .", Toast.LENGTH_LONG).show();
         }
+
+
+
         Intent i = new Intent(mContext, MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         mContext.startActivity(i);
@@ -153,5 +160,22 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
             mDBHelper = OpenHelperManager.getHelper(mContext,DBHelper.class);
         }
         return mDBHelper;
+    }
+
+    public void grabar(String contenido) {
+
+        try {
+
+            File tarjeta = Environment.getExternalStorageDirectory();
+            File file = new File(tarjeta.getAbsolutePath(), mUsuario+".txt");
+            OutputStreamWriter osw = new OutputStreamWriter(
+                    new FileOutputStream(file));
+            osw.write(contenido);
+            osw.flush();
+            osw.close();
+
+
+        } catch (IOException ioe) {
+        }
     }
 }

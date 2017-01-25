@@ -1,5 +1,4 @@
 package com.popgroup.encuestasv3;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,7 +15,6 @@ import com.popgroup.encuestasv3.DataBase.DBHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 /**
  * Created by jesus.hernandez on 26/12/16.
  * envia los datos de la encuesta al servidor

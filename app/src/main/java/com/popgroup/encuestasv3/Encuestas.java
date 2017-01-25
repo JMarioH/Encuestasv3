@@ -1,11 +1,13 @@
 package com.popgroup.encuestasv3;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,10 +24,13 @@ import android.widget.TextView;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.Preguntas;
+import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
+import com.popgroup.encuestasv3.Model.TipoEncuesta;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -75,12 +80,12 @@ public class Encuestas extends AppCompatActivity {
         idEncuesta = extras.getString("idEncuesta");
         idTienda = extras.getString("idTienda");
         usuario = extras.getString("usuario");
-
         arrayEnc = new ArrayList<>();
         try {
             dao = getmDBHelper().getCatMasterDao();
             arrayCatmaster = (ArrayList<CatMaster>) dao.queryBuilder().distinct().selectColumns("nombre")
                     .where().eq("idArchivo",idArchivoSel).and().eq("flag",true).query();
+            Log.e(TAG,"numero de encuestas " + arrayCatmaster.size());
             for(CatMaster item:arrayCatmaster){
 
                 arrayEnc.add(item.getNombre());
@@ -102,55 +107,70 @@ public class Encuestas extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
-        adapter= new ArrayAdapter<String>(this,R.layout.simple_list_item,arrayEnc){
-            @NonNull
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView textView  = (TextView) view.findViewById(android.R.id.text1);
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP,16);
-                textView.setGravity(Gravity.CENTER);
-                return view;
-            }
-        };
-        listEncuestas = (ListView) findViewById(R.id.listEncuestas);
-        listEncuestas.setAdapter(adapter);
-        listEncuestas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String value = adapterView.getAdapter().getItem(i).toString();
-                String id = null;
-                String idArchivo= null;
-                try {
-                    dao = getmDBHelper().getCatMasterDao();
-                    arrayCatmaster = (ArrayList<CatMaster>) dao.queryBuilder().distinct().selectColumns("idTienda","idArchivo").where().in("idArchivo",idArchivoSel).and().eq("nombre",value).query();
-                    for(CatMaster item:arrayCatmaster){
-                        id = item.getIdTienda();
-                        idArchivo = item.getIdArchivo();
-                    }
-                    dao.clearObjectCache();
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
+        if(arrayCatmaster.size()>0) {
+            adapter = new ArrayAdapter<String>(this, R.layout.simple_list_item, arrayEnc) {
+                @NonNull
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+                    textView.setGravity(Gravity.CENTER);
+                    return view;
                 }
-                bundle.putString("usuario",usuario);
-                bundle.putString("idEncuesta",idEncuesta);
-                bundle.putString("encuesta",value);
-                bundle.putString("idEstablecimiento",id);
-                bundle.putString("idTienda",idTienda);
-                bundle.putString("idArchivo",idArchivo);
-                bundle.putString("numPregunta",idpregunta);
-                bundle.putString("numRespuesta","0");
+            };
+            listEncuestas = (ListView) findViewById(R.id.listEncuestas);
+            listEncuestas.setAdapter(adapter);
+            listEncuestas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    String value = adapterView.getAdapter().getItem(i).toString();
+                    String id = null;
+                    String idArchivo = null;
+                    try {
+                        dao = getmDBHelper().getCatMasterDao();
+                        arrayCatmaster = (ArrayList<CatMaster>) dao.queryBuilder().distinct().selectColumns("idTienda", "idArchivo").where().in("idArchivo", idArchivoSel).and().eq("nombre", value).query();
+                        for (CatMaster item : arrayCatmaster) {
+                            id = item.getIdTienda();
+                            idArchivo = item.getIdArchivo();
+                        }
+                        dao.clearObjectCache();
 
-                Intent intent = new Intent(Encuestas.this,Cuestionario.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    bundle.putString("usuario", usuario);
+                    bundle.putString("idEncuesta", idEncuesta);
+                    bundle.putString("encuesta", value);
+                    bundle.putString("idEstablecimiento", id);
+                    bundle.putString("idTienda", idTienda);
+                    bundle.putString("idArchivo", idArchivo);
+                    bundle.putString("numPregunta", idpregunta);
+                    bundle.putString("numRespuesta", "0");
+
+                    //limpiemoas la base de deregistros antes de usarla
+
+                    try {
+                        dao = getmDBHelper().getRespuestasCuestioanrioDao();
+                        DeleteBuilder<RespuestasCuestionario, Integer> deleteBuilder = dao.deleteBuilder();
+                        deleteBuilder.where().eq("idEstablecimiento", id).and().eq("idTienda", idTienda);
+                        deleteBuilder.delete();
+                        dao.clearObjectCache();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                    Intent intent = new Intent(Encuestas.this, Cuestionario.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
 
 
-            }
-        });
+                }
+            });
+        }else{
+            showMessage();
+        }
 
 
     }
@@ -191,6 +211,32 @@ public class Encuestas extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
 
     }
+    public void showMessage(){
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Mensaje");
+        alertDialog.setMessage("No hay encuestas disponibles.. ");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener() {
 
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent intent = new Intent(Encuestas.this, Proyectos.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                Intent intent = new Intent(Encuestas.this, Proyectos.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        alertDialog.show();
+    }
 
 }

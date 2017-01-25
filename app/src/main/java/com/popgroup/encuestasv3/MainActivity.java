@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
-        if (getSupportActionBar() != null) // Habilitar up button
+        if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         txtTitle = (TextView) toolbar.findViewById(R.id.txtTitle);
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             dao.clearObjectCache();
 
             dao = getmDBHelper().getRespuestasCuestioanrioDao();
-            encuestasPendientes = (ArrayList<RespuestasCuestionario>) dao.queryBuilder().where().eq("flag",true).query();
+            encuestasPendientes = (ArrayList<RespuestasCuestionario>) dao.queryBuilder().distinct().selectColumns("idEstablecimiento").where().eq("flag",true).query();
 
             dao.clearObjectCache();
 
@@ -119,9 +119,11 @@ public class MainActivity extends AppCompatActivity {
 
             if(encuestasPendientes.size() > 0 ){
                 btnEncPendientes.setVisibility(View.VISIBLE);
+                btnEncPendientes.setText("Encuestas Pendientes " + " ( " + encuestasPendientes.size() + " )" );
             }
             if(fotosPendientes.size()>0){
                 btnFotosPendientes.setVisibility(View.VISIBLE);
+                btnFotosPendientes.setText("Fotos Pendientes " + " ( " +fotosPendientes.size() +" )");
             }
 
         } catch (java.sql.SQLException e) {
@@ -194,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void encuestasPendientes(){
         Connectivity  connectivity = new Connectivity();
-        connectionAvailable = connectivity.isConnectedWifi(this);
+        connectionAvailable = connectivity.isConnected(this);
         if(connectionAvailable){
             new AsynckEncPendientes(this,mUsuario,encuestasPendientes.size()).execute();
         }else{
@@ -319,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
     public void showMessage(){
         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
         alertDialog.setTitle("Mensaje");
-        alertDialog.setMessage("Debe estar conectado a una red WI-FI para continuar");
+        alertDialog.setMessage("Debe estar conectado a una red Estable para continuar");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
