@@ -16,4 +16,5 @@
     <string name="maximoFotos">Número de fotos maximo 5</string>
     <string name="tomarFoto">Tomar Foto</string>
     <string name="terminarEnc">¿Terminar la encuesta?</string>
+    <string name="seleccioneTxt">Seleccione un Archivo</string>
 </resources>

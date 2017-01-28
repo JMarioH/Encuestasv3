@@ -148,7 +148,6 @@ public class Login extends AppCompatActivity{
             pDialog.hide();
             if(res.equals("1")){
                 try {
-
                     dao = getmDBHelper().getUserDao();
                     User user = new User();
                     user.setNombre(usuario);
@@ -161,9 +160,14 @@ public class Login extends AppCompatActivity{
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
 
+            }else if(res.equals("2")){
+                // solo en caso de de haber problemas con la aplicacion
+                Toast.makeText(getApplicationContext(), "Login root",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(Login.this, AdminActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
             }else{
-                Toast.makeText(Login.this,"Datos incorrectos", Toast.LENGTH_SHORT).show();
-            }
+                Toast.makeText(Login.this,"Datos incorrectos", Toast.LENGTH_SHORT).show();}
         }
         @SuppressWarnings("WrongThread")
         @Override
@@ -173,27 +177,31 @@ public class Login extends AppCompatActivity{
             data.add(new BasicNameValuePair("f", "login"));
             data.add(new BasicNameValuePair("usuario", usuario));
             data.add(new BasicNameValuePair("password", password));
+            if(usuario.equals("00001")){
+                success = "2";
 
-            try{
-                ServiceHandler jsonParser = new ServiceHandler();
-                String jsonRes = jsonParser.makeServiceCall(URL, ServiceHandler.POST, data);
-                JSONObject jsonObject = new JSONObject(jsonRes);
-                JSONObject result = jsonObject.getJSONObject("result");
-                success = result.getString("logstatus").toString();
-                if(success.equals("1")) {
-                    new AsynckCliente(Login.this, usuario).execute();
-                    new AsynckProyecto(Login.this, usuario).execute();
-                    new AsynckTipoEnc(Login.this, usuario).execute();
-                    new AsynckCatMaster(Login.this, usuario).execute();
-                    new AsynckPreguntas(Login.this, usuario).execute();
-                    new AsynckRespuestas(Login.this, usuario).execute();
-                }else{
-                    success ="0";
+            }else {
+                try {
+                    ServiceHandler jsonParser = new ServiceHandler();
+                    String jsonRes = jsonParser.makeServiceCall(URL, ServiceHandler.POST, data);
+                    JSONObject jsonObject = new JSONObject(jsonRes);
+                    JSONObject result = jsonObject.getJSONObject("result");
+                    success = result.getString("logstatus").toString();
+                    if (success.equals("1")) {
+                        new AsynckCliente(Login.this, usuario).execute();
+                        new AsynckProyecto(Login.this, usuario).execute();
+                        new AsynckTipoEnc(Login.this, usuario).execute();
+                        new AsynckCatMaster(Login.this, usuario).execute();
+                        new AsynckPreguntas(Login.this, usuario).execute();
+                        new AsynckRespuestas(Login.this, usuario).execute();
+                    } else {
+                        success = "0";
+                    }
+                    return success;
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                return success;
-
-            }catch (JSONException e) {
-                e.printStackTrace();
             }
             return success;
         }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -54,6 +55,8 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
     String mUsuario;
     int numeroReg;
     private ArrayList<NameValuePair> data;
+    ArrayList<RespuestasCuestionario> arrayEnc;
+    ArrayList<GeoLocalizacion> arrayGeos;
     public AsynckEncPendientes(Context context , String usuario, int registros){
         this.mContext = context;
         this.mUsuario = usuario;
@@ -75,16 +78,15 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
         success = "0";
         constantes = new Constantes();
         URL = constantes.getIPWBSetService();
-        ArrayList<RespuestasCuestionario> arrayEnc;
-        ArrayList<GeoLocalizacion> arrayGeos;
         data = new ArrayList<>();
+
         try {
             arrayEnc = new ArrayList<>();
             arrayGeos = new ArrayList<>();
             jsonArray = new JSONArray();
             dao = getmDBHelper().getRespuestasCuestioanrioDao();
             arrayEnc = (ArrayList<RespuestasCuestionario>) dao.queryBuilder().where().eq("flag",true).query();
-
+            Log.e(TAG,"size array " +arrayEnc.size());
             for(RespuestasCuestionario resp : arrayEnc){
 
                 dao = getmDBHelper().getGeosDao();
@@ -109,22 +111,23 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
                 jsonObject.put("longitud",longitud);
                 jsonObject.put("fecha",resp.getFecha());
                 jsonArray.put(jsonObject);
+
             }
             data.add(new BasicNameValuePair("setEncuestas",jsonArray.toString()));
             ServiceHandler serviceHandler = new ServiceHandler();
             String response = serviceHandler.makeServiceCall(URL, ServiceHandler.POST, data);
             JSONObject jsonObject = new JSONObject(response);
             JSONObject result = jsonObject.getJSONObject("result");
-            grabar(jsonArray.toString());
+
             success = result.getString("success").toString();
-            return success;
+
 
         } catch (SQLException e) {
             e.printStackTrace();
-            success = "0";
+
         } catch (JSONException e) {
             e.printStackTrace();
-            success = "0";
+
         }
         return success;
     }
@@ -134,7 +137,8 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
         super.onPostExecute(s);
         progressDialog.dismiss();
         progressDialog.hide();
-        if(s=="1"){
+        Log.e(TAG,"onpostExecute : " +s);
+        if(s.equals("1")){
             try { // borramos las encuestas enviada
                 dao = getmDBHelper().getRespuestasCuestioanrioDao();
                 DeleteBuilder<RespuestasCuestionario,Integer> deleteBuilder = dao.deleteBuilder();
@@ -148,9 +152,6 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
         }else{
             Toast.makeText(mContext, "Error enviado pendientes. .", Toast.LENGTH_LONG).show();
         }
-
-
-
         Intent i = new Intent(mContext, MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         mContext.startActivity(i);
@@ -160,22 +161,5 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
             mDBHelper = OpenHelperManager.getHelper(mContext,DBHelper.class);
         }
         return mDBHelper;
-    }
-
-    public void grabar(String contenido) {
-
-        try {
-
-            File tarjeta = Environment.getExternalStorageDirectory();
-            File file = new File(tarjeta.getAbsolutePath(), mUsuario+".txt");
-            OutputStreamWriter osw = new OutputStreamWriter(
-                    new FileOutputStream(file));
-            osw.write(contenido);
-            osw.flush();
-            osw.close();
-
-
-        } catch (IOException ioe) {
-        }
     }
 }
