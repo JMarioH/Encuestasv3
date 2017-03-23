@@ -1,0 +1,12 @@
+
+ksquid:S3008"VRename this field "IPWBService" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(™†şë
+isquid:S3008"TRename this field "IPSetFoto" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ì›•ˆ
+rsquid:S3008"XRename this field "IPSetEncuesta" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Û¤Ú§şÿÿÿÿ
+Fsquid:S1444"1Make this "public static IPWBService" field final(™†şë
+Dsquid:S1444"/Make this "public static IPSetFoto" field final(Ì›•ˆ
+Msquid:S1444"3Make this "public static IPSetEncuesta" field final(Û¤Ú§şÿÿÿÿ
+ƒ"squid:ClassVariableVisibilityCheck"WMake IPWBService a static final constant or non-public and provide accessors if needed.(™†şë
+"squid:ClassVariableVisibilityCheck"UMake IPSetFoto a static final constant or non-public and provide accessors if needed.(Ì›•ˆ
+Š"squid:ClassVariableVisibilityCheck"YMake IPSetEncuesta a static final constant or non-public and provide accessors if needed.(Û¤Ú§şÿÿÿÿ
+Lsquid:S1135"2Complete the task associated to this TODO comment.(Û¤Ú§şÿÿÿÿ
+rsquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(ØŞƒÊùÿÿÿÿ

@@ -1,0 +1,13 @@
+
+Rsquid:S1213"8Move this variable to comply with Java Code Conventions.(‡îşÿÿÿÿ
+…squid:S1319"qThe type of the "nombre" object should be an interface such as "List" rather than the implementation "ArrayList".(ØÂæ6
+‰squid:S1319"uThe type of the "arrayFotos" object should be an interface such as "List" rather than the implementation "ArrayList".(ØÂæ6
+ˆsquid:S1319"tThe type of the "arrayByte" object should be an interface such as "List" rather than the implementation "ArrayList".(ØÂæ6
+…squid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(Öº§Ä
+†squid:S1319"qThe type of the "nombre" object should be an interface such as "List" rather than the implementation "ArrayList".(ĞØéù
+Šsquid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(®ó¶¸şÿÿÿÿ
+Šsquid:S1319"uThe type of the "arrayFotos" object should be an interface such as "List" rather than the implementation "ArrayList".(…£ö 
+Šsquid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(Ê¤ß¹üÿÿÿÿ
+‰squid:S1319"tThe type of the "arrayByte" object should be an interface such as "List" rather than the implementation "ArrayList".(öİâ‡
+–squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(³š™
+rsquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(—¼™Ÿúÿÿÿÿ

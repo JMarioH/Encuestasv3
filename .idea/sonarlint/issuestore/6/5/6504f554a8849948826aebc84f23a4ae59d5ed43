@@ -1,0 +1,13 @@
+
+Œ"squid:ClassVariableVisibilityCheck"TMake password a static final constant or non-public and provide accessors if needed.(¼şòüÿÿÿÿ8Ş¨ÿÃ­+
+csquid:S1132"GMove the "1" string literal on the left side of this string comparison.(ÇÀáŞ8Ş¨ÿÃ­+
+ksquid:S00116"NRename this field "URL" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ù˜‡°8Ş¨ÿÃ­+
+Msquid:S2440",Remove this instantiation of "Connectivity".(·¼Ö€ıÿÿÿÿ8Ş¨ÿÃ­+
+osquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(§ÿ—Ôüÿÿÿÿ8Ş¨ÿÃ­+
+_squid:HiddenFieldCheck"8Rename "user" which hides the field declared at line 76.(Ç­‚û8Ş¨ÿÃ­+
+gsquid:S1132"KMove the "00001" string literal on the left side of this string comparison.(¹Âš²8Ş¨ÿÃ­+
+‹"squid:ClassVariableVisibilityCheck"SMake usuario a static final constant or non-public and provide accessors if needed.(´šÉ›ûÿÿÿÿ8Ş¨ÿÃ­+
+csquid:S1132"GMove the "2" string literal on the left side of this string comparison.(Î™ÑÌ8Ş¨ÿÃ­+
+psquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(º‰ùÊøÿÿÿÿ8Ş¨ÿÃ­+
+hsquid:S1132"GMove the "1" string literal on the left side of this string comparison.(ºØÂçùÿÿÿÿ8Ş¨ÿÃ­+
+‚"squid:ClassVariableVisibilityCheck"OMake URL a static final constant or non-public and provide accessors if needed.(ù˜‡°8Ş¨ÿÃ­+

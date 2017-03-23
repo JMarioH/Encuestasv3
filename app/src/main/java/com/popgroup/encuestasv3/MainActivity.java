@@ -42,7 +42,8 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 
 public class MainActivity extends AppCompatActivity {
-    String TAG = getClass().getSimpleName();
+
+    private String TAG = getClass().getSimpleName();
     Toolbar toolbar;
     Dao dao;
     Bundle bundle;
@@ -69,15 +70,19 @@ public class MainActivity extends AppCompatActivity {
     TextView txtLog;
     @BindView(R.id.txtUsuario)
     TextView txtUser;
+
     String mUsuario;
     boolean connectionAvailable;
     TextView txtTitle;
+
+    Connectivity connectivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         if (getSupportActionBar() != null)
@@ -89,8 +94,9 @@ public class MainActivity extends AppCompatActivity {
         txtTitle.setTextColor(getBaseContext().getResources().getColor(R.color.colorTextPrimary));
         setSupportActionBar(toolbar);
         bundle = new Bundle();
+        connectionAvailable = connectivity.isConnected(this);
         try {
-            // recuperando datos de la DB
+            // recuperando datos de la DBs
             user = new User();
             cliente = new Cliente();
             proyecto = new Proyecto();
@@ -104,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 mUsuario  = item.getNombre();
 
             }
-            if(arrayUser.size()>0) {
+            if(!arrayUser.isEmpty()) {
                 txtUser.setText(mUsuario);
             }
             dao.clearObjectCache();
@@ -118,17 +124,17 @@ public class MainActivity extends AppCompatActivity {
             fotosPendientes = (ArrayList<Fotos>) dao.queryForAll();
             dao.clearObjectCache();
 
-            if(encuestasPendientes.size() > 0 ){
+            if(!encuestasPendientes.isEmpty()){
                 btnEncPendientes.setVisibility(View.VISIBLE);
                 btnEncPendientes.setText("Encuestas Pendientes " + " ( " + encuestasPendientes.size() + " )" );
             }
-            if(fotosPendientes.size()>0){
+            if(!fotosPendientes.isEmpty()){
                 btnFotosPendientes.setVisibility(View.VISIBLE);
                 btnFotosPendientes.setText("Fotos Pendientes " + " ( " +fotosPendientes.size() +" )");
             }
 
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            Log.e(" excetion","sql-> "+e);
         }
         btnCambiarUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,9 +150,9 @@ public class MainActivity extends AppCompatActivity {
                     dao.clearObjectCache();
 
                 }catch (SQLException e){
-                    e.printStackTrace();
+                    Log.e(TAG,"sqlException " + e);
                 }
-                if(arrayUser.size()>0){
+                if(!arrayUser.isEmpty()){
                     showAlert();
                 }else{
                     Intent i = new Intent(MainActivity.this,Login.class);
@@ -173,7 +179,10 @@ public class MainActivity extends AppCompatActivity {
                 fotosPendientes();
             }
         });
+
     }
+
+
     private DBHelper getmDBHelper() {
         if (mDBHelper == null) {
             mDBHelper = OpenHelperManager.getHelper(this, DBHelper.class);
@@ -196,8 +205,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(a);
     }
     public void encuestasPendientes(){
-        Connectivity  connectivity = new Connectivity();
-        connectionAvailable = connectivity.isConnected(this);
         if(connectionAvailable){
             Log.e(TAG,"aqui");
             new AsynckEncPendientes(this,mUsuario,encuestasPendientes.size()).execute();
@@ -206,8 +213,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void fotosPendientes(){
-        Connectivity  connectivity = new Connectivity();
-        connectionAvailable = connectivity.isConnectedWifi(this);
+
         JSONArray jsonFotos;
         ArrayList<NameValuePair> datosPost = null;
         if(connectionAvailable){
@@ -217,20 +223,22 @@ public class MainActivity extends AppCompatActivity {
                 String nomArchivo;
                 int j = 0;
                 jsonFotos = new JSONArray();
-                for (int x = 0; x < fotosPendientes.size(); x++) {
-                    datosPost = new ArrayList<>();
-                    JSONObject jsonFoto = new JSONObject();
-                    try {
-                        nomArchivo = fotosPendientes.get(x).getIdEncuesta() + "_" + fotosPendientes.get(x).getIdEstablecimiento() + "_" + fotosPendientes.get(x).getNombre() + "_" + x + ".jpg";
-                        jsonFoto.put("idEstablecimiento", fotosPendientes.get(x).getIdEstablecimiento());
-                        jsonFoto.put("idEncuesta", fotosPendientes.get(x).getIdEncuesta());
-                        jsonFoto.put("nombreFoto", nomArchivo.toString());
-                        jsonFoto.put("base64", fotosPendientes.get(x).getBase64());
-                        jsonFotos.put(jsonFoto);
-                        j++;
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                try {
+                    for (int x = 0; x < fotosPendientes.size(); x++) {
+                        datosPost = new ArrayList<>();
+                        JSONObject jsonFoto = new JSONObject();
+
+                            nomArchivo = fotosPendientes.get(x).getIdEncuesta() + "_" + fotosPendientes.get(x).getIdEstablecimiento() + "_" + fotosPendientes.get(x).getNombre() + "_" + x + ".jpg";
+                            jsonFoto.put("idEstablecimiento", fotosPendientes.get(x).getIdEstablecimiento());
+                            jsonFoto.put("idEncuesta", fotosPendientes.get(x).getIdEncuesta());
+                            jsonFoto.put("nombreFoto", nomArchivo);
+                            jsonFoto.put("base64", fotosPendientes.get(x).getBase64());
+                            jsonFotos.put(jsonFoto);
+                            j++;
+
                     }
+                } catch (JSONException e) {
+                    Log.e(TAG,"jsonE -> " +e);
                 }
                 datosPost.add(new BasicNameValuePair("subeFotos", jsonFotos.toString()));
                 new AsyncUploadFotos(this, datosPost).execute();
@@ -246,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
 
                 dao.clearObjectCache();
             } catch (SQLException e) {
-                e.printStackTrace();
+            Log.e(TAG,"sql->" + e);
             }
 
         }else{
@@ -302,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
                             dao.clearObjectCache();
 
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            Log.e(TAG,"sql->" +e );
                         }
                         dialog.dismiss();
                         bundle.putString("bandera","1");
@@ -333,8 +341,8 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
     public void iniciarProceso(){
-        boolean existenDatos = true;
-        if(existenDatos){
+
+        if(connectionAvailable){
             Intent i = new Intent(MainActivity.this,Proyectos.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(i);

@@ -27,13 +27,18 @@ import org.json.JSONObject;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
+
+import static android.R.attr.path;
 
 /**
  * Created by jesus.hernandez on 26/12/16.
@@ -133,9 +138,11 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
                 jsonObject.put("fecha", item.getFecha().toString());
 
                 jsonArray.put(jsonObject);
+
             }
-            Log.e(TAG, "txt data: " + jsonArray);
+
             grabar(jsonArray.toString());
+            grabaJson(jsonArray.toString());
             data.add(new BasicNameValuePair("setEncuestas", jsonArray.toString()));
 
             validaConexion = connectivity.isConnected(mContext);
@@ -242,7 +249,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             for (x = 0; x < arrayFotos.size(); x++) {
                 nomArchivo = mEncuesta + "_" + mEstablecimiento + "_" + fotoEncuesta.getNombre().get(x) + "_" + x + ".jpg";
                 base64 = fotoEncuesta.getArrayFotos().get(x);
-                bytefoto = fotoEncuesta.getArrayByte().get(x);
+                //bytefoto = fotoEncuesta.getArrayByte().get(x);
                 // agregamos las fotos ala base de datos ;
                 try {
                     JSONObject jsonObject = new JSONObject();
@@ -293,26 +300,36 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
     public void grabar(String contenido) {
         File ubicacion = Environment.getExternalStorageDirectory();
         File logFile = new File(ubicacion.getAbsolutePath(), mUsuario + ".txt");
+
         if (!logFile.exists()) {
             try {
                 logFile.createNewFile();
-                Log.e(TAG, "crear txt");
+                //Log.e(TAG, "crear txt");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         try {
-            Log.e(TAG, "llena txt");
-            //BufferedWriter for performance, true to set append to file flag
+          //  Log.e(TAG, "llena txt");
             BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
-            buf.append(contenido);
-            buf.newLine();
+            buf.append(contenido.toString());
             buf.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-
     }
 
+    public void grabaJson(String data){
+
+        try {
+            File ubicacion = Environment.getExternalStorageDirectory();
+            FileWriter file = new FileWriter(ubicacion.getAbsolutePath()+"/"+mUsuario+"_test.json");
+            file.write(data);
+            file.flush();
+            file.close();
+        } catch (IOException e) {
+            Log.e("TAG", "Error in Writing: " + e.getLocalizedMessage());
+        }
+    }
 }

@@ -80,6 +80,10 @@ public class Fotos {
         return bytebase;
     }
 
+    public  int getID() {
+        return id;
+    }
+
     public void setBytebase(byte[] bytebase) {
         this.bytebase = bytebase;
     }

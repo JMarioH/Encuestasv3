@@ -21,8 +21,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.sql.SQLException;
@@ -86,7 +88,6 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
             jsonArray = new JSONArray();
             dao = getmDBHelper().getRespuestasCuestioanrioDao();
             arrayEnc = (ArrayList<RespuestasCuestionario>) dao.queryBuilder().where().eq("flag",true).query();
-            Log.e(TAG,"size array " +arrayEnc.size());
             for(RespuestasCuestionario resp : arrayEnc){
 
                 dao = getmDBHelper().getGeosDao();
@@ -112,7 +113,9 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
                 jsonObject.put("fecha",resp.getFecha());
                 jsonArray.put(jsonObject);
 
+
             }
+            grabar(jsonArray.toString());
             data.add(new BasicNameValuePair("setEncuestas",jsonArray.toString()));
             ServiceHandler serviceHandler = new ServiceHandler();
             String response = serviceHandler.makeServiceCall(URL, ServiceHandler.POST, data);
@@ -145,7 +148,7 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
                 deleteBuilder.where().eq("flag",true);
                 deleteBuilder.delete();
                 dao.clearObjectCache();
-                Toast.makeText(mContext, "Error enviado pendientes. .", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "Datos enviados. .", Toast.LENGTH_LONG).show();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -161,5 +164,29 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
             mDBHelper = OpenHelperManager.getHelper(mContext,DBHelper.class);
         }
         return mDBHelper;
+    }
+    public void grabar(String contenido) {
+        File ubicacion = Environment.getExternalStorageDirectory();
+        File logFile = new File(ubicacion.getAbsolutePath(), mUsuario + ".txt");
+
+        if (!logFile.exists()) {
+            try {
+                logFile.createNewFile();
+                Log.e(TAG, "crear txt");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            Log.e(TAG, "llena txt");
+            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+            buf.append(contenido.toString());
+            buf.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
     }
 }

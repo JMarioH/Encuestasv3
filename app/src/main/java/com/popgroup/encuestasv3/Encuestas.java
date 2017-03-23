@@ -85,7 +85,7 @@ public class Encuestas extends AppCompatActivity {
             dao = getmDBHelper().getCatMasterDao();
             arrayCatmaster = (ArrayList<CatMaster>) dao.queryBuilder().distinct().selectColumns("nombre")
                     .where().eq("idArchivo",idArchivoSel).and().eq("flag",true).query();
-            Log.e(TAG,"numero de encuestas " + arrayCatmaster.size());
+
             for(CatMaster item:arrayCatmaster){
 
                 arrayEnc.add(item.getNombre());
@@ -147,9 +147,7 @@ public class Encuestas extends AppCompatActivity {
                     bundle.putString("idArchivo", idArchivo);
                     bundle.putString("numPregunta", idpregunta);
                     bundle.putString("numRespuesta", "0");
-
                     //limpiemoas la base de deregistros antes de usarla
-
                     try {
                         dao = getmDBHelper().getRespuestasCuestioanrioDao();
                         DeleteBuilder<RespuestasCuestionario, Integer> deleteBuilder = dao.deleteBuilder();
@@ -159,13 +157,10 @@ public class Encuestas extends AppCompatActivity {
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-
                     Intent intent = new Intent(Encuestas.this, Cuestionario.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     intent.putExtras(bundle);
                     startActivity(intent);
-
-
                 }
             });
         }else{

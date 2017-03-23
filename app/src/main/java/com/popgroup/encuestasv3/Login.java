@@ -60,11 +60,11 @@ public class Login extends AppCompatActivity{
     @BindView(R.id.btnLogin)
     Button btnLogin;
 
+
     Bundle bundle;
-    public String usuario ;
+    public  String usuario ;
     public String password;
     public String URL;
-    public String bandera;
 
     ArrayList<NameValuePair> data;
     Constantes constantes;
@@ -108,22 +108,27 @@ public class Login extends AppCompatActivity{
                 startActivity(intent);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+        Log.d(TAG,"sql" + e);
         }
             URL = constantes.getIPWBService();
+
 
             btnLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    connectivity = new Connectivity();
+
                     conectionAvailable = connectivity.isConnected(getBaseContext());
-                    usuario = editUser.getText().toString();
-                    password = editPassword.getText().toString();
-                    Log.e(TAG, "user  : " + usuario);
-                    if (conectionAvailable) {
-                        new LoginAsynck().execute();
-                    } else {
-                        Toast.makeText(Login.this, "Debe conectarse a un red primero!", Toast.LENGTH_LONG).show();
+                    if(!validaCampo(editUser) && !validaCampo(editPassword)) {
+                        usuario = editUser.getText().toString();
+                        password = editPassword.getText().toString();
+                        Log.e(TAG, "user  : " + usuario);
+                        if (conectionAvailable) {
+                            new LoginAsynck().execute();
+                        } else {
+                            Toast.makeText(Login.this, "Debe conectarse a un red primero!", Toast.LENGTH_LONG).show();
+                        }
+                    }else{
+                        Toast.makeText(Login.this, "Debe completar los campos!", Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -153,7 +158,8 @@ public class Login extends AppCompatActivity{
                     user.setNombre(usuario);
                     dao.create(user);
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    Log.e(TAG,"sql"+ e);
+
                 }
                 Toast.makeText(getApplicationContext(), "Login Exitoso",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(Login.this, MainActivity.class);
@@ -161,13 +167,15 @@ public class Login extends AppCompatActivity{
                 startActivity(intent);
 
             }else if(res.equals("2")){
+
                 // solo en caso de de haber problemas con la aplicacion
                 Toast.makeText(getApplicationContext(), "Login root",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(Login.this, AdminActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
             }else{
-                Toast.makeText(Login.this,"Datos incorrectos", Toast.LENGTH_SHORT).show();}
+                Toast.makeText(Login.this,"Datos incorrectos", Toast.LENGTH_SHORT).show();
+            }
         }
         @SuppressWarnings("WrongThread")
         @Override
@@ -177,31 +185,31 @@ public class Login extends AppCompatActivity{
             data.add(new BasicNameValuePair("f", "login"));
             data.add(new BasicNameValuePair("usuario", usuario));
             data.add(new BasicNameValuePair("password", password));
+
             if(usuario.equals("00001")){
                 success = "2";
-
             }else {
-                try {
-                    ServiceHandler jsonParser = new ServiceHandler();
-                    String jsonRes = jsonParser.makeServiceCall(URL, ServiceHandler.POST, data);
-                    JSONObject jsonObject = new JSONObject(jsonRes);
-                    JSONObject result = jsonObject.getJSONObject("result");
-                    success = result.getString("logstatus").toString();
-                    if (success.equals("1")) {
-                        new AsynckCliente(Login.this, usuario).execute();
-                        new AsynckProyecto(Login.this, usuario).execute();
-                        new AsynckTipoEnc(Login.this, usuario).execute();
-                        new AsynckCatMaster(Login.this, usuario).execute();
-                        new AsynckPreguntas(Login.this, usuario).execute();
-                        new AsynckRespuestas(Login.this, usuario).execute();
-                    } else {
-                        success = "0";
-                    }
-                    return success;
+                    try {
+                        ServiceHandler jsonParser = new ServiceHandler();
+                        String jsonRes = jsonParser.makeServiceCall(URL, ServiceHandler.POST, data);
+                        JSONObject jsonObject = new JSONObject(jsonRes);
+                        JSONObject result = jsonObject.getJSONObject("result");
+                        success = result.getString("logstatus").toString();
+                        if (success.equals("1")) {
+                            new AsynckCliente(Login.this, usuario).execute();
+                            new AsynckProyecto(Login.this, usuario).execute();
+                            new AsynckTipoEnc(Login.this, usuario).execute();
+                            new AsynckCatMaster(Login.this, usuario).execute();
+                            new AsynckPreguntas(Login.this, usuario).execute();
+                            new AsynckRespuestas(Login.this, usuario).execute();
+                        } else {
+                            success = "0";
+                        }
+                        return success;
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                    } catch (JSONException e) {
+                        Log.e(TAG,"sql"+ e);
+                    }
             }
             return success;
         }
@@ -246,4 +254,8 @@ public class Login extends AppCompatActivity{
 
     }
 
+    public boolean validaCampo(EditText edit){
+        String dato = edit.getText().toString();
+        return !dato.isEmpty();
+    }
 }

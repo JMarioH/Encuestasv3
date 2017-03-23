@@ -215,7 +215,7 @@ public class Cuestionario extends AppCompatActivity{
                         }else{
                             if(item.getMultiple()==0){
                                 // RESPUESTAS DE OPCION MULTIPLE
-                                Log.e(TAG,"respuestas opciones " );
+
                                 tipoResp="2";
                                 spnOpciones.setVisibility(View.VISIBLE);
                                 arrayResp.add(resp.getRespuesta());
@@ -407,7 +407,7 @@ public class Cuestionario extends AppCompatActivity{
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 ArrayList<Respuestas> arrayRespSel = new ArrayList<>();
                 String value = adapterView.getAdapter().getItem(i).toString();
-                Log.e(TAG,"value spinner " + value) ;
+
                 try {
 
                     dao = getmDBHelper().getRespuestasDao();

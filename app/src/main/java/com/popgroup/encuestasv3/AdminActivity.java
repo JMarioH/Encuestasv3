@@ -3,6 +3,8 @@ package com.popgroup.encuestasv3;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -39,12 +41,17 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
+import static android.R.attr.id;
+import static android.R.attr.value;
+import static android.R.attr.x;
+import static android.R.attr.y;
 import static com.popgroup.encuestasv3.R.id.add;
 import static com.popgroup.encuestasv3.R.id.contenido;
 
@@ -57,6 +64,7 @@ public class AdminActivity extends AppCompatActivity {
     ArrayList<String> arrayList;
     ArrayList<RespuestasCuestionario> arrayResp;
     ArrayList<String> item;
+    String dataString;
     JSONArray jsonArrayitem;
     String strContent;
 
@@ -67,7 +75,8 @@ public class AdminActivity extends AppCompatActivity {
     @BindView(R.id.btnEnviar)
     Button btnEnviar;
     ArrayAdapter adapter;
-    ArrayList<String> contenido ;
+    ArrayList<String> contenido;
+    String itemtxt;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,12 +91,11 @@ public class AdminActivity extends AppCompatActivity {
         arrayList = new ArrayList<>();
         item = new ArrayList<>();
         arrayResp = new ArrayList<>();
-        for (File f : files)
-        {
+        for (File f : files) {
             String fullPath = f.getAbsolutePath();
             int dot = fullPath.lastIndexOf(".");
             String ext = fullPath.substring(dot + 1);
-            if(ext.equals("txt")) {
+            if (ext.equals("json")) {
                 arrayList.add(f.getName());
                 adapter = new ArrayAdapter<String>(this, R.layout.simple_list_item, arrayList) {
                     @Override
@@ -95,7 +103,7 @@ public class AdminActivity extends AppCompatActivity {
                         View view = super.getView(position, convertView, parent);
                         TextView textView = (TextView) view.findViewById(android.R.id.text1);
                         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-                        textView.setTextColor(getResources().getColor( R.color.colorTxt));
+                        textView.setTextColor(getResources().getColor(R.color.colorTxt));
                         textView.setGravity(Gravity.CENTER);
                         return view;
 
@@ -108,12 +116,12 @@ public class AdminActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String itemtxt = adapterView.getAdapter().getItem(i).toString();
-                Log.e(TAG,"txt Seleccionado " + itemtxt);
+                itemtxt = adapterView.getAdapter().getItem(i).toString();
+                Log.e(TAG, "txt Seleccionado " + itemtxt);
                 StringBuilder txt = new StringBuilder();
-
+                //show datos in txt
                 try {
-                    File mfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),itemtxt);
+                    File mfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), itemtxt);
                     BufferedReader br = new BufferedReader(new FileReader(mfile));
                     String line;
                     while ((line = br.readLine()) != null) {
@@ -121,11 +129,14 @@ public class AdminActivity extends AppCompatActivity {
                         //txt.append('\n');
                         item.add(txt.toString());
 
+
+
                     }
                     strContent = item.toString();
+
+
                     br.close();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     //You'll need to add proper error handling here
                 }
 
@@ -142,15 +153,15 @@ public class AdminActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                new AsynckEncuestasTxt(AdminActivity.this,item).execute();
+                new AsynckEncuestasTxt(AdminActivity.this, itemtxt).execute();
             }
         });
 
     }
 
-    public class AsynckEncuestasTxt extends AsyncTask<String,String,String>{
+    public class AsynckEncuestasTxt extends AsyncTask<String, String, String> {
 
-        private ArrayList<String> stringTxt;
+        private String stringTxt;
         private ProgressDialog pDialog;
         private String URL;
         String success;
@@ -158,8 +169,11 @@ public class AdminActivity extends AppCompatActivity {
         Context mContext;
         private ArrayList<NameValuePair> data;
 
-        public AsynckEncuestasTxt(Context context,ArrayList<String> arrayList) {
-            this.stringTxt = arrayList;
+        JSONArray jsonArray ;
+        JSONObject rJson;
+
+        public AsynckEncuestasTxt(Context context, String item) {
+            this.stringTxt = item;
             this.mContext = context;
         }
 
@@ -174,20 +188,6 @@ public class AdminActivity extends AppCompatActivity {
             pDialog.show();
         }
 
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            pDialog.dismiss();
-            pDialog.hide();
-
-            if (s.equals("1")){
-                //Log.e(TAG,"proceso terminado");
-            }else{
-                //Log.e(TAG,"error");
-            }
-
-        }
 
         @Override
         protected String doInBackground(String... strings) {
@@ -196,41 +196,53 @@ public class AdminActivity extends AppCompatActivity {
             URL = rutas.getIPWBSetService();
             data = new ArrayList<>();
             arrayResp = new ArrayList<>();
+            item = new ArrayList<>();
+            StringBuilder txtEnvio = new StringBuilder();
+            jsonArray = new JSONArray();
+            String mItem = null;
+            JSONObject mJson ;
             try {
-                JSONArray jsonArray = new JSONArray(stringTxt);
-                Log.e(TAG,"jsonArray" + jsonArray.length());
-
-               String[] strArr = new String[jsonArray.length()];
-                arrayList = new ArrayList<>();
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                   strArr[i] = jsonArray.getString(i);
-                    arrayList.add(strArr[i]);
+                File mfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), itemtxt);
+                BufferedReader br = new BufferedReader(new FileReader(mfile));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    txtEnvio.append(line);
+                    //txt.append('\n');
+                    mItem = txtEnvio.toString();
+                    item.add(txtEnvio.toString());
+                    Log.e(TAG,"item" + item);
+                    jsonArray= new JSONArray(mItem);
                 }
-
-
-                Log.e(TAG,"JsonObj " + arrayList.toString());
-
-
-
-               // Log.e(TAG,"jsonArritem " + jsonArray);
-                //System.out.println(Arrays.toString(strArr));
-
-               data.add(new BasicNameValuePair("setEncuestas",arrayList.toString()));
-               //Log.w(TAG,"data : " + data);
-
-              /*  ServiceHandler serviceHandler = new ServiceHandler();
+                //TODO sube solo la primera
+                data.add(new BasicNameValuePair("setEncuestas",jsonArray.toString()));
+                Log.e(TAG,"data  : "+ data.toString());
+                ServiceHandler serviceHandler = new ServiceHandler();
                 String response = serviceHandler.makeServiceCall(URL, ServiceHandler.POST, data);
                 JSONObject jsonObject = new JSONObject(response);
                 JSONObject result = jsonObject.getJSONObject("result");
                 success = result.getString("success").toString();
-                Log.w(TAG,"success" + success);*/
-
+                Log.w(TAG,"success" + success);
+                br.close();
+            } catch (IOException e) {
+                //You'll need to add proper error handling here
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
             return success;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            pDialog.dismiss();
+            pDialog.hide();
+
+            if (s.equals("1")) {
+                //Log.e(TAG,"proceso terminado");
+            } else {
+                //Log.e(TAG,"error");
+            }
+
         }
     }
 

@@ -103,7 +103,6 @@ public class Proyectos extends AppCompatActivity {
           //  proyecto = (Proyecto) dao.queryForId(1);
           //  proyectoList = (List<Proyecto>) dao.queryBuilder().distinct().selectColumns("nombre").where().in("cliente",nomCliente).query();
             proyectoList = (List<Proyecto>) dao.queryForAll();
-            Log.e(TAG,"proyecto list " + proyectoList.size());
             dao.clearObjectCache();
             for (Proyecto item : proyectoList) {
                arrayProyectos.add(item.getNombre()  );
@@ -133,13 +132,13 @@ public class Proyectos extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String value = adapterView.getAdapter().getItem(i).toString();
                 String  id = null;
-                Log.e(TAG,"value " + value);
+
                 try {
                     dao = getmDBHelper().getProyectoDao();
                     proyectoList = (List<Proyecto>) dao.queryBuilder().distinct().selectColumns("idProyecto").where().in("nombre",value).query();
                     for (Proyecto item : proyectoList){
                         id = item.getIdproyecto();
-                        Log.e(TAG,"id proyecto " + id);
+
                     }
                     dao.clearObjectCache();
 

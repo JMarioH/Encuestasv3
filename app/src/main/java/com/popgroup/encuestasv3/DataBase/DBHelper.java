@@ -39,6 +39,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
     private Dao<GeoLocalizacion,Integer> geosDao = null;
     private Dao<Fotos,Integer> fotosDao = null;
 
+
     private RuntimeExceptionDao<User,Integer> userRuntime = null;
     private RuntimeExceptionDao<Cliente,Integer> clienteRuntime = null;
     private RuntimeExceptionDao<Proyecto,Integer> proyectoRuntime = null;
@@ -49,6 +50,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
     private RuntimeExceptionDao<RespuestasCuestionario,Integer> respuestasCuestionaroiRuntime = null;
     private RuntimeExceptionDao<GeoLocalizacion,Integer> geosRuntime = null;
     private RuntimeExceptionDao<Fotos,Integer> fotosRuntime = null;
+
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -85,7 +87,9 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, Preguntas.class,true);
             TableUtils.dropTable(connectionSource, Respuestas.class,true);
             TableUtils.dropTable(connectionSource,RespuestasCuestionario.class,true);
+            TableUtils.createTable(connectionSource,GeoLocalizacion.class);
             TableUtils.dropTable(connectionSource, Fotos.class,true);
+
             onCreate(database, connectionSource);
         } catch (SQLException e) {
           Log.e(DBHelper.class.getName(), "Can't drop databases", e);
@@ -230,6 +234,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         }
         return fotosRuntime;
     }
+
     @Override
     public void close() {
         super.close();
@@ -253,6 +258,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         geosRuntime = null;
         fotosDao = null;
         fotosRuntime = null;
+
     }
 }
 

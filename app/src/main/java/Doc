@@ -1,0 +1,58 @@
+App Encuesta Version 3
+
+Descripcion de Directorios
+
+DIR: AsynckTask
+
+    Class: AsynckCatMaster - descarga y guarga los datos del catMaster a la aplicacion .
+    Class: AsynckCliente - descarga y guarda los datos del Cliente
+    Class: AsynckEncPendientes - Envia las encuestas pendientes al servidor
+    Class: AsynckEncuestas - Envia las encuestas al final del procesos normal
+    Class: AsynckPreguntas - Descarga y guarda  el catalogo de preguntas
+    Class: AsynckProyecto -  Descarga y guarda el catalago de proyectos
+    Class: AsynckTipoEnc - Descarga y guarda el catalago de asignaciones por proyecto
+    Class: AsynckUploadFotos -  Envia las fotos al servidor , pendientes y de proceso normal
+    Class: Constantes - Contiene las variables estatiucas de la URl de los webservices
+    Class: ServiceHandler - Contiene la clase que gestiona las conexione con los webservices
+
+DIR: DataBase
+
+    Class : DBHelper - Declara la base de datos de la aplicacio , el motor es ORMLlte
+    Class : OrmliteDatabaseConfigUtil - genera el archivo txt para la creacion de la base Ormlite
+
+DIR: Model
+
+Contiene los objetos simples usados en la aplicacion
+
+DIR: Utility
+
+    Class : Connectivity - con esta clase obtenemos el estatus de las conexiones disponibles para la aplicacion
+            Wifi,3g, 4g , etc.
+
+    Class :  GPSTracker - esta clases gestiona la obtencion de la geolocalizacion ya sea por gps, o red ,
+            tambien mantiene las alertas si el dispositivo no tiene encendido el GPS o no ha dado permisos
+
+DIR : APP
+
+    Class : AdminActivity - esta clase esta destinada a gestionar el archivo txt o json de respaldo
+            para enviarlo al servidor (sin terminar ) no afecta a la aplicacion
+    Class : Cuestionario - es la clase que mantiene el proceso para ir guardando las respuestas del cuestionario
+
+    Class :  Encuestas - aqui se selcciona la lista de encuestas disponibles
+    Class :  FinEncuesta -  envia los datos del cuestionario y fotos
+    Class :  Fotografia - camputura y guarda el string Base64 de cada fotografia
+    Class :  Login -  Logea y guarda los datos del usuario en el telefono
+    Class :  MainActivity - contiene el inicio y gestion de enceustas pendientes y fotos pendientes
+    Class :  Proyectos - genera la lista de proyecto disponibles
+    Class :  TipoEncuestas - genera la lista de por tipos
+
+
+
+
+
+
+
+
+
+
+

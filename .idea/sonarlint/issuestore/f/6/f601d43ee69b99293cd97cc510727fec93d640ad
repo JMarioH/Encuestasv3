@@ -1,0 +1,23 @@
+
+qsquid:S1188"\Reduce this anonymous class number of lines from 24 to at most 20, or make it a named class.(Àõìÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(•ëÖğ
+“squid:S1319"yThe type of the "arrayProyectos" object should be an interface such as "List" rather than the implementation "ArrayList".(ã×«–şÿÿÿÿ
+squid:S1319"uThe type of the "arrayUsers" object should be an interface such as "List" rather than the implementation "ArrayList".(÷èùßşÿÿÿÿ
+{"squid:ClassVariableVisibilityCheck"OMake TAG a static final constant or non-public and provide accessors if needed.(°’Ü³
+‰"squid:ClassVariableVisibilityCheck"XMake proyectoList a static final constant or non-public and provide accessors if needed.(¨Â¾øüÿÿÿÿ
+ˆ"squid:ClassVariableVisibilityCheck"WMake clienteList a static final constant or non-public and provide accessors if needed.(¬Å†£şÿÿÿÿ
+„"squid:ClassVariableVisibilityCheck"SMake adapter a static final constant or non-public and provide accessors if needed.(–ãÊ¾şÿÿÿÿ
+‹"squid:ClassVariableVisibilityCheck"ZMake arrayProyectos a static final constant or non-public and provide accessors if needed.(ã×«–şÿÿÿÿ
+‡"squid:ClassVariableVisibilityCheck"VMake arrayUsers a static final constant or non-public and provide accessors if needed.(÷èùßşÿÿÿÿ
+†"squid:ClassVariableVisibilityCheck"UMake mDBHelper a static final constant or non-public and provide accessors if needed.(¿àÃüüÿÿÿÿ
+‡"squid:ClassVariableVisibilityCheck"VMake nomCliente a static final constant or non-public and provide accessors if needed.(ŠÓ¹ˆøÿÿÿÿ
+„"squid:ClassVariableVisibilityCheck"SMake usuario a static final constant or non-public and provide accessors if needed.(¥‡ñÇøÿÿÿÿ
+…"squid:ClassVariableVisibilityCheck"YMake listProyectos a static final constant or non-public and provide accessors if needed.(ÔàŞÚ
+:squid:S1166"%Either log or rethrow this exception.(É®£
+:squid:S1166"%Either log or rethrow this exception.(É®£
+dsquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(°’Ü³
+Msquid:UselessImportCheck",Remove this unused import 'android.nfc.Tag'.(¡¸ó
+Tsquid:UselessImportCheck"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ
+=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
+=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
+csquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(¬¶–ù

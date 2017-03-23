@@ -10,5 +10,6 @@
 
     <color name="colorBackgroundTxt">#FFFFFF</color>
     <color name="colorTxt">#0e0e0e</color>
+    <color name="colorBackgroundButton">#4DB6AC</color>
 
 </resources>

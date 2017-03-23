@@ -28,7 +28,7 @@ public class OrmliteDatabaseConfigUtil extends OrmLiteConfigUtil {
      */
     private static final Class<?>[] classes = new Class[] {User.class , Cliente.class,
             TipoEncuesta.class, Proyecto.class, CatMaster.class,
-            Preguntas.class, Respuestas.class, RespuestasCuestionario.class, GeoLocalizacion.class, Fotos.class};
+            Preguntas.class, Respuestas.class, RespuestasCuestionario.class, GeoLocalizacion.class, Fotos.class };
 
 
     /**

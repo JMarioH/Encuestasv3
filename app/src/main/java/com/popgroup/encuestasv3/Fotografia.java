@@ -149,7 +149,7 @@ public class Fotografia  extends AppCompatActivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        // TODO Borrar respuesta registrada
+
         Intent intent = new Intent(Fotografia.this,Cuestionario.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtras(bundle);
@@ -158,6 +158,8 @@ public class Fotografia  extends AppCompatActivity {
     //Open
     public void open() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
         startActivityForResult(intent, 1);
     }
     //ActivityResult Method
@@ -166,17 +168,28 @@ public class Fotografia  extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
        if (resultCode == RESULT_OK) {
           if (requestCode == 1) {
+              File f = new File(Environment.getExternalStorageDirectory().toString());
+              for (File temp : f.listFiles()) {
+                  if (temp.getName().equals("temp.jpg")) {
+                      f = temp;
+                      break;
+                  }
+              }
                 try {
-                    Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                    Bitmap bitmap;
+                    BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+                    bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(),bitmapOptions);
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-                    String nombreFoto =  String.valueOf(System.currentTimeMillis()); // nombre del archivo
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
                     banderaFotoTomada = true;
                     Bitmap newBitmap = redimensionarIMG(bitmap,200,300);
 
-                    Bitmap bitMapEnvio = redimensionarIMG(bitmap,768,1024);
                     ByteArrayOutputStream mbytes = new ByteArrayOutputStream();
-                    bitMapEnvio.compress(Bitmap.CompressFormat.JPEG,50,mbytes);
+                    Bitmap bitMapEnvio = redimensionarIMG(bitmap,768,1024);
+                    bitMapEnvio.compress(Bitmap.CompressFormat.JPEG,60,mbytes);
+
+                    String nombreFoto =  String.valueOf(System.currentTimeMillis()); // nombre del archivo
 
                     if (arrayFotos.size() == 0) {
                         imgView1.setImageBitmap(newBitmap);

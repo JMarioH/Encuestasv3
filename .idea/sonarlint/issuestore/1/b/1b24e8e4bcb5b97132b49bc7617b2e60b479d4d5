@@ -1,0 +1,9 @@
+
+^squid:S2259"DNullPointerException might be thrown as 'datosPost' is nullable here(šşœ¬ûÿÿÿÿ
+qsquid:S1188"\Reduce this anonymous class number of lines from 43 to at most 20, or make it a named class.(Î¬¯”
+n
+squid:S134"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(¼ëĞÑÿÿÿÿÿ8çáÃ­+
+vsquid:S1188"\Reduce this anonymous class number of lines from 22 to at most 20, or make it a named class.(„ø¸‚ùÿÿÿÿ
+Vsquid:S1141"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8çáÃ­+
+csquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(²Ú±
+dsquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ËƒòÄ
