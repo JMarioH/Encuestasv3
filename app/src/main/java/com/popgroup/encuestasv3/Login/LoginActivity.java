@@ -45,7 +45,7 @@ public class LoginActivity extends BaseActivity implements ILoginView {
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
         mPresenter.isRegisterUser ();
-        mLoader.setTextLoader ("Login..");
+        mLoader.setTextLoader ("Validando Datos..");
         mLoader.disableTouch (true);
         mLoader.initUI ();
         if (BuildConfig.DEBUG) {
@@ -97,12 +97,10 @@ public class LoginActivity extends BaseActivity implements ILoginView {
     @Override
     public void nextAction (Object result) {
         if (result.equals ("1")) {
-            Toast.makeText (this, "LoginActivity Exitoso", Toast.LENGTH_LONG).show ();
             Intent intent = new Intent (this, MainActivity.class);
             intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
             this.startActivity (intent);
         } else if (result.equals ("2")) {
-            Toast.makeText (this, "LoginActivity root", Toast.LENGTH_LONG).show ();
             Intent intent = new Intent (this, AdminActivity.class);
             intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
             this.startActivity (intent);

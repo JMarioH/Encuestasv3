@@ -166,6 +166,8 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
         File logFile = new File(ubicacion.getAbsolutePath(), mUsuario + ".txt");
 
         if (!logFile.exists()) {
+
+            
             try {
                 logFile.createNewFile();
                 Log.e(TAG, "crear txt");

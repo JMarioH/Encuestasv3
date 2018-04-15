@@ -19,7 +19,6 @@ import com.popgroup.encuestasv3.Model.FotoEncuesta;
 import com.popgroup.encuestasv3.Model.Fotos;
 import com.popgroup.encuestasv3.Model.GeoLocalizacion;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
-import com.popgroup.encuestasv3.Utility.Connectivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,51 +26,43 @@ import org.json.JSONObject;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
-import static android.R.attr.path;
-
 /**
  * Created by jesus.hernandez on 26/12/16.
  * envias las encuestas en el proceso normal
  */
 public class AsynckEncuestas extends AsyncTask<String, String, String> {
-    private String TAG = getClass().getSimpleName();
-    private ProgressDialog progressDialog;
-    private DBHelper mDBHelper;
+    public JSONArray jsonArray;
     Dao dao;
     Context mContext;
     Constantes constantes;
     String URL;
     String success;
-
+    String latitud = null, longitud = null;
+    FotoEncuesta fotoEncuesta = new FotoEncuesta ().getInstace ();
+    Boolean validaConexion;
+    private String TAG = getClass ().getSimpleName ();
+    private ProgressDialog progressDialog;
+    private DBHelper mDBHelper;
     private JSONObject jsonObject;
     private ArrayList<RespuestasCuestionario> arrayResultados;
-    public JSONArray jsonArray;
     private ArrayList<NameValuePair> data;
     private String mEncuesta;
     private String mTienda;
     private String mEstablecimiento;
     private String mUsuario;
-
-    String latitud = null, longitud = null;
-    FotoEncuesta fotoEncuesta = new FotoEncuesta().getInstace();
     private String nomArchivo, base64;
     private byte[] bytefoto;
     private ArrayList<String> arrayFotos, arrayNomFoto;
     private ArrayList<NameValuePair> datosPost;
     private JSONArray jsonFotos;
-    Connectivity connectivity;
-    Boolean validaConexion;
 
     public AsynckEncuestas(Context context, String idEncuesta, String idEstablecimiento, String idTienda, String usuario) {
         this.mContext = context;
@@ -82,24 +73,13 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
     }
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        progressDialog = new ProgressDialog(mContext);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setMessage("Enviando datos . . ");
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-    }
-
-    @Override
     protected String doInBackground(String... strings) {
         success = "0";
         constantes = new Constantes();
         URL = constantes.getIPWBSetService();
         mDBHelper = OpenHelperManager.getHelper(mContext, DBHelper.class);
         ArrayList<GeoLocalizacion> arrayGeos;
-        connectivity = new Connectivity();
+
 
         try {
             dao = getmDBHelper().getGeosDao();
@@ -144,9 +124,6 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             grabar(jsonArray.toString());
             grabaJson(jsonArray.toString());
             data.add(new BasicNameValuePair("setEncuestas", jsonArray.toString()));
-
-            validaConexion = connectivity.isConnected(mContext);
-            if (validaConexion) {
                 try {
                     ServiceHandler serviceHandler = new ServiceHandler();
                     String response = serviceHandler.makeServiceCall(URL, ServiceHandler.POST, data);
@@ -160,9 +137,6 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
                     success = "0";
                 }
 
-            } else {
-                success = "0";
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -170,6 +144,17 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
         }
 
         return success;
+    }
+
+    @Override
+    protected void onPreExecute () {
+        super.onPreExecute ();
+        progressDialog = new ProgressDialog (mContext);
+        progressDialog.setProgressStyle (ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage ("Enviando datos . . ");
+        progressDialog.setIndeterminate (true);
+        progressDialog.setCancelable (false);
+        progressDialog.show ();
     }
 
     @Override
@@ -202,6 +187,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
                 e.printStackTrace();
             }
             enviaFotos();
+
             Intent i = new Intent(mContext, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             mContext.startActivity(i);
@@ -225,13 +211,6 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             mContext.startActivity(i);
         }
-    }
-
-    private DBHelper getmDBHelper() {
-        if (mDBHelper == null) {
-            mDBHelper = OpenHelperManager.getHelper(mContext, DBHelper.class);
-        }
-        return mDBHelper;
     }
 
     public void enviaFotos() { //  preparamos las fotos para enviarlas
@@ -295,6 +274,13 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             }
 
         }
+    }
+
+    private DBHelper getmDBHelper () {
+        if (mDBHelper == null) {
+            mDBHelper = OpenHelperManager.getHelper (mContext, DBHelper.class);
+        }
+        return mDBHelper;
     }
 
     public void grabar(String contenido) {

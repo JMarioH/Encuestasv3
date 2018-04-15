@@ -186,17 +186,17 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected BasePresenter getmPresenter () {
-        return null;
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mDBHelper != null) {
             OpenHelperManager.releaseHelper();
             mDBHelper = null;
         }
+    }
+
+    @Override
+    protected BasePresenter getmPresenter () {
+        return null;
     }
 
     private DBHelper getmDBHelper () {
@@ -209,7 +209,6 @@ public class MainActivity extends BaseActivity {
     public void encuestasPendientes(){
         connectionAvailable = connectivity.isConnected (this);
         if(connectionAvailable){
-
             new AsynckEncPendientes(this,mUsuario,encuestasPendientes.size()).execute();
         }else{
             showMessage();
@@ -230,7 +229,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void fotosPendientes(){
-        connectionAvailable = connectivity.isConnected (this);
+        connectionAvailable = connectivity.isConnected (getBaseContext ());
         JSONArray jsonFotos;
         ArrayList<NameValuePair> datosPost = null;
         if(connectionAvailable){

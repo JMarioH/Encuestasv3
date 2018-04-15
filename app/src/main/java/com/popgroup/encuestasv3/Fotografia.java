@@ -3,16 +3,14 @@ package com.popgroup.encuestasv3;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +27,6 @@ import com.popgroup.encuestasv3.Model.FotoEncuesta;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -41,9 +38,9 @@ import butterknife.ButterKnife;
  *  captura la fotografia para esta version de la aplicacion
  */
 public class Fotografia  extends AppCompatActivity {
-    private String TAG = getClass().getSimpleName();
+    public String idEncuesta, encuesta, idTienda, idEstablecimiento, idArchivo, usuario, numPregunta;
+    public byte[] byteArray;
     Bundle  bundle;
-
     Toolbar toolbar;
     @BindView(R.id.txtTitle)
     TextView txtTitle;
@@ -61,19 +58,16 @@ public class Fotografia  extends AppCompatActivity {
     ImageView imgView4;
     @BindView(R.id.imageView5)
     ImageView imgView5;
-
     DBHelper mDBHelper;
     Dao dao;
-    public String idEncuesta,encuesta,idTienda,idEstablecimiento,idArchivo,usuario,numPregunta;
-
     ArrayList<RespuestasCuestionario> arrayResultados;
     Boolean banderaFotoTomada = false;
-    public byte[] byteArray;
     ArrayList<String> arrayFotos , arrayNombrefoto;
     ArrayList<byte []> arrayByte;
     String ba1;
     int numFotos = 0;
     FotoEncuesta fotoEncuesta;
+    private String TAG = getClass ().getSimpleName ();
     private int permissionCheck  ;
 
     @Override
@@ -85,7 +79,7 @@ public class Fotografia  extends AppCompatActivity {
         toolbar.setTitle("");
         if (getSupportActionBar() != null) // Habilitar up button
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        txtTitle.setText("Encuestas");
+        txtTitle.setText ("Fotografia");
         txtTitle.setTextSize(18);
         txtTitle.setTextColor(getBaseContext().getResources().getColor(R.color.colorTextPrimary));
         setSupportActionBar(toolbar);
@@ -138,55 +132,44 @@ public class Fotografia  extends AppCompatActivity {
             Toast.makeText(getBaseContext(),"Debe proporcionar permisos para usar la camara ",Toast.LENGTH_LONG).show();
         }
     }
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        try {
 
-            DeleteBuilder<RespuestasCuestionario, Integer> deleteBuilder = dao.deleteBuilder();
-            deleteBuilder.where().eq("idpregunta", numPregunta);
-            deleteBuilder.delete();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        Intent intent = new Intent(Fotografia.this,Cuestionario.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION|Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
     //Open
     public void open() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-        startActivityForResult(intent, 1);
+
+        Intent takePictureIntent = new Intent (MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity (getPackageManager ()) != null) {
+            startActivityForResult (takePictureIntent, 1);
+        }
     }
+
+    @Override
+    protected void onDestroy () {
+        super.onDestroy ();
+        if (mDBHelper != null) {
+            OpenHelperManager.releaseHelper ();
+            mDBHelper = null;
+        }
+    }
+
     //ActivityResult Method
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
        if (resultCode == RESULT_OK) {
           if (requestCode == 1) {
-              File f = new File(Environment.getExternalStorageDirectory().toString());
-              for (File temp : f.listFiles()) {
-                  if (temp.getName().equals("temp.jpg")) {
-                      f = temp;
-                      break;
-                  }
-              }
+
                 try {
-                    Bitmap bitmap;
-                    BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-                    bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(),bitmapOptions);
+
+                    Bundle extras = data.getExtras ();
+                    Bitmap imageBitmap = (Bitmap) extras.get ("data");
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                    imageBitmap.compress (Bitmap.CompressFormat.JPEG, 100, bytes);
 
                     banderaFotoTomada = true;
-                    Bitmap newBitmap = redimensionarIMG(bitmap,200,300);
+                    Bitmap newBitmap = redimensionarIMG (imageBitmap, 200, 300);
 
                     ByteArrayOutputStream mbytes = new ByteArrayOutputStream();
-                    Bitmap bitMapEnvio = redimensionarIMG(bitmap,768,1024);
+                    Bitmap bitMapEnvio = redimensionarIMG (imageBitmap, 768, 1024);
                     bitMapEnvio.compress(Bitmap.CompressFormat.JPEG,60,mbytes);
 
                     String nombreFoto =  String.valueOf(System.currentTimeMillis()); // nombre del archivo
@@ -223,11 +206,36 @@ public class Fotografia  extends AppCompatActivity {
                     }
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e (TAG, "Exception " + e.getMessage ());
                 }
           }
        }
     }
+
+    @Override
+    public void onBackPressed () {
+        super.onBackPressed ();
+        try {
+
+            DeleteBuilder<RespuestasCuestionario, Integer> deleteBuilder = dao.deleteBuilder ();
+            deleteBuilder.where ().eq ("idpregunta", numPregunta);
+            deleteBuilder.delete ();
+        } catch (SQLException e) {
+            Log.e (TAG, "SQLException" + e.getMessage ());
+        }
+
+        Intent intent = new Intent (Fotografia.this, Cuestionario.class);
+        intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtras (bundle);
+        startActivity (intent);
+    }
+
+    @Override
+    protected void onResume () {
+        super.onResume ();
+        permissionCheck = ContextCompat.checkSelfPermission (Fotografia.this, Manifest.permission.CAMERA);
+    }
+
     public Bitmap redimensionarIMG(Bitmap mBitmap, float newWidth, float newHeigth) {
         //Redimensionamos
         int width = mBitmap.getWidth();
@@ -244,6 +252,7 @@ public class Fotografia  extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu,menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -261,23 +270,11 @@ public class Fotografia  extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        permissionCheck = ContextCompat.checkSelfPermission(Fotografia.this, Manifest.permission.CAMERA);
-    }
+
     private DBHelper getmDBHelper() {
         if (mDBHelper == null) {
             mDBHelper = OpenHelperManager.getHelper(this, DBHelper.class);
         }
         return mDBHelper;
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mDBHelper != null) {
-            OpenHelperManager.releaseHelper();
-            mDBHelper = null;
-        }
     }
 }
