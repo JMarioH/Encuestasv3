@@ -1,17 +1,0 @@
-
-<squid:S1068"'Remove this unused "TAG" private field.(ËƒòÄ
-gsquid:S1450"RRemove the "URL" field and declare it as a local variable in the relevant methods.(ºë½Ñ
-ksquid:S1450"VRemove the "success" field and declare it as a local variable in the relevant methods.(üè¦Ÿ
-hsquid:S1450"SRemove the "data" field and declare it as a local variable in the relevant methods.(®µ¼õ
-Osquid:S1141"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ
-:squid:S1166"%Either log or rethrow this exception.(É®£
-?squid:S1166"%Either log or rethrow this exception.(÷¿­¹ÿÿÿÿÿ
-=squid:S1185"(Remove this method to simply inherit it.(ËÐƒ
-Bsquid:S1185"(Remove this method to simply inherit it.(Œÿµºøÿÿÿÿ
-Ssquid:S1854">Remove this useless assignment to local variable "jsonObject".(™Ö…œ
-dsquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ËƒòÄ
-dsquid:S00116"NRename this field "URL" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ºë½Ñ
-rsquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(ØÞƒÊùÿÿÿÿ
-osquid:UselessImportCheck"HRemove this unused import 'com.popgroup.encuestasv3.Model.TipoEncuesta'.(è¹÷£þÿÿÿÿ
-Tsquid:UselessImportCheck"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ
-=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ

@@ -24,28 +24,16 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
  */
 
 public class AsynckCliente extends AsyncTask<String, String, String> {
+    Constantes constantes;
+    Context mContext;
+    Cliente cliente;
+    Dao dao;
     private String TAG = getClass().getSimpleName();
     private String URL;
-    Constantes constantes;
     private String success = null;
     private ArrayList<NameValuePair> data;
     private String telefono;
-    Context mContext;
-    Cliente cliente;
     private DBHelper mDBHelper;
-    Dao dao;
-
-    public AsynckCliente() {
-    }
-    public AsynckCliente(Context context, String telefono) {
-        this.telefono = telefono;
-        this.mContext = context;
-    }
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-
-    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -55,7 +43,7 @@ public class AsynckCliente extends AsyncTask<String, String, String> {
         mDBHelper = OpenHelperManager.getHelper(mContext, DBHelper.class);
         data = new ArrayList<>();
         data.add(new BasicNameValuePair("f", "getCliente"));
-        data.add(new BasicNameValuePair("telefono", telefono));
+        data.add (new BasicNameValuePair ("telefono", strings[0]));
 
         try {
             ServiceHandler jsonParser = new ServiceHandler();
@@ -76,6 +64,12 @@ public class AsynckCliente extends AsyncTask<String, String, String> {
             e.printStackTrace();
             return success;
         }
+
+    }
+
+    @Override
+    protected void onPreExecute () {
+        super.onPreExecute ();
 
     }
 

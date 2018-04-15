@@ -2,7 +2,6 @@ package com.popgroup.encuestasv3.AsynckTask;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -27,27 +26,17 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 public class AsynckProyecto extends AsyncTask<String,String,String> {
 
+    Constantes constantes;
+    Context mContext;
+    Proyecto proyecto;
+    ArrayList<TipoEncuesta> arrayListTipoEnc;
+    Dao dao;
     private String TAG= getClass().getSimpleName();
     private String URL;
-    Constantes constantes;
     private String success = null;
     private ArrayList<NameValuePair> data ;
     private String telefono;
-    Context mContext;
-    Proyecto proyecto;
     private DBHelper mDBHelper;
-    ArrayList<TipoEncuesta> arrayListTipoEnc;
-    Dao dao;
-
-    public AsynckProyecto(Context context, String telefono) {
-        this.telefono = telefono;
-        this.mContext = context;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -57,7 +46,7 @@ public class AsynckProyecto extends AsyncTask<String,String,String> {
         mDBHelper = OpenHelperManager.getHelper(mContext,DBHelper.class);
         data = new ArrayList<>();
         data.add(new BasicNameValuePair("f","getProyecto"));
-        data.add(new BasicNameValuePair("telefono",telefono));
+        data.add (new BasicNameValuePair ("telefono", strings[0]));
 
         try{
             ServiceHandler serviceHandler = new ServiceHandler();
@@ -87,6 +76,11 @@ public class AsynckProyecto extends AsyncTask<String,String,String> {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    protected void onPreExecute () {
+        super.onPreExecute ();
     }
 
     @Override

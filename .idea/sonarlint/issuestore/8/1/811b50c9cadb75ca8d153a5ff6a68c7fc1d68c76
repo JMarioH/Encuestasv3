@@ -1,16 +1,0 @@
-
-gsquid:S1450"RRemove the "URL" field and declare it as a local variable in the relevant methods.(ºë½Ñ
-dsquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ËƒòÄ
-rsquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(ØÞƒÊùÿÿÿÿ
-dsquid:S00116"NRename this field "URL" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ºë½Ñ
-?squid:S1166"%Either log or rethrow this exception.(÷¿­¹ÿÿÿÿÿ
-=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ
-ksquid:S1450"VRemove the "success" field and declare it as a local variable in the relevant methods.(üè¦Ÿ
-<squid:S1068"'Remove this unused "TAG" private field.(ËƒòÄ
-Bsquid:S1185"(Remove this method to simply inherit it.(Œÿµºøÿÿÿÿ
-a$squid:AssignmentInSubExpressionCheck".Extract the assignment out of this expression.(Ã¢–ßúÿÿÿÿ
-Osquid:S1141"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ
-=squid:S1185"(Remove this method to simply inherit it.(ËÐƒ
-:squid:S1166"%Either log or rethrow this exception.(É®£
-hsquid:S1450"SRemove the "data" field and declare it as a local variable in the relevant methods.(®µ¼õ
-›squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ºðÐ…ýÿÿÿÿ

@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -18,7 +17,10 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.popgroup.encuestasv3.AsynckTask.AsyncUploadFotos;
 import com.popgroup.encuestasv3.AsynckTask.AsynckEncPendientes;
+import com.popgroup.encuestasv3.Base.BaseActivity;
+import com.popgroup.encuestasv3.Base.BasePresenter;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
+import com.popgroup.encuestasv3.Login.LoginActivity;
 import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.Cliente;
 import com.popgroup.encuestasv3.Model.Fotos;
@@ -41,13 +43,11 @@ import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
-    private String TAG = getClass().getSimpleName();
     Toolbar toolbar;
     Dao dao;
     Bundle bundle;
-    private DBHelper mDBHelper;
     User user;
     Cliente cliente;
     Proyecto proyecto;
@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Fotos> fotosPendientes;
     ArrayList<RespuestasCuestionario> encuestasPendientes;
     ArrayList<User> arrayUser;
-
     @BindView(R.id.btnCambiarUser)
     Button btnCambiarUser;
     @BindView(R.id.btnInicio)
@@ -70,29 +69,18 @@ public class MainActivity extends AppCompatActivity {
     TextView txtLog;
     @BindView(R.id.txtUsuario)
     TextView txtUser;
-
     String mUsuario;
     boolean connectionAvailable;
     TextView txtTitle;
-
     Connectivity connectivity;
+    private String TAG = getClass ().getSimpleName ();
+    private DBHelper mDBHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        txtTitle = (TextView) toolbar.findViewById(R.id.txtTitle);
-        txtTitle.setText("Encuestas");
-        txtTitle.setTextSize(18);
-        txtTitle.setTextColor(getBaseContext().getResources().getColor(R.color.colorTextPrimary));
-        setSupportActionBar(toolbar);
         bundle = new Bundle();
         connectionAvailable = connectivity.isConnected(this);
         try {
@@ -155,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 if(!arrayUser.isEmpty()){
                     showAlert();
                 }else{
-                    Intent i = new Intent(MainActivity.this,Login.class);
+                    Intent i = new Intent (MainActivity.this, LoginActivity.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(i);
                 }
@@ -182,13 +170,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-    private DBHelper getmDBHelper() {
-        if (mDBHelper == null) {
-            mDBHelper = OpenHelperManager.getHelper(this, DBHelper.class);
-        }
-        return mDBHelper;
+    @Override
+    protected int setLayout () {
+        return R.layout.activity_main;
     }
+
+    @Override
+    protected String setTitleToolBar () {
+        return "Encuestas";
+    }
+
+    @Override
+    protected void createPresenter () {
+
+    }
+
+    @Override
+    protected BasePresenter getmPresenter () {
+        return null;
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -197,23 +198,39 @@ public class MainActivity extends AppCompatActivity {
             mDBHelper = null;
         }
     }
-    @Override
-    public void onBackPressed() {
-        Intent a = new Intent(Intent.ACTION_MAIN);
-        a.addCategory(Intent.CATEGORY_HOME);
-        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(a);
+
+    private DBHelper getmDBHelper () {
+        if (mDBHelper == null) {
+            mDBHelper = OpenHelperManager.getHelper (this, DBHelper.class);
+        }
+        return mDBHelper;
     }
+
     public void encuestasPendientes(){
+        connectionAvailable = connectivity.isConnected (this);
         if(connectionAvailable){
-            Log.e(TAG,"aqui");
+
             new AsynckEncPendientes(this,mUsuario,encuestasPendientes.size()).execute();
         }else{
             showMessage();
         }
     }
-    public void fotosPendientes(){
 
+    public void showMessage () {
+        AlertDialog alertDialog = new AlertDialog.Builder (MainActivity.this).create ();
+        alertDialog.setTitle ("Mensaje");
+        alertDialog.setMessage ("Debe estar conectado a una red Estable para continuar");
+        alertDialog.setButton (AlertDialog.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener () {
+                    public void onClick (DialogInterface dialog, int which) {
+                        dialog.dismiss ();
+                    }
+                });
+        alertDialog.show ();
+    }
+
+    public void fotosPendientes(){
+        connectionAvailable = connectivity.isConnected (this);
         JSONArray jsonFotos;
         ArrayList<NameValuePair> datosPost = null;
         if(connectionAvailable){
@@ -262,8 +279,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void showAlert(){
-        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-        alertDialog.setTitle("Mensaje");
+        final AlertDialog alertDialog = new AlertDialog.Builder (MainActivity.this).create ();
+        alertDialog.setTitle ("Aviso");
+
         alertDialog.setMessage("Cambiar de usuario borrara los datos existentes");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Si",
                 new DialogInterface.OnClickListener() {
@@ -314,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         dialog.dismiss();
                         bundle.putString("bandera","1");
-                        Intent intent = new Intent(getBaseContext(), Login.class);
+                        Intent intent = new Intent (getBaseContext (), LoginActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         intent.putExtras(bundle);
                         startActivity(intent);
@@ -326,30 +344,34 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+        alertDialog.setOnShowListener (new DialogInterface.OnShowListener () {
+            @Override
+            public void onShow (DialogInterface arg0) {
+                alertDialog.getButton (AlertDialog.BUTTON_POSITIVE).setTextColor (getResources ().getColor (R.color.colorPrimary));
+                alertDialog.getButton (AlertDialog.BUTTON_NEGATIVE).setTextColor (getResources ().getColor (R.color.colorPrimary));
+            }
+        });
+
+
         alertDialog.show();
     }
-    public void showMessage(){
-        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-        alertDialog.setTitle("Mensaje");
-        alertDialog.setMessage("Debe estar conectado a una red Estable para continuar");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.show();
-    }
+
     public void iniciarProceso(){
 
-        if(connectionAvailable){
             Intent i = new Intent(MainActivity.this,Proyectos.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(i);
-        }else{
-            showMessage();
-        }
+
     }
+
+    @Override
+    public void onBackPressed () {
+        Intent a = new Intent (Intent.ACTION_MAIN);
+        a.addCategory (Intent.CATEGORY_HOME);
+        a.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity (a);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu,menu);

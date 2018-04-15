@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.popgroup.encuestasv3.Loader xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_loader"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/transBlack"
+    android:elevation="4dp"
+    android:gravity="center"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:layout_width="290dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/background_loader"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ProgressBar
+            android:id="@+id/loader_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:indeterminate="true"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/txtLoader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/colorTextPrimary" />
+    </LinearLayout>
+</com.popgroup.encuestasv3.Loader>

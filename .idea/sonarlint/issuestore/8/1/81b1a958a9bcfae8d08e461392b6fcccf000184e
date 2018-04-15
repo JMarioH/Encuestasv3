@@ -1,7 +1,0 @@
-
-usquid:S1845"[Rename field "id" to prevent any misunderstanding/clash with field "ID" defined on line 13.(ôç¼Óşÿÿÿÿ
-}squid:S1845"cRename field "nombre" to prevent any misunderstanding/clash with field "NOMBRE" defined on line 14.(µÿï„ùÿÿÿÿ
-…squid:S1845"kRename field "idproyecto" to prevent any misunderstanding/clash with field "IDPROYECTO" defined on line 15.(²ªøúÿÿÿÿ
-squid:S1845"eRename field "cliente" to prevent any misunderstanding/clash with field "CLIENTE" defined on line 16.(‰çÓ£øÿÿÿÿ
-–squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(úŒé
-rsquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(—¼™Ÿúÿÿÿÿ

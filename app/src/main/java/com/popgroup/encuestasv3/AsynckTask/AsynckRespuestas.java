@@ -2,6 +2,7 @@ package com.popgroup.encuestasv3.AsynckTask;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -24,31 +25,17 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
  * descarga el catalogo de respuestas
  */
 public class AsynckRespuestas extends AsyncTask<String,String,String>{
+    Constantes constantes;
+    Context mContext;
+    Respuestas respuestas;
+    ArrayList<Preguntas> arrayPreguntas;
+    Dao dao;
     private String TAG = getClass().getSimpleName();
     private String URL;
-    Constantes constantes;
     private String success = null;
     private ArrayList<NameValuePair> data;
     private String telefono;
-    Context mContext;
-    Respuestas respuestas;
     private DBHelper mDBHelper;
-    ArrayList<Preguntas> arrayPreguntas;
-    Dao dao;
-    public AsynckRespuestas(Context context, String telefono) {
-        this.telefono = telefono;
-        this.mContext = context;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
-
-    @Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -57,7 +44,7 @@ public class AsynckRespuestas extends AsyncTask<String,String,String>{
         URL = constantes.getIPWBService();
         data = new ArrayList<>();
         data.add(new BasicNameValuePair("f","getRespuestas"));
-        data.add(new BasicNameValuePair("telefono",telefono));
+        data.add (new BasicNameValuePair ("telefono", strings[0]));
         try{
             ServiceHandler jsonParser = new ServiceHandler();
             String jsonRes = jsonParser.makeServiceCall(URL, ServiceHandler.POST, data);
@@ -79,6 +66,7 @@ public class AsynckRespuestas extends AsyncTask<String,String,String>{
 
                 } catch (SQLException e) {
                     e.printStackTrace();
+                    Log.d (TAG, "SqlException " + e.getMessage ());
                 }
 
             }
@@ -88,6 +76,17 @@ public class AsynckRespuestas extends AsyncTask<String,String,String>{
         }
         return success;
     }
+
+    @Override
+    protected void onPreExecute () {
+        super.onPreExecute ();
+    }
+
+    @Override
+    protected void onPostExecute (String s) {
+        super.onPostExecute (s);
+    }
+
     private DBHelper getmDBHelper(){
         if (mDBHelper == null){
             mDBHelper = OpenHelperManager.getHelper(mContext,DBHelper.class);

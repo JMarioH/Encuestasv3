@@ -6,9 +6,7 @@ import android.os.AsyncTask;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
-import com.popgroup.encuestasv3.Model.Cliente;
 import com.popgroup.encuestasv3.Model.Preguntas;
-import com.popgroup.encuestasv3.Model.TipoEncuesta;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,26 +24,16 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
  */
 
 public class AsynckPreguntas extends AsyncTask<String, String, String> {
+    Constantes constantes;
+    Context mContext;
+    ArrayList<Preguntas> arrayPreguntas;
+    Dao dao;
     private String TAG = getClass().getSimpleName();
     private String URL;
-    Constantes constantes;
     private String success = null;
     private ArrayList<NameValuePair> data;
     private String telefono;
-    Context mContext;
-
     private DBHelper mDBHelper;
-    ArrayList<Preguntas> arrayPreguntas;
-    Dao dao;
-    public AsynckPreguntas(Context context, String telefono) {
-        this.telefono = telefono;
-        this.mContext = context;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -56,7 +44,7 @@ public class AsynckPreguntas extends AsyncTask<String, String, String> {
         mDBHelper = OpenHelperManager.getHelper(mContext,DBHelper.class);
         data = new ArrayList<>();
         data.add(new BasicNameValuePair("f","getPreguntas"));
-        data.add(new BasicNameValuePair("telefono",telefono));
+        data.add (new BasicNameValuePair ("telefono", strings[0]));
         try{
             ServiceHandler jsonParser = new ServiceHandler();
             String jsonRes = jsonParser.makeServiceCall(URL, ServiceHandler.POST, data);
@@ -84,6 +72,11 @@ public class AsynckPreguntas extends AsyncTask<String, String, String> {
             e.printStackTrace();
         }
         return success;
+    }
+
+    @Override
+    protected void onPreExecute () {
+        super.onPreExecute ();
     }
 
     @Override

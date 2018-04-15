@@ -3,27 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="fill_parent"
     android:background="@color/colorBackgound"
-    android:orientation="vertical"
-    tools:context=".Login">
+    tools:context=".Login.LoginActivity">
 
+    <include layout="@layout/layout_loader" />
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_alignParentTop="true"
-        android:elevation="4dp"
         android:background="@color/colorBackgoundHeader"
+        android:elevation="2dp"
         android:gravity="center"
         android:orientation="vertical">
 
         <TextView
+            style="@style/textTittle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/CambiarUsr"
-            style="@style/textTittle" />
+            android:text="@string/CambiarUsr" />
 
     </LinearLayout>
 
@@ -32,43 +32,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/footer"
-        android:padding="16dp"
         android:layout_below="@id/header"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/input_usuario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColorHint="@color/colorTextPrimary"
-            android:layout_marginTop="36dp">
+            android:layout_marginTop="36dp"
+            android:textColorHint="@color/colorTextPrimary">
 
             <EditText
                 android:id="@+id/editUser"
                 android:layout_width="384dp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorTextPrimary"
-                android:textColorHint="@color/colorTextPrimary"
                 android:hint="Usuario"
-                android:inputType="number" />
+                android:inputType="number"
+                android:textColor="@color/colorTextPrimary"
+                android:textColorHint="@color/colorTextPrimary" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/input_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColorHint="@color/colorTextPrimary"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="24dp"
+            android:textColorHint="@color/colorTextPrimary">
 
         <EditText
             android:id="@+id/editPassword"
             android:layout_width="384dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorTextPrimary"
-            android:textColorHint="@color/colorTextPrimary"
             android:ems="10"
             android:hint="Password"
             android:inputType="textPassword"
+            android:textColor="@color/colorTextPrimary"
+            android:textColorHint="@color/colorTextPrimary"
              />
         </android.support.design.widget.TextInputLayout>
 
@@ -83,7 +83,6 @@
             android:text="Login" />
 
     </LinearLayout>
-
     <LinearLayout
         android:id="@+id/footer"
         android:layout_width="match_parent"
@@ -95,8 +94,8 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <TextView
                 android:id="@+id/txtTitle"

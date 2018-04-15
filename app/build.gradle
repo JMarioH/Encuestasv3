@@ -17,6 +17,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug{
+            // usuario desarrollo
+            buildConfigField "String", "USER", '"5560860001"'
+            buildConfigField "String", "PASS", '"foo"'
+        }
     }
 }
 
@@ -32,4 +37,5 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
     compile 'com.android.support:design:25.0.1'
     compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.facebook.stetho:stetho:1.5.0'
 }

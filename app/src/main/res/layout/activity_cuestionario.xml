@@ -1,75 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorBackgound"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:gravity="center_vertical"
-        android:padding="12dp"
-        android:elevation="4dp"
+        android:layout_height="130dp"
         android:background="@color/colorBackgoundHeader"
-        android:orientation="vertical">
+        android:elevation="4dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="12dp">
 
         <TextView
             android:id="@+id/txtPregunta"
+            style="@style/textTittle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            style="@style/textTittle"
+            android:textSize="14sp"
              />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="100dp"
         android:layout_marginBottom="56dp"
-        android:padding="24dp"
-        android:orientation="vertical">
+        android:layout_marginTop="100dp"
+        android:orientation="vertical"
+        android:padding="24dp">
 
         <EditText
             android:id="@+id/editRespLibre"
+            style="@style/mEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:padding="4dp"
-            style="@style/mEditText"
             android:inputType="text"
+            android:padding="4dp"
             android:visibility="invisible"
             />
         <Button
             android:id="@+id/btnOpc"
+            style="@style/mButtonCuestionario"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="6dp"
-            style="@style/mButtonCuestionario"
-            android:visibility="invisible"
-            android:text="@string/seleccione" />
+            android:text="@string/seleccione"
+            android:visibility="invisible" />
 
         <Spinner
             android:id="@+id/spnOpciones"
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginTop="6dp"
-            android:popupBackground="@color/colorBackgoundHeader"
             android:background="@color/colorBackgoundHeader"
-            android:visibility="invisible"
-            android:focusableInTouchMode="true" />
+            android:focusableInTouchMode="true"
+            android:popupBackground="@color/colorBackgoundHeader"
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/btnSiguiente"
+            style="@style/mButtonCuestionario"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="6dp"
-            style="@style/mButtonCuestionario"
             android:text="@string/siguiente" />
 
         <TextView
@@ -82,10 +83,10 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="?attr/colorPrimary"
         android:layout_alignParentBottom="true"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <TextView
             android:id="@+id/txtTitle"

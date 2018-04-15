@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -23,17 +22,13 @@ import org.json.JSONObject;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 
 /**
  * Created by jesus.hernandez on 09/01/17.
@@ -42,9 +37,6 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 
 public class AsynckEncPendientes extends AsyncTask<String,String,String> {
 
-    private String TAG = getClass().getSimpleName();
-    private ProgressDialog progressDialog;
-    private DBHelper mDBHelper;
     Dao dao;
     Context mContext;
     Constantes constantes;
@@ -56,23 +48,16 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
     JSONArray jsonArray;
     String mUsuario;
     int numeroReg;
-    private ArrayList<NameValuePair> data;
     ArrayList<RespuestasCuestionario> arrayEnc;
     ArrayList<GeoLocalizacion> arrayGeos;
+    private String TAG = getClass ().getSimpleName ();
+    private ProgressDialog progressDialog;
+    private DBHelper mDBHelper;
+    private ArrayList<NameValuePair> data;
     public AsynckEncPendientes(Context context , String usuario, int registros){
         this.mContext = context;
         this.mUsuario = usuario;
         this.numeroReg = registros;
-    }
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        progressDialog = new ProgressDialog(mContext);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setMessage("Enviando..."+numeroReg+ " datos pendientes .");
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
     }
 
     @Override
@@ -92,7 +77,7 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
 
                 dao = getmDBHelper().getGeosDao();
                 arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder().selectColumns("latitud","longitud")
-                        .where().eq("idEncuesta",resp.getIdEncuesta()).and().eq("idEstablecimiento",resp.getIdEstablecimiento()).query();
+                        .where ().eq ("idEncuesta", resp.getIdTienda ()).and ().eq ("idEstablecimiento", resp.getIdEstablecimiento ()).query ();
 
                 for(GeoLocalizacion item :arrayGeos){
                     latitud =  item.getLatitud();
@@ -133,6 +118,17 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
 
         }
         return success;
+    }
+
+    @Override
+    protected void onPreExecute () {
+        super.onPreExecute ();
+        progressDialog = new ProgressDialog (mContext);
+        progressDialog.setProgressStyle (ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage ("Enviando..." + numeroReg + " datos pendientes .");
+        progressDialog.setIndeterminate (true);
+        progressDialog.setCancelable (false);
+        progressDialog.show ();
     }
 
     @Override

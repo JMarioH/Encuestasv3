@@ -1,14 +1,0 @@
-
-Rsquid:S1213"8Move this variable to comply with Java Code Conventions.(ôç¼Óşÿÿÿÿ
-Msquid:S1213"8Move this variable to comply with Java Code Conventions.(·Âä
-Msquid:S1213"8Move this variable to comply with Java Code Conventions.(÷¯ï
-Rsquid:S1213"8Move this variable to comply with Java Code Conventions.(µÿï„ùÿÿÿÿ
-Msquid:S1213"8Move this variable to comply with Java Code Conventions.(†£Á
-Rsquid:S1213"8Move this variable to comply with Java Code Conventions.(èºÖ™ùÿÿÿÿ
-usquid:S1845"[Rename field "id" to prevent any misunderstanding/clash with field "ID" defined on line 21.(ôç¼Óşÿÿÿÿ
-squid:S1845"yRename field "idEstablecimiento" to prevent any misunderstanding/clash with field "IDESTABLECIMIENTO" defined on line 22.(·Âä
-€squid:S1845"kRename field "idEncuesta" to prevent any misunderstanding/clash with field "IDENCUESTA" defined on line 23.(÷¯ï
-}squid:S1845"cRename field "nombre" to prevent any misunderstanding/clash with field "NOMBRE" defined on line 24.(µÿï„ùÿÿÿÿ
-xsquid:S1845"cRename field "base64" to prevent any misunderstanding/clash with field "BASE64" defined on line 25.(†£Á
-–squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ä–ãØ
-rsquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(—¼™Ÿúÿÿÿÿ

@@ -2,7 +2,6 @@ package com.popgroup.encuestasv3.AsynckTask;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -26,26 +25,17 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 public class AsynckTipoEnc  extends AsyncTask<String,String,String> {
 
+    Constantes constantes;
+    Context mContext;
+    TipoEncuesta tipoEncuesta;
+    ArrayList<TipoEncuesta> arrayListTipoEnc;
+    Dao dao;
     private String TAG= getClass().getSimpleName();
     private String URL;
-    Constantes constantes;
     private String success = null;
     private ArrayList<NameValuePair> data ;
     private String telefono;
-    Context mContext;
-    TipoEncuesta tipoEncuesta;
     private DBHelper mDBHelper;
-    ArrayList<TipoEncuesta> arrayListTipoEnc;
-    Dao dao;
-
-    public AsynckTipoEnc(Context context, String telefono) {
-        this.telefono = telefono;
-        this.mContext = context;
-    }
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -56,7 +46,7 @@ public class AsynckTipoEnc  extends AsyncTask<String,String,String> {
         mDBHelper = OpenHelperManager.getHelper(mContext,DBHelper.class);
         data = new ArrayList<>();
         data.add(new BasicNameValuePair("f","getTipoEnc"));
-        data.add(new BasicNameValuePair("telefono",telefono));
+        data.add (new BasicNameValuePair ("telefono", strings[0]));
         try{
             ServiceHandler jsonParser = new ServiceHandler();
             String jsonRes = jsonParser.makeServiceCall(URL, ServiceHandler.POST, data);
@@ -89,6 +79,12 @@ public class AsynckTipoEnc  extends AsyncTask<String,String,String> {
         }
         return success;
     }
+
+    @Override
+    protected void onPreExecute () {
+        super.onPreExecute ();
+    }
+
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);

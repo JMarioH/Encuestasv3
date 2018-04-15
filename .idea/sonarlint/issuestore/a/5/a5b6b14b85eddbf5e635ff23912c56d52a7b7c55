@@ -1,35 +1,0 @@
-
-_squid:S3027"JPut single-quotes around '.' to use the faster "lastIndexOf(char)" method.(Å™¥
-psquid:S1188"\Reduce this anonymous class number of lines from 23 to at most 20, or make it a named class.(•ÁñS
-Bsquid:S1068"-Remove this unused "stringTxt" private field.(‰÷ÿ¡
-gsquid:S1450"RRemove the "URL" field and declare it as a local variable in the relevant methods.(ºë½Ñ
-hsquid:S1450"SRemove the "data" field and declare it as a local variable in the relevant methods.(®µ¼õ
-2squid:S2095"Close this "FileReader".(ôÄ¹úÿÿÿÿ
-2squid:S2095"Close this "FileReader".(ôÄ¹úÿÿÿÿ
-`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(éÔÙê
-`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(éÔÙê
-`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(üÈä
-`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ãæ¹û
-{"squid:ClassVariableVisibilityCheck"OMake TAG a static final constant or non-public and provide accessors if needed.(°’Ü³
-"squid:ClassVariableVisibilityCheck"PMake path a static final constant or non-public and provide accessors if needed.(’»‘õúÿÿÿÿ
-_squid:S1132"JMove the "json" string literal on the left side of this string comparison.(Ì˜½¬
-\squid:S1132"GMove the "1" string literal on the left side of this string comparison.(È½òÔ
-Gsquid:S1135"2Complete the task associated to this TODO comment.(öÁ‡ß
-Dsquid:S1481"*Remove this unused "mJson" local variable.(ÍìÓÌüÿÿÿÿ
-:squid:S1166"%Either log or rethrow this exception.(ï­£Ä
-:squid:S1166"%Either log or rethrow this exception.(ï­£Ä
-?squid:S1166"%Either log or rethrow this exception.(÷¿­¹ÿÿÿÿÿ
-dsquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(°’Ü³
-dsquid:S00116"NRename this field "URL" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ºë½Ñ
-Msquid:UselessImportCheck",Remove this unused import 'android.nfc.Tag'.(¡¸ó
-Tsquid:UselessImportCheck"-Remove this unused import 'java.util.Arrays'.(î–˜Éüÿÿÿÿ
-Tsquid:UselessImportCheck"3Remove this unused import 'android.content.Intent'.(³ğ‹G
-Usquid:UselessImportCheck".Remove this unused import 'java.util.HashMap'.(™˜”€ùÿÿÿÿ
-\squid:UselessImportCheck"5Remove this unused import 'android.content.ClipData'.(°ú‚üÿÿÿÿ
-Qsquid:UselessImportCheck"/Remove this unused import 'java.util.Iterator'.(¥ÍòÕ
-Vsquid:UselessImportCheck"5Remove this unused import 'java.io.FileOutputStream'.(˜«ªg
-Vsquid:UselessImportCheck"4Remove this unused import 'java.io.FileInputStream'.(˜³ÉÓ
-gsquid:UselessImportCheck"@Remove this unused import 'com.popgroup.encuestasv3.Model.User'.(ÓÆÉšûÿÿÿÿ
-hsquid:UselessImportCheck"FRemove this unused import 'com.popgroup.encuestasv3.Model.Respuestas'.(øÃ˜
-\squid:UselessImportCheck":Remove this unused import 'java.nio.channels.FileChannel'.(±Áá
-hsquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(ü­³÷øÿÿÿÿ

@@ -1,62 +1,0 @@
-
-=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-isquid:S00116"NRename this field "URL" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(—°°ıøÿÿÿÿ
-?squid:S1166"%Either log or rethrow this exception.(÷¿­¹ÿÿÿÿÿ
-=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-\squid:S1132"GMove the "1" string literal on the left side of this string comparison.(ÇÀáŞ
-asquid:S1858"L"contenido" is already a string, there's no need to call "toString()" on it.( ”¬Ô
-csquid:S1192"IDefine a constant instead of duplicating this literal "idTienda" 5 times.(è°åÁıÿÿÿÿ
-=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-:squid:S1166"%Either log or rethrow this exception.(”ı¾
-^squid:HiddenFieldCheck">Rename "jsonObject" which hides the field declared at line 57.(õî¹ª
-_squid:S2147"ECombine this catch with the one at line 166, which has the same body.(÷¿­¹ÿÿÿÿÿ
-:squid:S1166"%Either log or rethrow this exception.(É®£
-esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Ó÷Ğçúÿÿÿÿ
-^squid:HiddenFieldCheck">Rename "jsonObject" which hides the field declared at line 57.(™Ö…œ
-lsquid:S1192"RDefine a constant instead of duplicating this literal "idEstablecimiento" 7 times.(˜ö®“şÿÿÿÿ
-2squid:S2095"Close this "FileWriter".(…í»±ÿÿÿÿÿ
-`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(æøÀ
-Fsquid:S1068",Remove this unused "bytefoto" private field.(¢ƒèÿÿÿÿÿ
-rsquid:S1450"XRemove the "jsonFotos" field and declare it as a local variable in the relevant methods.(•«°äúÿÿÿÿ
-rsquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(ØŞƒÊùÿÿÿÿ
-Dsquid:S1659"*Declare "arrayNomFoto" on a separate line.(ú×„üÿÿÿÿ
-Ysquid:UselessImportCheck"7Remove this unused import 'java.io.OutputStreamWriter'.(Ÿ“¸
-Osquid:S1854"5Remove this useless assignment to local variable "x".(¾„ëüÿÿÿÿ
-esquid:S1192"KDefine a constant instead of duplicating this literal "idEncuesta" 8 times.(˜ö®“şÿÿÿÿ
-<squid:S1068"'Remove this unused "TAG" private field.(ËƒòÄ
-Vsquid:UselessImportCheck"5Remove this unused import 'java.io.FileOutputStream'.(˜«ªg
-:squid:S1166"%Either log or rethrow this exception.(É®£
-:squid:S1166"%Either log or rethrow this exception.(É®£
-:squid:S1166"%Either log or rethrow this exception.(ï­£Ä
-?squid:S1166"%Either log or rethrow this exception.(÷¿­¹ÿÿÿÿÿ
-Jsquid:S2209"5Change this instance-reference to a static reference.(‹ÄÇÁ
-xsquid:S1450"^Remove the "arrayResultados" field and declare it as a local variable in the relevant methods.(×Ãõúÿÿÿÿ
-Fsquid:S2440",Remove this instantiation of "Connectivity".(·¼Ö€ıÿÿÿÿ
-dsquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ËƒòÄ
-=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-:squid:S1166"%Either log or rethrow this exception.(ï­£Ä
-Osquid:S1141"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ
-lsquid:S00117"VRename this local variable name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(âç
-\squid:S1858"B"getFecha" returns a string, there's no need to call "toString()".(ôÈËıÿÿÿÿ
-†"squid:ClassVariableVisibilityCheck"UMake jsonArray a static final constant or non-public and provide accessors if needed.(ÒÍÀúÿÿÿÿ
-usquid:S1450"[Remove the "arrayNomFoto" field and declare it as a local variable in the relevant methods.(ú×„üÿÿÿÿ
-:squid:S1166"%Either log or rethrow this exception.(É®£
-=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-@squid:S1659"&Declare "longitud" on a separate line.(°âÃÉÿÿÿÿÿ
->squid:S1659"$Declare "base64" on a separate line.(«™ÓŸüÿÿÿÿ
-=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-2squid:S2095"Close this "FileWriter".(ÕÖÎÁûÿÿÿÿ
-msquid:S1450"YRemove the "jsonObject" field and declare it as a local variable in the relevant methods.(ËÅÀu
-:squid:S1166"%Either log or rethrow this exception.(É®£
-esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ëÃ÷ÿÿÿÿÿ
-hsquid:S1450"SRemove the "data" field and declare it as a local variable in the relevant methods.(®µ¼õ
-esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(°üş•üÿÿÿÿ
-rsquid:S1450"XRemove the "datosPost" field and declare it as a local variable in the relevant methods.(ÅàòÕùÿÿÿÿ
-[
-squid:S899"BDo something with the "boolean" value returned by "createNewFile".(´¸ö×şÿÿÿÿ
-=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-^squid:UselessImportCheck"7Remove this unused import 'java.io.ObjectOutputStream'.(é»Óºûÿÿÿÿ
-ssquid:S1450"YRemove the "arrayFotos" field and declare it as a local variable in the relevant methods.(ú×„üÿÿÿÿ
-Jsquid:S1068"0Remove this unused "arrayNomFoto" private field.(ú×„üÿÿÿÿ
-:squid:S1166"%Either log or rethrow this exception.(ï­£Ä
