@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -152,7 +153,7 @@ public class Cuestionario extends PermisionActivity {
                     dao.clearObjectCache ();
 
                 } catch (SQLException e) {
-                    e.printStackTrace ();
+                    Log.e(TAG, "SQLException Geos " + e.getMessage());
                 }
             }
         }
@@ -324,6 +325,48 @@ public class Cuestionario extends PermisionActivity {
         return null;
     }
 
+    private DBHelper getmDBHelper () {
+        if (mDBHelper == null) {
+            mDBHelper = OpenHelperManager.getHelper(this, DBHelper.class);
+        }
+        return mDBHelper;
+    }
+
+    private void sppinerOpciones (ArrayList<String> arrayRespuestas, final int idPregSel) {
+        arrayAdapter = new ArrayAdapter<String>(this, R.layout.simple_list_item, arrayRespuestas);
+        arrayAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
+        spnOpciones.setAdapter(arrayAdapter);
+        spnOpciones.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected (AdapterView<?> adapterView, View view, int i, long l) {
+                ArrayList<Respuestas> arrayRespSel = new ArrayList<>();
+                String value = adapterView.getAdapter().getItem(i).toString();
+
+                try {
+
+                    dao = getmDBHelper().getRespuestasDao();
+                    arrayRespSel = (ArrayList<Respuestas>) dao.queryBuilder().selectColumns("idrespuesta", "respuesta", "sigPregunta", "respuestaLibre", "idEncuesta").where().eq("respuesta", value).and().eq("idpregunta", idPregSel).and().eq("idEncuesta", idEncuesta).query();
+                    dao.clearObjectCache();
+
+                    for (Respuestas itemSel : arrayRespSel) {
+
+                        bundle.putString("numPregunta", String.valueOf(itemSel.getSigPregunta()));
+                        bundle.putString("numRespuesta", String.valueOf(itemSel.getIdRespuesta()));
+                        respSpinner = String.valueOf(itemSel.getIdRespuesta());
+
+                    }
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onNothingSelected (AdapterView<?> adapterView) {
+            }
+        });
+    }
+
     private void showOpciones (final ArrayList<String> arrayResp) {
         boolean[] chekedOpcion = new boolean[arrayResp.size ()];
         for (int i = 0; i < arrayResp.size (); i++) {
@@ -353,6 +396,48 @@ public class Cuestionario extends PermisionActivity {
 
         dialog.show ();
 
+    }
+
+    //Mensajes de Validacion y Error
+    public void showMessage () {
+        final AlertDialog alertD = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog).create();
+        alertD.setTitle("Mensaje");
+        alertD.setMessage("Debe seleccionar una respuesta para continuar");
+        alertD.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+            public void onClick (DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        alertD.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow (DialogInterface arg0) {
+                alertD.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+
+            }
+        });
+
+        alertD.show();
+    }
+
+    // menu inferior
+    public void showMessageRespLibre () {
+        final AlertDialog alertDialog = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog).create();
+        alertDialog.setTitle("Mensaje");
+        alertDialog.setMessage("Debe contestar esta pregunta");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+            public void onClick (DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow (DialogInterface arg0) {
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+
+            }
+        });
+        alertDialog.show();
     }
 
     private void onChangeOpcSelecionada () {
@@ -402,97 +487,6 @@ public class Cuestionario extends PermisionActivity {
             bundle.putString ("numPregunta", pregSig);
             bundle.putString ("numRespuesta", idResp);
         }
-    }
-
-    private void sppinerOpciones (ArrayList<String> arrayRespuestas, final int idPregSel) {
-        arrayAdapter = new ArrayAdapter<String> (this, R.layout.simple_list_item, arrayRespuestas);
-        arrayAdapter.setDropDownViewResource (R.layout.simple_spinner_item);
-        spnOpciones.setAdapter (arrayAdapter);
-        spnOpciones.setOnItemSelectedListener (new AdapterView.OnItemSelectedListener () {
-            @Override
-            public void onItemSelected (AdapterView<?> adapterView, View view, int i, long l) {
-                ArrayList<Respuestas> arrayRespSel = new ArrayList<> ();
-                String value = adapterView.getAdapter ().getItem (i).toString ();
-
-                try {
-
-                    dao = getmDBHelper ().getRespuestasDao ();
-                    arrayRespSel = (ArrayList<Respuestas>) dao.queryBuilder ()
-                            .selectColumns ("idrespuesta", "respuesta", "sigPregunta", "respuestaLibre", "idEncuesta")
-                            .where ().eq ("respuesta", value)
-                            .and ().eq ("idpregunta", idPregSel)
-                            .and ().eq ("idEncuesta", idEncuesta)
-                            .query ();
-                    dao.clearObjectCache ();
-
-                    for (Respuestas itemSel : arrayRespSel) {
-
-                        bundle.putString ("numPregunta", String.valueOf (itemSel.getSigPregunta ()));
-                        bundle.putString ("numRespuesta", String.valueOf (itemSel.getIdRespuesta ()));
-                        respSpinner = String.valueOf (itemSel.getIdRespuesta ());
-
-                    }
-
-                } catch (SQLException e) {
-                    e.printStackTrace ();
-                }
-            }
-
-            @Override
-            public void onNothingSelected (AdapterView<?> adapterView) {
-            }
-        });
-    }
-
-    //Mensajes de Validacion y Error
-    public void showMessage () {
-        final AlertDialog alertD = new AlertDialog.Builder (this, android.R.style.Theme_Material_Light_Dialog).create ();
-        alertD.setTitle ("Mensaje");
-        alertD.setMessage ("Debe seleccionar una respuesta para continuar");
-        alertD.setButton (AlertDialog.BUTTON_POSITIVE, "OK",
-                new DialogInterface.OnClickListener () {
-                    public void onClick (DialogInterface dialog, int which) {
-                        dialog.dismiss ();
-                    }
-                });
-
-        alertD.setOnShowListener (new DialogInterface.OnShowListener () {
-            @Override
-            public void onShow (DialogInterface arg0) {
-                alertD.getButton (AlertDialog.BUTTON_POSITIVE).setTextColor (getResources ().getColor (R.color.colorPrimary));
-
-            }
-        });
-
-        alertD.show ();
-    }
-
-    // menu inferior
-    public void showMessageRespLibre () {
-        final AlertDialog alertDialog = new AlertDialog.Builder (this, android.R.style.Theme_Material_Light_Dialog).create ();
-        alertDialog.setTitle ("Mensaje");
-        alertDialog.setMessage ("Debe contestar esta pregunta");
-        alertDialog.setButton (AlertDialog.BUTTON_POSITIVE, "OK",
-                new DialogInterface.OnClickListener () {
-                    public void onClick (DialogInterface dialog, int which) {
-                        dialog.dismiss ();
-                    }
-                });
-        alertDialog.setOnShowListener (new DialogInterface.OnShowListener () {
-            @Override
-            public void onShow (DialogInterface arg0) {
-                alertDialog.getButton (AlertDialog.BUTTON_POSITIVE).setTextColor (getResources ().getColor (R.color.colorPrimary));
-
-            }
-        });
-        alertDialog.show ();
-    }
-
-    private DBHelper getmDBHelper () {
-        if (mDBHelper == null) {
-            mDBHelper = OpenHelperManager.getHelper (this, DBHelper.class);
-        }
-        return mDBHelper;
     }
 
     @Override

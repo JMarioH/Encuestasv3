@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -85,11 +84,17 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             dao = getmDBHelper().getGeosDao();
             arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder().selectColumns("latitud", "longitud")
                     .where().eq("idEncuesta", mEncuesta).and().eq("idEstablecimiento", mTienda).query();
-            for (GeoLocalizacion item : arrayGeos) {
-                latitud = item.getLatitud();
-                longitud = item.getLongitud();
+            if (arrayGeos != null && arrayGeos.size() > 0) {
+                for (GeoLocalizacion item : arrayGeos) {
+                    latitud = item.getLatitud();
+                    longitud = item.getLongitud();
+                }
+            } else {
+                latitud = "0.0";
+                longitud = "0.0";
             }
             dao.clearObjectCache();
+
             dao = getmDBHelper().getRespuestasCuestioanrioDao();
             dao.clearObjectCache(); // limpiamos el cache de de la base de datos
 
@@ -162,6 +167,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
         super.onPostExecute(s);
         progressDialog.dismiss();
         progressDialog.hide();
+
         try {
             // cambiamos el status de la lista de encuestas
             dao = getmDBHelper().getCatMasterDao();
@@ -191,7 +197,8 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             Intent i = new Intent(mContext, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             mContext.startActivity(i);
-        } else {
+        } /*
+        else {
             // datos guaradados localmente
             try {
                 //cambiamos el estatus de las respuestas
@@ -210,7 +217,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             Intent i = new Intent(mContext, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             mContext.startActivity(i);
-        }
+        }*/
     }
 
     public void enviaFotos() { //  preparamos las fotos para enviarlas
@@ -245,33 +252,6 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             datosPost.add(new BasicNameValuePair("subeFotos", jsonFotos.toString()));
             // envio de fotos
             new AsyncUploadFotos(mContext, datosPost).execute();
-
-        }
-    }
-
-    public void guardaFotos() {
-        int x = 0;
-        ArrayList<String> arrayBase64;
-        if (fotoEncuesta.getNombre() != null) {
-            arrayBase64 = fotoEncuesta.getArrayFotos();
-            try {
-                dao = getmDBHelper().getFotosDao();
-                for (x = 0; x < arrayBase64.size(); x++) {
-                    Fotos Objfotos = new Fotos();
-                    nomArchivo = mEncuesta + "_" + mEstablecimiento + "_" + fotoEncuesta.getNombre().get(x) + "_" + x + ".jpg";
-                    base64 = fotoEncuesta.getArrayFotos().get(x);
-                    Objfotos.setIdEstablecimiento(Integer.parseInt(mEstablecimiento));
-                    Objfotos.setIdEncuesta(Integer.parseInt(mEncuesta));
-                    Objfotos.setNombre(fotoEncuesta.getNombre().get(x));
-                    Objfotos.setBase64(base64);
-                    // Objfotos.setBytebase(fotoEncuesta.getArrayByte().get(x));
-                    dao.create(Objfotos);
-                }
-                dao.clearObjectCache();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
 
         }
     }
@@ -316,6 +296,33 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             file.close();
         } catch (IOException e) {
             Log.e("TAG", "Error in Writing: " + e.getLocalizedMessage());
+        }
+    }
+
+    public void guardaFotos () {
+        int x = 0;
+        ArrayList<String> arrayBase64;
+        if (fotoEncuesta.getNombre() != null) {
+            arrayBase64 = fotoEncuesta.getArrayFotos();
+            try {
+                dao = getmDBHelper().getFotosDao();
+                for (x = 0; x < arrayBase64.size(); x++) {
+                    Fotos Objfotos = new Fotos();
+                    nomArchivo = mEncuesta + "_" + mEstablecimiento + "_" + fotoEncuesta.getNombre().get(x) + "_" + x + ".jpg";
+                    base64 = fotoEncuesta.getArrayFotos().get(x);
+                    Objfotos.setIdEstablecimiento(Integer.parseInt(mEstablecimiento));
+                    Objfotos.setIdEncuesta(Integer.parseInt(mEncuesta));
+                    Objfotos.setNombre(fotoEncuesta.getNombre().get(x));
+                    Objfotos.setBase64(base64);
+                    // Objfotos.setBytebase(fotoEncuesta.getArrayByte().get(x));
+                    dao.create(Objfotos);
+                }
+                dao.clearObjectCache();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 }

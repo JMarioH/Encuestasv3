@@ -23,6 +23,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
+import com.popgroup.encuestasv3.FinEncuesta.FinEncuestaActivity;
 import com.popgroup.encuestasv3.Model.FotoEncuesta;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
 
@@ -111,7 +112,7 @@ public class Fotografia  extends AppCompatActivity {
         btnSiguiente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(Fotografia.this, FinEncuesta.class);
+                Intent i = new Intent(Fotografia.this, FinEncuestaActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 i.putExtras(bundle);
                 startActivity(i);

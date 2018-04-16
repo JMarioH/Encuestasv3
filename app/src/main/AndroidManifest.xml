@@ -33,7 +33,9 @@
         <activity android:name=".Encuestas" android:screenOrientation="portrait"/>
         <activity android:name=".Cuestionario" android:screenOrientation="portrait"/>
         <activity android:name=".Fotografia" android:screenOrientation="portrait"/>
-        <activity android:name=".FinEncuesta" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".FinEncuesta.FinEncuestaActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".AdminActivity" android:screenOrientation="portrait"/>
     </application>
 
