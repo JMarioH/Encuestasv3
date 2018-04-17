@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -57,17 +55,17 @@ public class MainActivity extends BaseActivity {
     ArrayList<Fotos> fotosPendientes;
     ArrayList<RespuestasCuestionario> encuestasPendientes;
     ArrayList<User> arrayUser;
-    @BindView(R.id.btnCambiarUser)
+    @BindView (R.id.btnCambiarUser)
     Button btnCambiarUser;
-    @BindView(R.id.btnInicio)
+    @BindView (R.id.btnInicio)
     Button btnInicio;
-    @BindView(R.id.btnEncPnedientes)
+    @BindView (R.id.btnEncPnedientes)
     Button btnEncPendientes;
-    @BindView(R.id.btnFotosPendientes)
+    @BindView (R.id.btnFotosPendientes)
     Button btnFotosPendientes;
-    @BindView(R.id.txtTelefono)
+    @BindView (R.id.txtTelefono)
     TextView txtLog;
-    @BindView(R.id.txtUsuario)
+    @BindView (R.id.txtUsuario)
     TextView txtUser;
     String mUsuario;
     boolean connectionAvailable;
@@ -77,94 +75,94 @@ public class MainActivity extends BaseActivity {
     private DBHelper mDBHelper;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
+    protected void onCreate (Bundle savedInstanceState) {
+        super.onCreate (savedInstanceState);
+        ButterKnife.bind (this);
 
-        bundle = new Bundle();
-        connectionAvailable = connectivity.isConnected(this);
+        bundle = new Bundle ();
+        connectionAvailable = connectivity.isConnected (this);
         try {
             // recuperando datos de la DBs
-            user = new User();
-            cliente = new Cliente();
-            proyecto = new Proyecto();
-            tipoEncuesta = new TipoEncuesta();
-            catMaster = new CatMaster();
-            respuestasCuestionario = new RespuestasCuestionario();
+            user = new User ();
+            cliente = new Cliente ();
+            proyecto = new Proyecto ();
+            tipoEncuesta = new TipoEncuesta ();
+            catMaster = new CatMaster ();
+            respuestasCuestionario = new RespuestasCuestionario ();
 
-            dao = getmDBHelper().getUserDao();
-            arrayUser = (ArrayList<User>) dao.queryForAll();
-            for (User item : arrayUser){
-                mUsuario  = item.getNombre();
+            dao = getmDBHelper ().getUserDao ();
+            arrayUser = (ArrayList<User>) dao.queryForAll ();
+            for (User item : arrayUser) {
+                mUsuario = item.getNombre ();
 
             }
-            if(!arrayUser.isEmpty()) {
-                txtUser.setText(mUsuario);
+            if (!arrayUser.isEmpty ()) {
+                txtUser.setText (mUsuario);
             }
-            dao.clearObjectCache();
+            dao.clearObjectCache ();
 
-            dao = getmDBHelper().getRespuestasCuestioanrioDao();
-            encuestasPendientes = (ArrayList<RespuestasCuestionario>) dao.queryBuilder().distinct().selectColumns("idEstablecimiento").where().eq("flag",true).query();
+            dao = getmDBHelper ().getRespuestasCuestioanrioDao ();
+            encuestasPendientes = (ArrayList<RespuestasCuestionario>) dao.queryBuilder ().distinct ().selectColumns ("idEstablecimiento").where ().eq ("flag", true).query ();
 
-            dao.clearObjectCache();
+            dao.clearObjectCache ();
 
-            dao = getmDBHelper().getFotosDao();
-            fotosPendientes = (ArrayList<Fotos>) dao.queryForAll();
-            dao.clearObjectCache();
+            dao = getmDBHelper ().getFotosDao ();
+            fotosPendientes = (ArrayList<Fotos>) dao.queryForAll ();
+            dao.clearObjectCache ();
 
-            if(!encuestasPendientes.isEmpty()){
-                btnEncPendientes.setVisibility(View.VISIBLE);
-                btnEncPendientes.setText("Encuestas Pendientes " + " ( " + encuestasPendientes.size() + " )" );
+            if (!encuestasPendientes.isEmpty ()) {
+                btnEncPendientes.setVisibility (View.VISIBLE);
+                btnEncPendientes.setText ("Encuestas Pendientes " + " ( " + encuestasPendientes.size () + " )");
             }
-            if(!fotosPendientes.isEmpty()){
-                btnFotosPendientes.setVisibility(View.VISIBLE);
-                btnFotosPendientes.setText("Fotos Pendientes " + " ( " +fotosPendientes.size() +" )");
+            if (!fotosPendientes.isEmpty ()) {
+                btnFotosPendientes.setVisibility (View.VISIBLE);
+                btnFotosPendientes.setText ("Fotos Pendientes " + " ( " + fotosPendientes.size () + " )");
             }
 
         } catch (SQLException e) {
-            Log.e(" excetion","sql-> "+e);
+            Log.e (" excetion", "sql-> " + e);
         }
-        btnCambiarUser.setOnClickListener(new View.OnClickListener() {
+        btnCambiarUser.setOnClickListener (new View.OnClickListener () {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 //revisamos si existe un telefono logeado
                 try {
-                    dao = getmDBHelper().getUserDao();
-                    arrayUser = (ArrayList<User>) dao.queryForAll();
-                    for (User item : arrayUser){
-                        mUsuario  = item.getNombre();
+                    dao = getmDBHelper ().getUserDao ();
+                    arrayUser = (ArrayList<User>) dao.queryForAll ();
+                    for (User item : arrayUser) {
+                        mUsuario = item.getNombre ();
 
                     }
-                    dao.clearObjectCache();
+                    dao.clearObjectCache ();
 
-                }catch (SQLException e){
-                    Log.e(TAG,"sqlException " + e);
+                } catch (SQLException e) {
+                    Log.e (TAG, "sqlException " + e);
                 }
-                if(!arrayUser.isEmpty()){
-                    showAlert();
-                }else{
+                if (!arrayUser.isEmpty ()) {
+                    showAlert ();
+                } else {
                     Intent i = new Intent (MainActivity.this, LoginActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(i);
+                    i.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity (i);
                 }
             }
         });
-        btnInicio.setOnClickListener(new View.OnClickListener() {
+        btnInicio.setOnClickListener (new View.OnClickListener () {
             @Override
-            public void onClick(View view) {
-                iniciarProceso();
+            public void onClick (View view) {
+                iniciarProceso ();
             }
         });
-        btnEncPendientes.setOnClickListener(new View.OnClickListener() {
+        btnEncPendientes.setOnClickListener (new View.OnClickListener () {
             @Override
-            public void onClick(View view) {
-                encuestasPendientes();
+            public void onClick (View view) {
+                encuestasPendientes ();
             }
         });
-        btnFotosPendientes.setOnClickListener(new View.OnClickListener() {
+        btnFotosPendientes.setOnClickListener (new View.OnClickListener () {
             @Override
-            public void onClick(View view) {
-                fotosPendientes();
+            public void onClick (View view) {
+                fotosPendientes ();
             }
         });
 
@@ -186,10 +184,10 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onDestroy () {
+        super.onDestroy ();
         if (mDBHelper != null) {
-            OpenHelperManager.releaseHelper();
+            OpenHelperManager.releaseHelper ();
             mDBHelper = null;
         }
     }
@@ -206,12 +204,12 @@ public class MainActivity extends BaseActivity {
         return mDBHelper;
     }
 
-    public void encuestasPendientes(){
+    public void encuestasPendientes () {
         connectionAvailable = connectivity.isConnected (this);
-        if(connectionAvailable){
-            new AsynckEncPendientes(this,mUsuario,encuestasPendientes.size()).execute();
-        }else{
-            showMessage();
+        if (connectionAvailable) {
+            new AsynckEncPendientes (this, mUsuario, encuestasPendientes.size ()).execute ();
+        } else {
+            showMessage ();
         }
     }
 
@@ -228,119 +226,120 @@ public class MainActivity extends BaseActivity {
         alertDialog.show ();
     }
 
-    public void fotosPendientes(){
+    public void fotosPendientes () {
         connectionAvailable = connectivity.isConnected (getBaseContext ());
         JSONArray jsonFotos;
         ArrayList<NameValuePair> datosPost = null;
-        if(connectionAvailable){
+        if (connectionAvailable) {
             try {
-                dao = getmDBHelper().getFotosDao();
-                fotosPendientes =(ArrayList<Fotos>) dao.queryForAll();
+                dao = getmDBHelper ().getFotosDao ();
+                fotosPendientes = (ArrayList<Fotos>) dao.queryForAll ();
                 String nomArchivo;
                 int j = 0;
-                jsonFotos = new JSONArray();
+                jsonFotos = new JSONArray ();
                 try {
-                    for (int x = 0; x < fotosPendientes.size(); x++) {
-                        datosPost = new ArrayList<>();
-                        JSONObject jsonFoto = new JSONObject();
+                    for (int x = 0; x < fotosPendientes.size (); x++) {
+                        datosPost = new ArrayList<> ();
+                        JSONObject jsonFoto = new JSONObject ();
 
-                            nomArchivo = fotosPendientes.get(x).getIdEncuesta() + "_" + fotosPendientes.get(x).getIdEstablecimiento() + "_" + fotosPendientes.get(x).getNombre() + "_" + x + ".jpg";
-                            jsonFoto.put("idEstablecimiento", fotosPendientes.get(x).getIdEstablecimiento());
-                            jsonFoto.put("idEncuesta", fotosPendientes.get(x).getIdEncuesta());
-                            jsonFoto.put("nombreFoto", nomArchivo);
-                            jsonFoto.put("base64", fotosPendientes.get(x).getBase64());
-                            jsonFotos.put(jsonFoto);
-                            j++;
+                        nomArchivo = fotosPendientes.get (x).getIdEncuesta () + "_" + fotosPendientes.get (x).getIdEstablecimiento () + "_" + fotosPendientes.get (x).getNombre () + "_" + x + ".jpg";
+                        jsonFoto.put ("idEstablecimiento", fotosPendientes.get (x).getIdEstablecimiento ());
+                        jsonFoto.put ("idEncuesta", fotosPendientes.get (x).getIdEncuesta ());
+                        jsonFoto.put ("nombreFoto", nomArchivo);
+                        jsonFoto.put ("base64", fotosPendientes.get (x).getBase64 ());
+                        jsonFotos.put (jsonFoto);
+                        j++;
 
                     }
                 } catch (JSONException e) {
-                    Log.e(TAG,"jsonE -> " +e);
+                    Log.e (TAG, "jsonE -> " + e);
                 }
-                datosPost.add(new BasicNameValuePair("subeFotos", jsonFotos.toString()));
-                new AsyncUploadFotos(this, datosPost).execute();
-                if (j == fotosPendientes.size()) {
+                datosPost.add (new BasicNameValuePair ("subeFotos", jsonFotos.toString ()));
+                new AsyncUploadFotos (this, datosPost).execute ();
+                if (j == fotosPendientes.size ()) {
 
-                    dao = getmDBHelper().getFotosDao();
-                    DeleteBuilder<Fotos,Integer> deleteBuilder = dao.deleteBuilder();
-                    deleteBuilder.delete();
-                    dao.clearObjectCache();
+                    dao = getmDBHelper ().getFotosDao ();
+                    DeleteBuilder<Fotos, Integer> deleteBuilder = dao.deleteBuilder ();
+                    deleteBuilder.delete ();
+                    dao.clearObjectCache ();
 
-                    btnFotosPendientes.setVisibility(View.GONE);
+                    btnFotosPendientes.setVisibility (View.GONE);
                 }
 
-                dao.clearObjectCache();
+                dao.clearObjectCache ();
             } catch (SQLException e) {
-            Log.e(TAG,"sql->" + e);
+                Log.e (TAG, "sql->" + e);
             }
 
-        }else{
-            showMessage();
+        } else {
+            showMessage ();
         }
     }
-    public void showAlert(){
+
+    public void showAlert () {
         final AlertDialog alertDialog = new AlertDialog.Builder (MainActivity.this).create ();
         alertDialog.setTitle ("Aviso");
 
-        alertDialog.setMessage("Cambiar de usuario borrara los datos existentes");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Si",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+        alertDialog.setMessage ("Cambiar de usuario borrara los datos existentes");
+        alertDialog.setButton (AlertDialog.BUTTON_POSITIVE, "Si",
+                new DialogInterface.OnClickListener () {
+                    public void onClick (DialogInterface dialog, int which) {
 
                         try { // recuperamos los datos de la base de datos
 
-                            dao = getmDBHelper().getUserDao();
-                            DeleteBuilder<User,Integer> deleteBuilder = dao.deleteBuilder();
-                            deleteBuilder.delete();
-                            dao.clearObjectCache();
-                            txtUser.setText("00000000");
+                            dao = getmDBHelper ().getUserDao ();
+                            DeleteBuilder<User, Integer> deleteBuilder = dao.deleteBuilder ();
+                            deleteBuilder.delete ();
+                            dao.clearObjectCache ();
+                            txtUser.setText ("00000000");
 
-                            dao = getmDBHelper().getUserDao();
-                            dao.deleteBuilder().delete();
-                            dao.clearObjectCache();
+                            dao = getmDBHelper ().getUserDao ();
+                            dao.deleteBuilder ().delete ();
+                            dao.clearObjectCache ();
 
-                            dao = getmDBHelper().getProyectoDao();
-                            dao.deleteBuilder().delete();
-                            dao.clearObjectCache();
+                            dao = getmDBHelper ().getProyectoDao ();
+                            dao.deleteBuilder ().delete ();
+                            dao.clearObjectCache ();
 
-                            dao = getmDBHelper().getClienteDao();
-                            dao.deleteBuilder().delete();
-                            dao.clearObjectCache();
+                            dao = getmDBHelper ().getClienteDao ();
+                            dao.deleteBuilder ().delete ();
+                            dao.clearObjectCache ();
 
-                            dao = getmDBHelper().getTipoEncDao();
-                            dao.deleteBuilder().delete();
-                            dao.clearObjectCache();
+                            dao = getmDBHelper ().getTipoEncDao ();
+                            dao.deleteBuilder ().delete ();
+                            dao.clearObjectCache ();
 
-                            dao = getmDBHelper().getCatMasterDao();
-                            dao.deleteBuilder().delete();
-                            dao.clearObjectCache();
+                            dao = getmDBHelper ().getCatMasterDao ();
+                            dao.deleteBuilder ().delete ();
+                            dao.clearObjectCache ();
 
-                            dao = getmDBHelper().getPregutasDao();
-                            dao.deleteBuilder().delete();
-                            dao.clearObjectCache();
+                            dao = getmDBHelper ().getPregutasDao ();
+                            dao.deleteBuilder ().delete ();
+                            dao.clearObjectCache ();
 
-                            dao = getmDBHelper().getRespuestasDao();
-                            dao.deleteBuilder().delete();
-                            dao.clearObjectCache();
+                            dao = getmDBHelper ().getRespuestasDao ();
+                            dao.deleteBuilder ().delete ();
+                            dao.clearObjectCache ();
 
-                            dao = getmDBHelper().getRespuestasCuestioanrioDao();
-                            dao.deleteBuilder().delete();
-                            dao.clearObjectCache();
+                            dao = getmDBHelper ().getRespuestasCuestioanrioDao ();
+                            dao.deleteBuilder ().delete ();
+                            dao.clearObjectCache ();
 
                         } catch (SQLException e) {
-                            Log.e(TAG,"sql->" +e );
+                            Log.e (TAG, "sql->" + e);
                         }
-                        dialog.dismiss();
-                        bundle.putString("bandera","1");
+                        dialog.dismiss ();
+                        bundle.putString ("bandera", "1");
                         Intent intent = new Intent (getBaseContext (), LoginActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
+                        intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        intent.putExtras (bundle);
+                        startActivity (intent);
                     }
                 });
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE,"Cancelar",new DialogInterface.OnClickListener(){
+        alertDialog.setButton (AlertDialog.BUTTON_NEGATIVE, "Cancelar", new DialogInterface.OnClickListener () {
             @Override
-            public void onClick(DialogInterface dialog, int i) {
-                dialog.dismiss();
+            public void onClick (DialogInterface dialog, int i) {
+                dialog.dismiss ();
             }
         });
         alertDialog.setOnShowListener (new DialogInterface.OnShowListener () {
@@ -352,14 +351,14 @@ public class MainActivity extends BaseActivity {
         });
 
 
-        alertDialog.show();
+        alertDialog.show ();
     }
 
-    public void iniciarProceso(){
+    public void iniciarProceso () {
 
-            Intent i = new Intent(MainActivity.this,Proyectos.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(i);
+        Intent i = new Intent (MainActivity.this, Proyectos.class);
+        i.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity (i);
 
     }
 
@@ -369,27 +368,5 @@ public class MainActivity extends BaseActivity {
         a.addCategory (Intent.CATEGORY_HOME);
         a.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity (a);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.menuInicio) {
-            //Display Toast
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(intent);
-        }else if(id== R.id.menuSalir){
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

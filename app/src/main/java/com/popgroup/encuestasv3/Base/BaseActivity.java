@@ -2,6 +2,7 @@ package com.popgroup.encuestasv3.Base;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -9,10 +10,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.popgroup.encuestasv3.Loader;
+import com.popgroup.encuestasv3.MainActivity;
 import com.popgroup.encuestasv3.R;
 
 import butterknife.ButterKnife;
@@ -118,6 +122,30 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss ();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu) {
+        getMenuInflater ().inflate (R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item) {
+        int id = item.getItemId ();
+        if (id == R.id.menuInicio) {
+            //Display Toast
+            Intent intent = new Intent (this, MainActivity.class);
+            intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity (intent);
+        } else if (id == R.id.menuSalir) {
+            Intent intent = new Intent (Intent.ACTION_MAIN);
+            intent.addCategory (Intent.CATEGORY_HOME);
+            intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity (intent);
+        }
+        return super.onOptionsItemSelected (item);
+
     }
 
 }

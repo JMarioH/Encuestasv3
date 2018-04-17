@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:background="@color/colorBackgound"
-    android:orientation="vertical"
     tools:context=".Encuestas">
 
+    <include layout="@layout/layout_loader" />
     <LinearLayout
         android:id="@+id/lnrHeader"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:background="@color/colorBackgoundHeader"
-        android:elevation="4dp"
+        android:elevation="2dp"
         android:orientation="vertical">
 
         <TextView
@@ -22,9 +22,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="72dp"
             android:gravity="center"
-            android:textSize="18sp"
-            android:text="@string/terminarEnc" />
-
+            android:text="@string/terminarEnc"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -59,4 +58,5 @@
             android:gravity="center"
             android:textColor="@color/colorTextPrimary" />
     </android.support.v7.widget.Toolbar>
+
 </RelativeLayout>

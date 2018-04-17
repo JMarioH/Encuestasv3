@@ -11,6 +11,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
+import com.popgroup.encuestasv3.Base.ICallBack;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.MainActivity;
 import com.popgroup.encuestasv3.Model.CatMaster;
@@ -63,12 +64,15 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
     private ArrayList<NameValuePair> datosPost;
     private JSONArray jsonFotos;
 
-    public AsynckEncuestas(Context context, String idEncuesta, String idEstablecimiento, String idTienda, String usuario) {
+    private ICallBack iCallBack;
+
+    public AsynckEncuestas (Context context, String idEncuesta, String idEstablecimiento, String idTienda, String usuario, ICallBack iCallBack) {
         this.mContext = context;
         this.mEncuesta = idEncuesta;
         this.mTienda = idTienda;
         this.mUsuario = usuario;
         this.mEstablecimiento = idEstablecimiento;
+        this.iCallBack = iCallBack;
     }
 
     @Override
@@ -151,22 +155,11 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
         return success;
     }
 
-    @Override
-    protected void onPreExecute () {
-        super.onPreExecute ();
-        progressDialog = new ProgressDialog (mContext);
-        progressDialog.setProgressStyle (ProgressDialog.STYLE_SPINNER);
-        progressDialog.setMessage ("Enviando datos . . ");
-        progressDialog.setIndeterminate (true);
-        progressDialog.setCancelable (false);
-        progressDialog.show ();
-    }
+
 
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        progressDialog.dismiss();
-        progressDialog.hide();
 
         try {
             // cambiamos el status de la lista de encuestas
@@ -181,6 +174,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
         }
 
         if (success.equals("1")) {
+
             try { // borramos la encuesta enviada
                 dao = getmDBHelper().getRespuestasCuestioanrioDao();
                 DeleteBuilder<RespuestasCuestionario, Integer> deleteBuilder = dao.deleteBuilder();
@@ -193,31 +187,13 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
                 e.printStackTrace();
             }
             enviaFotos();
-
+            iCallBack.onSuccess (s);
             Intent i = new Intent(mContext, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             mContext.startActivity(i);
-        } /*
-        else {
-            // datos guaradados localmente
-            try {
-                //cambiamos el estatus de las respuestas
-                dao = getmDBHelper().getRespuestasCuestioanrioDao();
-                UpdateBuilder<RespuestasCuestionario, Integer> updateBuilder = dao.updateBuilder();
-                updateBuilder.updateColumnValue("flag", true);
-                updateBuilder.where().eq("idEstablecimiento", mEstablecimiento).and().eq("idEncuesta", mEncuesta);
-                updateBuilder.update();
-                dao.clearObjectCache();
-                guardaFotos();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            Toast.makeText(mContext, "guardando pendientes ", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(mContext, MainActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            mContext.startActivity(i);
-        }*/
+        } else {
+            iCallBack.onFailed (new Throwable ("Error al enviar encuestas"));
+        }
     }
 
     public void enviaFotos() { //  preparamos las fotos para enviarlas

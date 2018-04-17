@@ -9,7 +9,5 @@ public interface IView<T> {
 
     void showError (Throwable throwable);
 
-    void nextAction (Object result);
 
-    void actionMenu ();
 }

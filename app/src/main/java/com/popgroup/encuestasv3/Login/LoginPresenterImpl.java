@@ -15,7 +15,6 @@ public class LoginPresenterImpl extends BasePresenter implements LoginPresenter 
     public LoginPresenterImpl (BaseInteractor mBaseInteractor) {
         super (mBaseInteractor);
         this.mBaseInteractor = (LoginInteractorImpl) mBaseInteractor;
-
         mBaseInteractor.attachCallBack (this);
 
     }
@@ -23,13 +22,13 @@ public class LoginPresenterImpl extends BasePresenter implements LoginPresenter 
     @Override
     public void validateUser (String user, String password) {
         if (!user.isEmpty () && !password.isEmpty ()) {
-            if (mView != null) {
-                mView.showLoader (true);
+            if (getView () != null) {
+                getView ().showLoader (true);
             }
             mBaseInteractor.login (user, password);
         } else {
-            if (mView != null) {
-                mView.showError (new Throwable ("Debe completar los campos"));
+            if (getView () != null) {
+                getView ().showError (new Throwable ("Debe completar los campos"));
             }
         }
 
@@ -37,25 +36,8 @@ public class LoginPresenterImpl extends BasePresenter implements LoginPresenter 
 
     @Override
     public void isRegisterUser () {
-        if (mView != null && mBaseInteractor.getUser () != null) {
-            mView.actionMenu ();
-        }
-    }
-
-    @Override
-    public void onSuccess (Object result) {
-        if (mView != null) {
-            mView.showLoader (false);
-            mView.nextAction (result);
-        }
-
-    }
-
-    @Override
-    public void onFailed (Throwable throwable) {
-        if (mView != null) {
-            mView.showLoader (false);
-            mView.showError (throwable);
+        if (getView () != null && mBaseInteractor.getUser () != null) {
+            getView ().actionMenu ();
         }
     }
 
@@ -78,5 +60,22 @@ public class LoginPresenterImpl extends BasePresenter implements LoginPresenter 
     public void onDestroy () {
         super.onDestroy ();
 
+    }
+
+    @Override
+    public void onSuccess (Object result) {
+        if (getView () != null) {
+            getView ().showLoader (false);
+            getView ().nextAction (result);
+        }
+
+    }
+
+    @Override
+    public void onFailed (Throwable throwable) {
+        if (getView () != null) {
+            getView ().showLoader (false);
+            getView ().showError (throwable);
+        }
     }
 }
