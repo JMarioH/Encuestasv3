@@ -8,20 +8,26 @@ import android.util.Log;
  */
 
 public class GeoEstatica {
+    private static GeoEstatica instance;
     private double sLatitud ;
     private double sLongitud ;
     private boolean mEstatus ;
 
     public GeoEstatica() {
     }
-
     public GeoEstatica(double sLatitud, double sLongitud , boolean mEstatus) {
         this.sLatitud = sLatitud;
         this.sLongitud = sLongitud;
         this.mEstatus = mEstatus;
 
     }
-    private static GeoEstatica instance ;
+
+    public static synchronized GeoEstatica getInstance () {
+        if (instance == null) {
+            instance = new GeoEstatica ();
+        }
+        return instance;
+    }
 
     public double getsLatitud() {
         return sLatitud;
@@ -46,12 +52,7 @@ public class GeoEstatica {
     public void setmEstatus(boolean mEstatus) {
         this.mEstatus = mEstatus;
     }
-    public static synchronized GeoEstatica getInstance(){
-        if (instance == null ){
-            instance = new GeoEstatica();
-        }
-        return instance;
-    }
+
     public void reset(){
         Log.e("GeoEstatica envio","reset");
         sLatitud = 0.0 ;

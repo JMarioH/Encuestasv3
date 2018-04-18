@@ -8,8 +8,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -133,11 +131,12 @@ public class Cuestionario extends PermisionActivity {
         Date dt = new Date ();
         fecha = dateFormat.format (dt);
         // validamos que exista una ubicacion dsiponible
-        if (geoEstatica.ismEstatus () == false) {
-            geoEstatica.setmEstatus (true);
+        if (!geoEstatica.ismEstatus ()) {
+
             longitud = gpsTracker.getLongitude ();
             latitud = gpsTracker.getLatitude ();
             if (longitud != 0.0 && latitud != 0.0) {
+                geoEstatica.setmEstatus (true);
                 geoEstatica.setsLatitud (gpsTracker.getLatitude ());
                 geoEstatica.setsLongitud (gpsTracker.getLongitude ());
                 // guardamos la geolocalizacion en la base de datos
@@ -400,7 +399,7 @@ public class Cuestionario extends PermisionActivity {
 
     //Mensajes de Validacion y Error
     public void showMessage () {
-        final AlertDialog alertD = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog).create();
+        final AlertDialog alertD = new AlertDialog.Builder (this).create ();
         alertD.setTitle("Mensaje");
         alertD.setMessage("Debe seleccionar una respuesta para continuar");
         alertD.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
@@ -422,7 +421,7 @@ public class Cuestionario extends PermisionActivity {
 
     // menu inferior
     public void showMessageRespLibre () {
-        final AlertDialog alertDialog = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog).create();
+        final AlertDialog alertDialog = new AlertDialog.Builder (this).create ();
         alertDialog.setTitle("Mensaje");
         alertDialog.setMessage("Debe contestar esta pregunta");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
@@ -515,28 +514,4 @@ public class Cuestionario extends PermisionActivity {
         return true;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu (Menu menu) {
-        getMenuInflater ().inflate (R.menu.menu, menu);
-        return true;
-    }
-
-    // opciones del menu inferior
-    @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
-
-        int id = item.getItemId ();
-        if (id == R.id.menuInicio) {
-            //Display Toast
-            Intent intent = new Intent (this, MainActivity.class);
-            intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity (intent);
-        } else if (id == R.id.menuSalir) {
-            Intent intent = new Intent (Intent.ACTION_MAIN);
-            intent.addCategory (Intent.CATEGORY_HOME);
-            intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity (intent);
-        }
-        return super.onOptionsItemSelected (item);
-    }
 }

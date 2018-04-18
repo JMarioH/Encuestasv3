@@ -130,8 +130,8 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
 
             }
 
-            grabar(jsonArray.toString());
-            grabaJson(jsonArray.toString());
+            // grabar(jsonArray.toString());
+            //  grabaJson(jsonArray.toString());
             data.add(new BasicNameValuePair("setEncuestas", jsonArray.toString()));
                 try {
                     ServiceHandler serviceHandler = new ServiceHandler();
@@ -169,6 +169,13 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             updateBuilder.where().eq("idTienda", mEstablecimiento).and().eq("idEncuesta", mEncuesta);
             updateBuilder.update();
             dao.clearObjectCache();
+
+            dao = getmDBHelper ().getGeosDao ();
+            DeleteBuilder<GeoLocalizacion, Integer> deleteBuilder = dao.deleteBuilder ();
+            deleteBuilder.where ().eq ("idEncuesta", mEncuesta)
+                    .and ().eq ("idEstablecimiento", mTienda);
+            deleteBuilder.delete ();
+            dao.clearObjectCache ();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -227,7 +234,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             }
             datosPost.add(new BasicNameValuePair("subeFotos", jsonFotos.toString()));
             // envio de fotos
-            new AsyncUploadFotos(mContext, datosPost).execute();
+            new AsyncUploadFotos (mContext, datosPost, mEncuesta, mEstablecimiento).execute ();
 
         }
     }

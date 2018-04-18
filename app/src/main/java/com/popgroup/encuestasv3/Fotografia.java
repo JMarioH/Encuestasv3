@@ -7,21 +7,18 @@ import android.graphics.Matrix;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.popgroup.encuestasv3.Base.BaseActivity;
+import com.popgroup.encuestasv3.Base.BasePresenter;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.FinEncuesta.FinEncuestaActivity;
 import com.popgroup.encuestasv3.Model.FotoEncuesta;
@@ -32,17 +29,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by jesus.hernandez on 21/12/16.
  *  captura la fotografia para esta version de la aplicacion
  */
-public class Fotografia  extends AppCompatActivity {
+public class Fotografia extends BaseActivity {
     public String idEncuesta, encuesta, idTienda, idEstablecimiento, idArchivo, usuario, numPregunta;
     public byte[] byteArray;
     Bundle  bundle;
-    Toolbar toolbar;
     @BindView(R.id.txtTitle)
     TextView txtTitle;
     @BindView(R.id.btnFoto)
@@ -74,16 +69,7 @@ public class Fotografia  extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fotografia);
-        ButterKnife.bind(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        if (getSupportActionBar() != null) // Habilitar up button
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        txtTitle.setText ("Fotografia");
-        txtTitle.setTextSize(18);
-        txtTitle.setTextColor(getBaseContext().getResources().getColor(R.color.colorTextPrimary));
-        setSupportActionBar(toolbar);
+
         bundle= new Bundle();
         Bundle extras = getIntent().getExtras();
         //recivimos las variables
@@ -134,21 +120,38 @@ public class Fotografia  extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected int setLayout () {
+        return R.layout.activity_fotografia;
+    }
+
+    @Override
+    protected String setTitleToolBar () {
+        return "Fotografia";
+    }
+
+    @Override
+    protected void createPresenter () {
+
+    }
+
+    @Override
+    protected BasePresenter getmPresenter () {
+        return null;
+    }
+
+    @Override
+    protected void onResume () {
+        super.onResume ();
+        permissionCheck = ContextCompat.checkSelfPermission (Fotografia.this, Manifest.permission.CAMERA);
+    }
+
     //Open
     public void open() {
 
         Intent takePictureIntent = new Intent (MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity (getPackageManager ()) != null) {
             startActivityForResult (takePictureIntent, 1);
-        }
-    }
-
-    @Override
-    protected void onDestroy () {
-        super.onDestroy ();
-        if (mDBHelper != null) {
-            OpenHelperManager.releaseHelper ();
-            mDBHelper = null;
         }
     }
 
@@ -231,12 +234,6 @@ public class Fotografia  extends AppCompatActivity {
         startActivity (intent);
     }
 
-    @Override
-    protected void onResume () {
-        super.onResume ();
-        permissionCheck = ContextCompat.checkSelfPermission (Fotografia.this, Manifest.permission.CAMERA);
-    }
-
     public Bitmap redimensionarIMG(Bitmap mBitmap, float newWidth, float newHeigth) {
         //Redimensionamos
         int width = mBitmap.getWidth();
@@ -246,36 +243,5 @@ public class Fotografia  extends AppCompatActivity {
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
         return Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix, false);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-        if (id == R.id.menuInicio) {
-            //Display Toast
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(intent);
-        }else if(id== R.id.menuSalir){
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private DBHelper getmDBHelper() {
-        if (mDBHelper == null) {
-            mDBHelper = OpenHelperManager.getHelper(this, DBHelper.class);
-        }
-        return mDBHelper;
     }
 }

@@ -234,6 +234,7 @@ public class MainActivity extends BaseActivity {
             try {
                 dao = getmDBHelper ().getFotosDao ();
                 fotosPendientes = (ArrayList<Fotos>) dao.queryForAll ();
+
                 String nomArchivo;
                 int j = 0;
                 jsonFotos = new JSONArray ();
@@ -249,13 +250,14 @@ public class MainActivity extends BaseActivity {
                         jsonFoto.put ("base64", fotosPendientes.get (x).getBase64 ());
                         jsonFotos.put (jsonFoto);
                         j++;
-
+                        datosPost.add (new BasicNameValuePair ("subeFotos", jsonFotos.toString ()));
+                        new AsyncUploadFotos (this, datosPost, String.valueOf (fotosPendientes.get (x).getIdEncuesta ()),
+                                String.valueOf (fotosPendientes.get (x).getIdEstablecimiento ())).execute ();
                     }
                 } catch (JSONException e) {
                     Log.e (TAG, "jsonE -> " + e);
                 }
-                datosPost.add (new BasicNameValuePair ("subeFotos", jsonFotos.toString ()));
-                new AsyncUploadFotos (this, datosPost).execute ();
+
                 if (j == fotosPendientes.size ()) {
 
                     dao = getmDBHelper ().getFotosDao ();

@@ -29,6 +29,7 @@ public class LoginInteractorImpl extends BaseInteractor implements LoginInteract
     public LoginInteractorImpl (Context ctx) {
         this.context = ctx;
         connectivity = new Connectivity ();
+
     }
 
     @Override

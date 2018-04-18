@@ -1,6 +1,5 @@
 package com.popgroup.encuestasv3.Utility;
 
-import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +10,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
+
+import com.popgroup.encuestasv3.R;
 
 /**
  * Created by jesus.hernandez on 08/12/16.
@@ -19,29 +21,23 @@ import android.provider.Settings;
 
 public class GPSTracker extends Service implements LocationListener {
 
-    String TAG = getClass().getName();
-
+    // The minimum distance to change Updates in meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
+    // The minimum time between updates in milliseconds
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 2; // 1 minute
     private final int REQUEST_PERMISSION_STATE=1;
     private final Context mContext;
-
+    // Declaring a Location Manager
+    protected LocationManager locationManager;
+    String TAG = getClass ().getName ();
     // flag for GPS status
     boolean isGPSEnabled = false;
     // flag for network status
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
-
-    private Location location; // location
     double latitude; // latitude
     double longitude; // longitude
-
-    // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
-
-    // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 2; // 1 minute
-
-    // Declaring a Location Manager
-    protected LocationManager locationManager;
+    private Location location; // location
 
     public GPSTracker(Context context) {
         this.mContext = context;
@@ -119,6 +115,32 @@ public class GPSTracker extends Service implements LocationListener {
         return location;
     }
 
+    /**
+     * Function to show settings alert dialog
+     */
+    public void showGpsAlert () {
+
+        final AlertDialog alertDialog = new AlertDialog.Builder (mContext).create ();
+        alertDialog.setTitle ("GPS Configuracion");
+        alertDialog.setMessage ("GPS no esta disponible. Debe activarlo!");
+        alertDialog.setButton (AlertDialog.BUTTON_POSITIVE, "Ir a la Configuración", new DialogInterface.OnClickListener () {
+            public void onClick (DialogInterface dialog, int which) {
+
+                Intent intent = new Intent (Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                mContext.startActivity (intent);
+            }
+        });
+        alertDialog.setOnShowListener (new DialogInterface.OnShowListener () {
+            @Override
+            public void onShow (DialogInterface arg0) {
+                alertDialog.getButton (AlertDialog.BUTTON_POSITIVE).setTextColor (mContext.getResources ().getColor (R.color.colorPrimary));
+
+            }
+        });
+        alertDialog.setCancelable (false);
+        alertDialog.show ();
+    }
+
     public double getLatitude(){
         if(location != null){
             latitude = location.getLatitude();
@@ -126,6 +148,7 @@ public class GPSTracker extends Service implements LocationListener {
         // return latitude
         return latitude;
     }
+
     /**
      * Function to get longitude
      * */
@@ -136,30 +159,9 @@ public class GPSTracker extends Service implements LocationListener {
         // return longitude
         return longitude;
     }
+
     public boolean canGetLocation() {
         return this.canGetLocation;
-    }
-    /**
-     * Function to show settings alert dialog
-     * */
-    public void showGpsAlert(){
-
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-        alertDialog.setTitle("GPS Configuracion");
-        alertDialog.setMessage("GPS no esta disponible. Desea ir al menu GPS?");
-        alertDialog.setPositiveButton("Configuracion", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int which) {
-
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                mContext.startActivity(intent);
-            }
-        });
-        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        alertDialog.show();
     }
 
     @Override
@@ -170,8 +172,7 @@ public class GPSTracker extends Service implements LocationListener {
     }
 
     @Override
-    public void onProviderDisabled(String provider) {
-
+    public void onStatusChanged (String provider, int status, Bundle extras) {
     }
 
     @Override
@@ -180,7 +181,8 @@ public class GPSTracker extends Service implements LocationListener {
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
+    public void onProviderDisabled (String provider) {
+
     }
 
     @Override
