@@ -3,9 +3,6 @@ package com.popgroup.encuestasv3.MainEncuesta;
 import com.popgroup.encuestasv3.Base.BaseInteractor;
 import com.popgroup.encuestasv3.Base.BasePresenter;
 import com.popgroup.encuestasv3.Base.IView;
-import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
-
-import java.util.ArrayList;
 
 /**
  * Created by JMario. on 18/4/2018.
@@ -27,7 +24,7 @@ public class MainPresenter extends BasePresenter implements IMainPresenter, IMai
     }
 
     @Override
-    public void enviarEncuestaPendientes (String usuario, ArrayList<RespuestasCuestionario> respuestasCuestionarios) {
+    public void enviarEncuestaPendientes (String usuario, Integer respuestasCuestionarios) {
 
         if (getView () != null) {
             getView ().showLoader (true);
@@ -51,6 +48,16 @@ public class MainPresenter extends BasePresenter implements IMainPresenter, IMai
     @Override
     public void validateFotosPendientes () {
         mainInteractor.validateFotosPendientes ();
+    }
+
+    @Override
+    public void nextLoginOperation () {
+        mainInteractor.checkUsuario ();
+    }
+
+    @Override
+    public void clearDataBase () {
+        mainInteractor.clearDataBase ();
     }
 
     @Override
@@ -86,6 +93,13 @@ public class MainPresenter extends BasePresenter implements IMainPresenter, IMai
     public void showBtnFotoPendientes (Boolean show, Integer pendientes) {
         if (getView () != null) {
             getView ().showButtonFotosPendientes (show, pendientes);
+        }
+    }
+
+    @Override
+    public void showAlertDB () {
+        if (getView () != null) {
+            getView ().showAlert ();
         }
     }
 

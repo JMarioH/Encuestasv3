@@ -1,7 +1,9 @@
 package com.popgroup.encuestasv3.Login;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -89,7 +91,21 @@ public class LoginActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void showError (Throwable throwable) {
-        Toast.makeText (this, "Error " + throwable.getMessage (), Toast.LENGTH_SHORT).show ();
+        final AlertDialog alertDialog = new AlertDialog.Builder (this).create ();
+        alertDialog.setTitle ("Mensaje");
+        alertDialog.setMessage (throwable.getMessage ());
+        alertDialog.setButton (AlertDialog.BUTTON_POSITIVE, "Aceptar", new DialogInterface.OnClickListener () {
+            public void onClick (DialogInterface dialog, int which) {
+                dialog.dismiss ();
+            }
+        });
+        alertDialog.setOnShowListener (new DialogInterface.OnShowListener () {
+            @Override
+            public void onShow (DialogInterface arg0) {
+                alertDialog.getButton (AlertDialog.BUTTON_POSITIVE).setTextColor (getResources ().getColor (R.color.colorPrimary));
+            }
+        });
+        alertDialog.show ();
     }
 
     @Override

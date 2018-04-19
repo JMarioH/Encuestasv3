@@ -14,7 +14,7 @@ import com.popgroup.encuestasv3.Base.BasePresenter;
 import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.FotoEncuesta;
 import com.popgroup.encuestasv3.R;
-import com.popgroup.encuestasv3.Utility.Connectivity;
+import com.popgroup.encuestasv3.Utility.NetWorkUtil;
 
 import butterknife.BindView;
 
@@ -28,7 +28,7 @@ public class FinEncuestaActivity extends BaseActivity implements IFinEncuestaVie
     @BindView (R.id.btnTerminar)
     Button btnTerminar;
     private String idEncuesta, encuesta, idTienda, idEstablecimiento, idArchivo, usuario;
-    private Connectivity connectivity;
+
     private FotoEncuesta fotoEncuesta;
     private FinEncuestaPresenter mPresenter;
 
@@ -40,7 +40,7 @@ public class FinEncuestaActivity extends BaseActivity implements IFinEncuestaVie
         mLoader.initUI ();
 
         fotoEncuesta = new FotoEncuesta ().getInstace ();
-        connectivity = new Connectivity ();
+
         Bundle extras = getIntent ().getExtras ();
         //recivimos las variables
         idEncuesta = extras.getString ("idEncuesta").toString ();
@@ -53,7 +53,7 @@ public class FinEncuestaActivity extends BaseActivity implements IFinEncuestaVie
         btnTerminar.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick (View view) {
-                if (connectivity.isConnected (getBaseContext ())) {
+                if (NetWorkUtil.checkConnection (getBaseContext ())) {
                     mPresenter.enviarEncuesta (idEncuesta, idEstablecimiento, idTienda, usuario);
                 } else {
                     showMessage ();

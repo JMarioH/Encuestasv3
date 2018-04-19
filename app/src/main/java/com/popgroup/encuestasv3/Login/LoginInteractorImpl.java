@@ -9,7 +9,7 @@ import com.popgroup.encuestasv3.Base.BaseInteractor;
 import com.popgroup.encuestasv3.Base.ICallBack;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Model.User;
-import com.popgroup.encuestasv3.Utility.Connectivity;
+import com.popgroup.encuestasv3.Utility.NetWorkUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,19 +23,17 @@ public class LoginInteractorImpl extends BaseInteractor implements LoginInteract
     public Dao dao;
     private ICallBack mCallback;
     private Context context;
-    private Connectivity connectivity;
     private ArrayList<User> arrayUser;
 
     public LoginInteractorImpl (Context ctx) {
         this.context = ctx;
-        connectivity = new Connectivity ();
 
     }
 
     @Override
     public void login (String user, String pass) {
 
-        if (connectivity.isConnected (context)) {
+        if (NetWorkUtil.checkConnection (context)) {
             new LoginAsynck (context, user, pass, mCallback, dao, getmDBHelper ()).execute ();
         } else {
             mCallback.onFailed (new Throwable ("Debe conectarse a una red"));

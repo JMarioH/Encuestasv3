@@ -8,10 +8,8 @@ import com.popgroup.encuestasv3.Base.IView;
 
 public interface IMainView extends IView {
     void showUsuario (Boolean show, String usuario);
-    void sincronizarEncuestas ();
-    void sincronizarFotos ();
 
+    void showAlert ();
     void showButtonEncuestasPendientes (Boolean show, Integer pendientes);
-
     void showButtonFotosPendientes (Boolean show, Integer pendientes);
 }

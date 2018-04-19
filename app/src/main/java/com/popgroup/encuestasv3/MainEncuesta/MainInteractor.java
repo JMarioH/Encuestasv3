@@ -15,7 +15,7 @@ import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Model.Fotos;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
 import com.popgroup.encuestasv3.Model.User;
-import com.popgroup.encuestasv3.Utility.Connectivity;
+import com.popgroup.encuestasv3.Utility.NetWorkUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,13 +38,9 @@ public class MainInteractor extends BaseInteractor implements IMainInteractor {
     private IMainCallback callBack;
     private Context context;
     private Dao dao;
-    private boolean isConnected;
-
 
     public MainInteractor (Activity activity) {
-
         this.context = activity;
-        isConnected = Connectivity.isConnected (context);
     }
 
     @Override
@@ -68,9 +64,9 @@ public class MainInteractor extends BaseInteractor implements IMainInteractor {
     }
 
     @Override
-    public void enviarEncPendientes (String mUsuario, ArrayList<RespuestasCuestionario> encuestasPendientes) {
-        if (isConnected) {
-            new AsynckEncPendientes (context, mUsuario, encuestasPendientes.size ()).execute ();
+    public void enviarEncPendientes (String mUsuario, Integer encuestasPendientes) {
+        if (NetWorkUtil.checkConnection (context)) {
+            new AsynckEncPendientes (context, mUsuario, encuestasPendientes, callBack).execute ();
         } else {
             callBack.onFailed (new Throwable ("Debe Conectarse a una red para poder enviar la informacion."));
         }
@@ -81,7 +77,7 @@ public class MainInteractor extends BaseInteractor implements IMainInteractor {
         JSONArray jsonFotos;
         ArrayList<NameValuePair> datosPost = null;
         ArrayList<Fotos> fotosPendientes;
-        if (isConnected) {
+        if (NetWorkUtil.checkConnection (context)) {
             try {
                 dao = getmDBHelper ().getFotosDao ();
                 fotosPendientes = (ArrayList<Fotos>) dao.queryForAll ();
@@ -102,7 +98,11 @@ public class MainInteractor extends BaseInteractor implements IMainInteractor {
                         jsonFotos.put (jsonFoto);
                         j++;
                         datosPost.add (new BasicNameValuePair ("subeFotos", jsonFotos.toString ()));
-                        new AsyncUploadFotos (context, datosPost, String.valueOf (fotosPendientes.get (x).getIdEncuesta ()), String.valueOf (fotosPendientes.get (x).getIdEstablecimiento ())).execute ();
+                        new AsyncUploadFotos (context, datosPost,
+                                String.valueOf (fotosPendientes.get (x).getIdEncuesta ()),
+                                String.valueOf (fotosPendientes.get (x).getIdEstablecimiento ()),
+                                callBack
+                        ).execute ();
                     }
                 } catch (JSONException e) {
                     Log.e (TAG, "jsonE -> " + e);
@@ -124,7 +124,7 @@ public class MainInteractor extends BaseInteractor implements IMainInteractor {
             }
 
         } else {
-            // showMessage();
+            callBack.onFailed (new Throwable ("Debe Conectarse a una red para poder enviar la informacion."));
         }
     }
 
@@ -157,6 +157,82 @@ public class MainInteractor extends BaseInteractor implements IMainInteractor {
             dao.clearObjectCache ();
         } catch (SQLException e) {
             Log.e (TAG, "SQLException " + e.getMessage ());
+        }
+    }
+
+    @Override
+    public void checkUsuario () {
+        String mUsuario = "";
+        ArrayList<User> arrayUser = new ArrayList<> ();
+        try {
+            dao = getmDBHelper ().getUserDao ();
+            arrayUser = (ArrayList<User>) dao.queryForAll ();
+            for (User item : arrayUser) {
+                mUsuario = item.getNombre ();
+            }
+            if (mUsuario != "") {
+                callBack.showAlertDB ();
+            }
+            dao.clearObjectCache ();
+
+        } catch (SQLException e) {
+            Log.e (TAG, "sqlException " + e);
+        }
+    }
+
+    @Override
+    public void clearDataBase () {
+        try { // recuperamos los datos de la base de datos
+
+            dao = getmDBHelper ().getUserDao ();
+            DeleteBuilder<User, Integer> deleteBuilder = dao.deleteBuilder ();
+            deleteBuilder.delete ();
+            dao.clearObjectCache ();
+
+            dao = getmDBHelper ().getUserDao ();
+            dao.deleteBuilder ().delete ();
+            dao.clearObjectCache ();
+
+            dao = getmDBHelper ().getProyectoDao ();
+            dao.deleteBuilder ().delete ();
+            dao.clearObjectCache ();
+
+            dao = getmDBHelper ().getClienteDao ();
+            dao.deleteBuilder ().delete ();
+            dao.clearObjectCache ();
+
+            dao = getmDBHelper ().getTipoEncDao ();
+            dao.deleteBuilder ().delete ();
+            dao.clearObjectCache ();
+
+            dao = getmDBHelper ().getCatMasterDao ();
+            dao.deleteBuilder ().delete ();
+            dao.clearObjectCache ();
+
+            dao = getmDBHelper ().getPregutasDao ();
+            dao.deleteBuilder ().delete ();
+            dao.clearObjectCache ();
+
+            dao = getmDBHelper ().getRespuestasDao ();
+            dao.deleteBuilder ().delete ();
+            dao.clearObjectCache ();
+
+            dao = getmDBHelper ().getRespuestasCuestioanrioDao ();
+            dao.deleteBuilder ().delete ();
+            dao.clearObjectCache ();
+
+            dao = getmDBHelper ().getFotosDao ();
+            dao.deleteBuilder ().delete ();
+            dao.clearObjectCache ();
+
+            dao = getmDBHelper ().getGeosDao ();
+            dao.deleteBuilder ().delete ();
+            dao.clearObjectCache ();
+
+            callBack.showUsuario (true, "00000000");
+
+        } catch (SQLException e) {
+            Log.e (TAG, "sql->" + e);
         }
     }
 

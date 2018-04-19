@@ -13,4 +13,6 @@ public interface IMainCallback extends ICallBack {
     void showBtnEncPendientes (Boolean show, Integer pendientes);
 
     void showBtnFotoPendientes (Boolean show, Integer pendientes);
+
+    void showAlertDB ();
 }

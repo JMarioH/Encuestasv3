@@ -1,17 +1,16 @@
 package com.popgroup.encuestasv3.AsynckTask;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
+import com.popgroup.encuestasv3.MainEncuesta.IMainCallback;
 import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.GeoLocalizacion;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
@@ -51,13 +50,16 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
     ArrayList<RespuestasCuestionario> arrayEnc;
     ArrayList<GeoLocalizacion> arrayGeos;
     private String TAG = getClass ().getSimpleName ();
-    private ProgressDialog progressDialog;
+    //  private ProgressDialog progressDialog;
     private DBHelper mDBHelper;
     private ArrayList<NameValuePair> data;
-    public AsynckEncPendientes(Context context , String usuario, int registros){
+    private IMainCallback iMainCallback;
+
+    public AsynckEncPendientes (Context context, String usuario, int registros, IMainCallback callback) {
         this.mContext = context;
         this.mUsuario = usuario;
         this.numeroReg = registros;
+        this.iMainCallback = callback;
     }
 
     @Override
@@ -123,19 +125,19 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
     @Override
     protected void onPreExecute () {
         super.onPreExecute ();
-        progressDialog = new ProgressDialog (mContext);
+     /*   progressDialog = new ProgressDialog (mContext);
         progressDialog.setProgressStyle (ProgressDialog.STYLE_SPINNER);
         progressDialog.setMessage ("Enviando..." + numeroReg + " datos pendientes .");
         progressDialog.setIndeterminate (true);
         progressDialog.setCancelable (false);
-        progressDialog.show ();
+        progressDialog.show ();*/
     }
 
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        progressDialog.dismiss();
-        progressDialog.hide();
+      /*  progressDialog.dismiss();
+        progressDialog.hide();*/
         Log.e(TAG,"onpostExecute : " +s);
         if(s.equals("1")){
             try { // borramos las encuestas enviada
@@ -144,12 +146,13 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
                 deleteBuilder.where().eq("flag",true);
                 deleteBuilder.delete();
                 dao.clearObjectCache();
-                Toast.makeText(mContext, "Datos enviados. .", Toast.LENGTH_LONG).show();
+                iMainCallback.onSuccess ("1");
+                iMainCallback.showBtnEncPendientes (false, 0);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }else{
-            Toast.makeText(mContext, "Error enviado pendientes. .", Toast.LENGTH_LONG).show();
+            iMainCallback.onFailed (new Throwable ("Error enviando la informacion"));
         }
         Intent i = new Intent(mContext, MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

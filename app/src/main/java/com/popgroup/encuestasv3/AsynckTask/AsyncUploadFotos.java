@@ -1,15 +1,16 @@
 package com.popgroup.encuestasv3.AsynckTask;
 
-import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
+import com.popgroup.encuestasv3.MainEncuesta.IMainCallback;
+import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.FotoEncuesta;
 
 import org.json.JSONException;
@@ -26,7 +27,6 @@ import cz.msebera.android.httpclient.NameValuePair;
  */
 public class AsyncUploadFotos extends AsyncTask<Void, Void, Boolean> {
 
-    public ProgressDialog pDialog;
     private Context context;
     private ArrayList<NameValuePair> data;
     private String TAG = getClass ().getSimpleName ();
@@ -37,12 +37,14 @@ public class AsyncUploadFotos extends AsyncTask<Void, Void, Boolean> {
 
     private String mEncuesta;
     private String mEstablecimiento;
+    private IMainCallback callback;
 
-    public AsyncUploadFotos (Context context, ArrayList<NameValuePair> data, String encuesta, String establecimiento) {
+    public AsyncUploadFotos (Context context, ArrayList<NameValuePair> data, String encuesta, String establecimiento, IMainCallback iMainCallback) {
         this.context = context;
         this.data = data;
         this.mEncuesta = encuesta;
         this.mEstablecimiento = establecimiento;
+        this.callback = iMainCallback;
         mDBHelper = OpenHelperManager.getHelper (context, DBHelper.class);
     }
 
@@ -63,31 +65,25 @@ public class AsyncUploadFotos extends AsyncTask<Void, Void, Boolean> {
             } else {
                 respuesta = false;
             }
-
-
         } catch (JSONException e) {
             e.printStackTrace ();
         }
         return respuesta;
     }
 
-    @Override
-    protected void onPreExecute () {
-        super.onPreExecute ();
-        pDialog = new ProgressDialog (context);
-        pDialog.setProgressStyle (ProgressDialog.STYLE_SPINNER);
-        pDialog.setMessage ("Enviando Fotos ");
-        pDialog.setIndeterminate (false);
-        pDialog.setCancelable (false);
-        pDialog.show ();
-    }
 
     @Override
     protected void onPostExecute (Boolean s) {
         super.onPostExecute (s);
-        pDialog.hide ();
-        pDialog.dismiss ();
 
+        if (s) {
+            callback.onSuccess (s);
+            Intent i = new Intent (context, MainActivity.class);
+            i.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            context.startActivity (i);
+        } else {
+            callback.onFailed (new Throwable ("Error al enviar las fotografias."));
+        }
         try {
             dao = getmDBHelper ().getFotosDao ();
             DeleteBuilder<FotoEncuesta, Integer> deleteBuilder = dao.deleteBuilder ();
@@ -97,9 +93,6 @@ public class AsyncUploadFotos extends AsyncTask<Void, Void, Boolean> {
             dao.clearObjectCache ();
         } catch (SQLException e) {
             Log.e (TAG, "Exception " + e.getMessage ());
-        }
-        if (s) {
-            Toast.makeText (context, "Fotos enviadas correctamente", Toast.LENGTH_SHORT).show ();
         }
 
     }
@@ -111,8 +104,5 @@ public class AsyncUploadFotos extends AsyncTask<Void, Void, Boolean> {
         return mDBHelper;
     }
 
-    private void borrarFotos () {
-
-    }
 }
 

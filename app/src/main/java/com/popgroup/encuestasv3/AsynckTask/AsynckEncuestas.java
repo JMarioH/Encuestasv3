@@ -1,6 +1,5 @@
 package com.popgroup.encuestasv3.AsynckTask;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -13,6 +12,7 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.popgroup.encuestasv3.Base.ICallBack;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
+import com.popgroup.encuestasv3.MainEncuesta.IMainCallback;
 import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.FotoEncuesta;
@@ -47,9 +47,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
     String success;
     String latitud = null, longitud = null;
     FotoEncuesta fotoEncuesta = new FotoEncuesta ().getInstace ();
-    Boolean validaConexion;
     private String TAG = getClass ().getSimpleName ();
-    private ProgressDialog progressDialog;
     private DBHelper mDBHelper;
     private JSONObject jsonObject;
     private ArrayList<RespuestasCuestionario> arrayResultados;
@@ -64,15 +62,28 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
     private ArrayList<NameValuePair> datosPost;
     private JSONArray jsonFotos;
 
-    private ICallBack iCallBack;
+    private IMainCallback iCallBack;
 
-    public AsynckEncuestas (Context context, String idEncuesta, String idEstablecimiento, String idTienda, String usuario, ICallBack iCallBack) {
+    public AsynckEncuestas (Context context, String idEncuesta, String idEstablecimiento,
+                            String idTienda, String usuario, IMainCallback iCallBack) {
         this.mContext = context;
         this.mEncuesta = idEncuesta;
         this.mTienda = idTienda;
         this.mUsuario = usuario;
         this.mEstablecimiento = idEstablecimiento;
         this.iCallBack = iCallBack;
+    }
+
+    public AsynckEncuestas (Context ctx, String idEncuesta, String idEstablecimiento,
+                            String idTienda, String usuario, ICallBack iCallBack) {
+        this.mContext = ctx;
+        this.mEncuesta = idEncuesta;
+        this.mTienda = idTienda;
+        this.mUsuario = usuario;
+        this.mEstablecimiento = idEstablecimiento;
+        if (iCallBack instanceof ICallBack) {
+            this.iCallBack = (IMainCallback) iCallBack;
+        }
     }
 
     @Override
@@ -235,7 +246,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             }
             datosPost.add(new BasicNameValuePair("subeFotos", jsonFotos.toString()));
             // envio de fotos
-            new AsyncUploadFotos (mContext, datosPost, mEncuesta, mEstablecimiento).execute ();
+            new AsyncUploadFotos (mContext, datosPost, mEncuesta, mEstablecimiento, iCallBack).execute ();
 
         }
     }
