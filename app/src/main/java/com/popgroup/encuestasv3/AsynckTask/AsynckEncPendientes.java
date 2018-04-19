@@ -12,7 +12,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
-import com.popgroup.encuestasv3.MainActivity;
+import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.GeoLocalizacion;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
 

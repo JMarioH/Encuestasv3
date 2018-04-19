@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.popgroup.encuestasv3.Base.BaseActivity;
 import com.popgroup.encuestasv3.Base.BasePresenter;
-import com.popgroup.encuestasv3.MainActivity;
+import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.FotoEncuesta;
 import com.popgroup.encuestasv3.R;
 import com.popgroup.encuestasv3.Utility.Connectivity;

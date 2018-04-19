@@ -13,7 +13,7 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.popgroup.encuestasv3.Base.ICallBack;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
-import com.popgroup.encuestasv3.MainActivity;
+import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.FotoEncuesta;
 import com.popgroup.encuestasv3.Model.Fotos;
@@ -199,6 +199,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             mContext.startActivity(i);
         } else {
+            guardaFotos();
             iCallBack.onFailed (new Throwable ("Error al enviar encuestas"));
         }
     }
@@ -235,6 +236,33 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             datosPost.add(new BasicNameValuePair("subeFotos", jsonFotos.toString()));
             // envio de fotos
             new AsyncUploadFotos (mContext, datosPost, mEncuesta, mEstablecimiento).execute ();
+
+        }
+    }
+
+    public void guardaFotos () {
+        int x = 0;
+        ArrayList<String> arrayBase64;
+        if (fotoEncuesta.getNombre() != null) {
+            arrayBase64 = fotoEncuesta.getArrayFotos();
+            try {
+                dao = getmDBHelper().getFotosDao();
+                for (x = 0; x < arrayBase64.size(); x++) {
+                    Fotos Objfotos = new Fotos();
+                    nomArchivo = mEncuesta + "_" + mEstablecimiento + "_" + fotoEncuesta.getNombre().get(x) + "_" + x + ".jpg";
+                    base64 = fotoEncuesta.getArrayFotos().get(x);
+                    Objfotos.setIdEstablecimiento(Integer.parseInt(mEstablecimiento));
+                    Objfotos.setIdEncuesta(Integer.parseInt(mEncuesta));
+                    Objfotos.setNombre(fotoEncuesta.getNombre().get(x));
+                    Objfotos.setBase64(base64);
+                    // Objfotos.setBytebase(fotoEncuesta.getArrayByte().get(x));
+                    dao.create(Objfotos);
+                }
+                dao.clearObjectCache();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
         }
     }
@@ -279,33 +307,6 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             file.close();
         } catch (IOException e) {
             Log.e("TAG", "Error in Writing: " + e.getLocalizedMessage());
-        }
-    }
-
-    public void guardaFotos () {
-        int x = 0;
-        ArrayList<String> arrayBase64;
-        if (fotoEncuesta.getNombre() != null) {
-            arrayBase64 = fotoEncuesta.getArrayFotos();
-            try {
-                dao = getmDBHelper().getFotosDao();
-                for (x = 0; x < arrayBase64.size(); x++) {
-                    Fotos Objfotos = new Fotos();
-                    nomArchivo = mEncuesta + "_" + mEstablecimiento + "_" + fotoEncuesta.getNombre().get(x) + "_" + x + ".jpg";
-                    base64 = fotoEncuesta.getArrayFotos().get(x);
-                    Objfotos.setIdEstablecimiento(Integer.parseInt(mEstablecimiento));
-                    Objfotos.setIdEncuesta(Integer.parseInt(mEncuesta));
-                    Objfotos.setNombre(fotoEncuesta.getNombre().get(x));
-                    Objfotos.setBase64(base64);
-                    // Objfotos.setBytebase(fotoEncuesta.getArrayByte().get(x));
-                    dao.create(Objfotos);
-                }
-                dao.clearObjectCache();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
         }
     }
 }

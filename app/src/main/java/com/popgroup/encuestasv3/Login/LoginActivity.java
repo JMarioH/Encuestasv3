@@ -11,7 +11,7 @@ import com.popgroup.encuestasv3.AdminActivity;
 import com.popgroup.encuestasv3.Base.BaseActivity;
 import com.popgroup.encuestasv3.Base.BasePresenter;
 import com.popgroup.encuestasv3.BuildConfig;
-import com.popgroup.encuestasv3.MainActivity;
+import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.R;
 
 import java.util.ArrayList;

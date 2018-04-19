@@ -2,15 +2,12 @@ package com.popgroup.encuestasv3;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
-import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -25,20 +22,17 @@ import android.widget.TextView;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.stmt.QueryBuilder;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
+import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.Preguntas;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
-import com.popgroup.encuestasv3.Model.TipoEncuesta;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.os.Build.VERSION_CODES.M;
 
 /**
  * Created by jesus.hernandez on 14/12/16.
@@ -175,6 +169,34 @@ public class Encuestas extends AppCompatActivity {
         }
         return mDBHelper;
     }
+
+    public void showMessage () {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Mensaje");
+        alertDialog.setMessage("No hay encuestas disponibles.. ");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+
+            public void onClick (DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Intent intent = new Intent(Encuestas.this, Proyectos.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss (DialogInterface dialogInterface) {
+                Intent intent = new Intent(Encuestas.this, Proyectos.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        alertDialog.show();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -183,11 +205,13 @@ public class Encuestas extends AppCompatActivity {
             mDBHelper = null;
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu,menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -205,33 +229,6 @@ public class Encuestas extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
 
-    }
-    public void showMessage(){
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Mensaje");
-        alertDialog.setMessage("No hay encuestas disponibles.. ");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
-                new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        Intent intent = new Intent(Encuestas.this, Proyectos.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    }
-                });
-
-        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                Intent intent = new Intent(Encuestas.this, Proyectos.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-        alertDialog.show();
     }
 
 }

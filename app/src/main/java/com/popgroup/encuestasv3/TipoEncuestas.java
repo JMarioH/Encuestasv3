@@ -2,9 +2,7 @@ package com.popgroup.encuestasv3;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,28 +19,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.stmt.DeleteBuilder;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
-import com.popgroup.encuestasv3.Model.Proyecto;
-import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
+import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.TipoEncuesta;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.R.attr.id;
-import static android.R.attr.value;
-import static android.os.Build.VERSION_CODES.M;
-import static com.popgroup.encuestasv3.R.id.toolbar;
-import static com.popgroup.encuestasv3.R.id.txtTitle;
 
 /**
  * Created by jesus.hernandez on 14/12/16.
@@ -164,38 +152,6 @@ public class TipoEncuestas extends AppCompatActivity {
         return mDBHelper;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mDBHelper != null) {
-            OpenHelperManager.releaseHelper();
-            mDBHelper = null;
-        }
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-        if (id == R.id.menuInicio) {
-            //Display Toast
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(intent);
-        }else if(id== R.id.menuSalir){
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
-        return super.onOptionsItemSelected(item);
-
-    }
-
     public void showMessage(){
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle("Mensaje");
@@ -223,6 +179,16 @@ public class TipoEncuestas extends AppCompatActivity {
         });
         alertDialog.show();
     }
+
+    @Override
+    protected void onDestroy () {
+        super.onDestroy();
+        if (mDBHelper != null) {
+            OpenHelperManager.releaseHelper();
+            mDBHelper = null;
+        }
+    }
+
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent intent = new Intent(this, Proyectos.class);
@@ -230,6 +196,31 @@ public class TipoEncuestas extends AppCompatActivity {
         }
         super.onKeyDown(keyCode, event);
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.menuInicio) {
+            //Display Toast
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
+        } else if (id == R.id.menuSalir) {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+
     }
 
 }

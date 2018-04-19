@@ -1,11 +1,9 @@
 package com.popgroup.encuestasv3;
 
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -17,11 +15,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
+import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.Cliente;
 import com.popgroup.encuestasv3.Model.Proyecto;
 import com.popgroup.encuestasv3.Model.User;
@@ -33,9 +31,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.popgroup.encuestasv3.R.id.text;
-import static com.popgroup.encuestasv3.R.id.txtTitle;
-
 /**
  * Created by jesus.hernandez on 13/12/16.
  * Selecciona el proyecto
@@ -43,21 +38,19 @@ import static com.popgroup.encuestasv3.R.id.txtTitle;
 public class Proyectos extends AppCompatActivity {
 
     public String TAG= getClass().getSimpleName();
-    Bundle bundle;
-
     public List<Proyecto> proyectoList;
     public List<Cliente> clienteList;
     public ArrayAdapter<String> adapter;
     public ArrayList<String> arrayProyectos;
     public ArrayList<User> arrayUsers;
-    Proyecto proyecto;
-    Cliente cliente;
     public DBHelper mDBHelper;
-    Dao dao;
     public String nomCliente = "";
     public String usuario  = "";
-
     public ListView listProyectos;
+    Bundle bundle;
+    Proyecto proyecto;
+    Cliente cliente;
+    Dao dao;
     Toolbar toolbar;
     @BindView(R.id.txtTitle)
     TextView txtTitle;
@@ -172,6 +165,16 @@ public class Proyectos extends AppCompatActivity {
             mDBHelper = null;
         }
     }
+
+    public boolean onKeyDown (int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+        super.onKeyDown(keyCode, event);
+        return true;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu,menu);
@@ -195,15 +198,6 @@ public class Proyectos extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
 
-    }
-
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-        }
-        super.onKeyDown(keyCode, event);
-        return true;
     }
 }
 

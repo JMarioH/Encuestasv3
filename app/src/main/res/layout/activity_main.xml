@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_selector"
-    tools:context="com.popgroup.encuestasv3.MainActivity">
+    tools:context="com.popgroup.encuestasv3.MainEncuesta.MainActivity">
 
     <LinearLayout
         android:id="@+id/header"
@@ -17,28 +17,28 @@
 
         <TextView
             android:id="@+id/txtTelefono"
+            style="@style/textTittle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Telefono : "
-            style="@style/textTittle"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/txtUsuario"
+            style="@style/textTittle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:gravity="center"
             android:text="00000000"
-            style="@style/textTittle"
             android:textStyle="bold" />
     </LinearLayout>
 
 <View
-    android:layout_below="@+id/header"
     android:layout_width="match_parent"
     android:layout_height="1dp"
+    android:layout_below="@+id/header"
     android:background="@color/colorBackgound"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,43 +51,43 @@
 
         <Button
             android:id="@+id/btnCambiarUser"
+            style="@style/mButton"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawableLeft="@drawable/ic_usuario"
             android:layout_marginTop="12dp"
-            style="@style/mButton"
+            android:drawableLeft="@drawable/ic_usuario"
             android:text="@string/cambiarUser" />
 
         <Button
             android:id="@+id/btnInicio"
+            style="@style/mButton"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_proyecto"
             android:layout_gravity="center"
             android:layout_marginTop="12dp"
-            style="@style/mButton"
+            android:drawableLeft="@drawable/ic_proyecto"
             android:text="@string/btnInicio" />
 
         <Button
             android:id="@+id/btnEncPnedientes"
+            style="@style/mButton"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_encuesta"
             android:layout_gravity="center"
-            style="@style/mButton"
             android:layout_marginTop="12dp"
+            android:drawableLeft="@drawable/ic_encuesta"
             android:text="@string/EncPendientes"
             android:visibility="invisible"/>
 
         <Button
             android:id="@+id/btnFotosPendientes"
+            style="@style/mButton"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_camara"
             android:layout_gravity="center"
-            style="@style/mButton"
             android:layout_marginTop="12dp"
+            android:drawableLeft="@drawable/ic_camara"
             android:text="@string/FotosPendientes"
             android:visibility="invisible"/>
 
@@ -101,8 +101,8 @@
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
         android:background="?attr/colorPrimary"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <TextView
             android:id="@+id/txtTitle"

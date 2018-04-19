@@ -16,7 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.popgroup.encuestasv3.Loader;
-import com.popgroup.encuestasv3.MainActivity;
+import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.R;
 
 import butterknife.ButterKnife;

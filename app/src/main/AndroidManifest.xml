@@ -27,7 +27,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".MainEncuesta.MainActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".Proyectos" android:screenOrientation="portrait"/>
         <activity android:name=".TipoEncuestas" android:screenOrientation="portrait"/>
         <activity android:name=".Encuestas" android:screenOrientation="portrait"/>
