@@ -15,6 +15,7 @@ public class GeoEstatica {
 
     public GeoEstatica() {
     }
+
     public GeoEstatica(double sLatitud, double sLongitud , boolean mEstatus) {
         this.sLatitud = sLatitud;
         this.sLongitud = sLongitud;

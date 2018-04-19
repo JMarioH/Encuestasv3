@@ -8,22 +8,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.popgroup.encuestasv3.AsynckTask.AsyncUploadFotos;
-import com.popgroup.encuestasv3.AsynckTask.AsynckEncPendientes;
 import com.popgroup.encuestasv3.Base.BaseActivity;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Login.LoginActivity;
-import com.popgroup.encuestasv3.Model.CatMaster;
-import com.popgroup.encuestasv3.Model.Cliente;
 import com.popgroup.encuestasv3.Model.Fotos;
-import com.popgroup.encuestasv3.Model.Proyecto;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
-import com.popgroup.encuestasv3.Model.TipoEncuesta;
 import com.popgroup.encuestasv3.Model.User;
 import com.popgroup.encuestasv3.Proyectos;
 import com.popgroup.encuestasv3.R;
@@ -59,12 +53,6 @@ public class MainActivity extends BaseActivity implements IMainView {
     boolean connectionAvailable;
     private Dao dao;
     private Bundle bundle;
-    private User user;
-    private Cliente cliente;
-    private Proyecto proyecto;
-    private TipoEncuesta tipoEncuesta;
-    private CatMaster catMaster;
-    private RespuestasCuestionario respuestasCuestionario;
     private ArrayList<Fotos> fotosPendientes;
     private ArrayList<RespuestasCuestionario> encuestasPendientes;
     private ArrayList<User> arrayUser;
@@ -81,47 +69,10 @@ public class MainActivity extends BaseActivity implements IMainView {
 
         bundle = new Bundle ();
         connectionAvailable = connectivity.isConnected (this);
-        try {
-            // recuperando datos de la DBs
-            user = new User ();
-            cliente = new Cliente ();
-            proyecto = new Proyecto ();
-            tipoEncuesta = new TipoEncuesta ();
-            catMaster = new CatMaster ();
-            respuestasCuestionario = new RespuestasCuestionario ();
+        mPresenter.getUsuario ();
+        mPresenter.validateEncPendientes ();
+        mPresenter.validateFotosPendientes ();
 
-            dao = getmDBHelper ().getUserDao ();
-            arrayUser = (ArrayList<User>) dao.queryForAll ();
-            for (User item : arrayUser) {
-                mUsuario = item.getNombre ();
-
-            }
-            if (!arrayUser.isEmpty ()) {
-                txtUser.setText (mUsuario);
-            }
-            dao.clearObjectCache ();
-
-            dao = getmDBHelper ().getRespuestasCuestioanrioDao ();
-            encuestasPendientes = (ArrayList<RespuestasCuestionario>) dao.queryBuilder ().distinct ().selectColumns ("idEstablecimiento").where ().eq ("flag", true).query ();
-
-            dao.clearObjectCache ();
-
-            dao = getmDBHelper ().getFotosDao ();
-            fotosPendientes = (ArrayList<Fotos>) dao.queryForAll ();
-            dao.clearObjectCache ();
-
-            if (!encuestasPendientes.isEmpty ()) {
-                btnEncPendientes.setVisibility (View.VISIBLE);
-                btnEncPendientes.setText ("Encuestas Pendientes " + " ( " + encuestasPendientes.size () + " )");
-            }
-            if (!fotosPendientes.isEmpty ()) {
-                btnFotosPendientes.setVisibility (View.VISIBLE);
-                btnFotosPendientes.setText ("Fotos Pendientes " + " ( " + fotosPendientes.size () + " )");
-            }
-
-        } catch (SQLException e) {
-            Log.e (" excetion", "sql-> " + e);
-        }
         btnCambiarUser.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick (View view) {
@@ -156,13 +107,13 @@ public class MainActivity extends BaseActivity implements IMainView {
         btnEncPendientes.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick (View view) {
-                encuestasPendientes ();
+                mPresenter.enviarEncuestaPendientes (mUsuario, encuestasPendientes);
             }
         });
         btnFotosPendientes.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick (View view) {
-                fotosPendientes ();
+                mPresenter.enviarFotosPendientes ();
             }
         });
 
@@ -291,12 +242,35 @@ public class MainActivity extends BaseActivity implements IMainView {
 
     }
 
-    public void encuestasPendientes () {
-        connectionAvailable = connectivity.isConnected(this);
-        if (connectionAvailable) {
-            new AsynckEncPendientes(this, mUsuario, encuestasPendientes.size()).execute();
-        } else {
-            showMessage();
+    @Override
+    public void showUsuario (Boolean show, String usuario) {
+        txtUser.setVisibility (show ? View.VISIBLE : View.GONE);
+        txtUser.setText (usuario);
+    }
+
+    @Override
+    public void sincronizarEncuestas () {
+
+    }
+
+    @Override
+    public void sincronizarFotos () {
+
+    }
+
+    @Override
+    public void showButtonEncuestasPendientes (Boolean show, Integer pendientes) {
+        if (btnEncPendientes != null) {
+            btnEncPendientes.setVisibility (show ? View.VISIBLE : View.GONE);
+            btnEncPendientes.setText ("Encuestas Pendientes " + " ( " + pendientes + " )");
+        }
+    }
+
+    @Override
+    public void showButtonFotosPendientes (Boolean show, Integer pendientes) {
+        if (btnFotosPendientes != null) {
+            btnFotosPendientes.setVisibility (show ? View.VISIBLE : View.GONE);
+            btnFotosPendientes.setText ("Fotos Pendientes " + " ( " + pendientes + " )");
         }
     }
 
@@ -347,20 +321,8 @@ public class MainActivity extends BaseActivity implements IMainView {
             }
 
         } else {
-            showMessage();
+            // showMessage();
         }
-    }
-
-    public void showMessage () {
-        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-        alertDialog.setTitle("Mensaje");
-        alertDialog.setMessage("Debe estar conectado a una red Estable para continuar");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-            public void onClick (DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        alertDialog.show();
     }
 
     @Override
@@ -372,17 +334,15 @@ public class MainActivity extends BaseActivity implements IMainView {
 
     @Override
     public void showError (Throwable throwable) {
-        Toast.makeText(this, "Error " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void sincronizarEncuestas () {
-
-    }
-
-    @Override
-    public void sincronizarFotos () {
-
+        AlertDialog alertDialog = new AlertDialog.Builder (MainActivity.this).create ();
+        alertDialog.setTitle ("Mensaje");
+        alertDialog.setMessage (throwable.getMessage ());
+        alertDialog.setButton (AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener () {
+            public void onClick (DialogInterface dialog, int which) {
+                dialog.dismiss ();
+            }
+        });
+        alertDialog.show ();
     }
 
     @Override

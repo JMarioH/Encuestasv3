@@ -75,18 +75,18 @@ public class Cuestionario extends PermisionActivity {
     Spinner spnOpciones;
     @BindView (R.id.LblMensaje)
     TextView textMensaje;
-    ArrayAdapter arrayAdapter;
-    // localizacion
-    GPSTracker gpsTracker;
-    GeoEstatica geoEstatica;
-    GeoLocalizacion geoLocalizacion;
-    RespuestasCuestionario respCuestionario;
     double longitud = 0.0, latitud = 0.0;
-    StringBuilder stringBuilder = new StringBuilder ();
-    Boolean spinnerRespuesta = false;
-    String tipoResp = "";
-    String fecha = "";
-    int idpregunta = 0;
+    private ArrayAdapter arrayAdapter;
+    // localizacion
+    private GPSTracker gpsTracker;
+    private GeoEstatica geoEstatica;
+    private GeoLocalizacion geoLocalizacion;
+    private RespuestasCuestionario respCuestionario;
+    private StringBuilder stringBuilder = new StringBuilder ();
+    private Boolean spinnerRespuesta = false;
+    private String tipoResp = "";
+    private String fecha = "";
+    private int idpregunta = 0;
     // validamos una seleccion sobre el spinner
     private View.OnTouchListener spinnerOnTouch = new View.OnTouchListener () {
         public boolean onTouch (View v, MotionEvent event) {
