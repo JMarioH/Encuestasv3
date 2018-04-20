@@ -8,6 +8,7 @@
     android:background="@drawable/background_selector"
     tools:context="com.popgroup.encuestasv3.MainEncuesta.MainActivity">
 
+    <include layout="@layout/layout_loader"></include>
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"

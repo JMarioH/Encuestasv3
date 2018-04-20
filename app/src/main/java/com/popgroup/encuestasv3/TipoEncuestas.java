@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -22,6 +20,8 @@ import android.widget.TextView;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.popgroup.encuestasv3.Base.BaseActivity;
+import com.popgroup.encuestasv3.Base.BasePresenter;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.TipoEncuesta;
@@ -36,40 +36,28 @@ import butterknife.ButterKnife;
  * Created by jesus.hernandez on 14/12/16.
  * Selecciona tipo de encuesta
  */
-public class TipoEncuestas extends AppCompatActivity {
-    String TAG = getClass().getSimpleName();
-    Bundle bundle;
-    String usuario,cliente,idproyecto;
-    Toolbar  toolbar;
+public class TipoEncuestas extends BaseActivity {
     @BindView(R.id.txtTitle)
     TextView txtTitle;
-    TipoEncuesta tipoEncuesta;
-    ArrayList<TipoEncuesta> arrayTipoEnc;
-    ArrayList<String> arrayEncuestas;
-    ArrayAdapter<String> adapter;
-    ListView listView;
-    DBHelper mDBHelper;
-    Dao dao;
+    private String TAG = getClass().getSimpleName();
+    private String usuario, idproyecto;
+    private Bundle bundle;
+    private ArrayList<TipoEncuesta> arrayTipoEnc;
+    private ArrayList<String> arrayEncuestas;
+    private ArrayAdapter<String> adapter;
+    private ListView listView;
+    private DBHelper mDBHelper;
+    private Dao dao;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tipo_encuestas);
         ButterKnife.bind(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        if (getSupportActionBar() != null) // Habilitar up button
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        txtTitle.setText("Encuestas");
-        txtTitle.setTextSize(18);
-        txtTitle.setTextColor(getBaseContext().getResources().getColor(R.color.colorTextPrimary));
-        setSupportActionBar(toolbar);
         bundle = new Bundle();
         Bundle extras = getIntent().getExtras();
 
         usuario = extras.getString("usuario");
-        cliente = extras.getString("cliente");
         idproyecto = extras.getString("idproyecto");
 
         arrayEncuestas = new ArrayList<>();
@@ -181,6 +169,21 @@ public class TipoEncuestas extends AppCompatActivity {
     }
 
     @Override
+    protected int setLayout () {
+        return R.layout.activity_tipo_encuestas;
+    }
+
+    @Override
+    protected String setTitleToolBar () {
+        return "Encuestas";
+    }
+
+    @Override
+    protected void createPresenter () {
+
+    }
+
+    @Override
     protected void onDestroy () {
         super.onDestroy();
         if (mDBHelper != null) {
@@ -189,13 +192,9 @@ public class TipoEncuestas extends AppCompatActivity {
         }
     }
 
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent = new Intent(this, Proyectos.class);
-            startActivity(intent);
-        }
-        super.onKeyDown(keyCode, event);
-        return true;
+    @Override
+    protected BasePresenter getmPresenter () {
+        return null;
     }
 
     @Override
@@ -221,6 +220,15 @@ public class TipoEncuestas extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
 
+    }
+
+    public boolean onKeyDown (int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent intent = new Intent(this, Proyectos.class);
+            startActivity(intent);
+        }
+        super.onKeyDown(keyCode, event);
+        return true;
     }
 
 }
