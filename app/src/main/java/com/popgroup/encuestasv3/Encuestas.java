@@ -27,6 +27,7 @@ import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.Preguntas;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
+import com.popgroup.encuestasv3.Proyectos.Proyectos;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

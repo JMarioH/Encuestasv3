@@ -25,6 +25,7 @@ import com.popgroup.encuestasv3.Base.BasePresenter;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.TipoEncuesta;
+import com.popgroup.encuestasv3.Proyectos.Proyectos;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
