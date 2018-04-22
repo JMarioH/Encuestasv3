@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorBackgound"
     android:orientation="vertical"
-    tools:context=".TipoEncuestas">
+    tools:context=".TipoEncuesta.TipoEncuestas">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:background="@color/colorBackgoundHeader"
         android:elevation="4dp">
         <TextView
+            style="@style/textTittle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_gravity="center"
-            style="@style/textTittle"
+            android:gravity="center"
             android:text="@string/tipoEncuestas" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:layout_marginBottom="56dp"
         android:layout_marginTop="120dp"
-        android:layout_marginBottom="56dp">
+        android:gravity="center_vertical">
 
         <ListView android:id="@+id/listTipoEnc"
             android:layout_width="match_parent"
@@ -40,8 +40,8 @@
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
         android:background="?attr/colorPrimary"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <TextView
             android:id="@+id/txtTitle"

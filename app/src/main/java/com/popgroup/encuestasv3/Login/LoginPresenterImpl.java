@@ -6,15 +6,16 @@ import com.popgroup.encuestasv3.Base.IView;
 
 /**
  * Created by Jmario on 14/04/2018.
+ * LoginPresenter
  */
 
 public class LoginPresenterImpl extends BasePresenter implements LoginPresenter {
 
     private LoginInteractorImpl mBaseInteractor;
 
-    public LoginPresenterImpl (BaseInteractor mBaseInteractor) {
-        super (mBaseInteractor);
-        this.mBaseInteractor = (LoginInteractorImpl) mBaseInteractor;
+    public LoginPresenterImpl (BaseInteractor interactor) {
+        super (interactor);
+        this.mBaseInteractor = (LoginInteractorImpl) interactor;
         mBaseInteractor.attachCallBack (this);
 
     }
@@ -53,7 +54,7 @@ public class LoginPresenterImpl extends BasePresenter implements LoginPresenter 
 
     @Override
     public LoginInteractorImpl getInteractor () {
-        return mBaseInteractor != null ? mBaseInteractor : null;
+        return mBaseInteractor;
     }
 
     @Override

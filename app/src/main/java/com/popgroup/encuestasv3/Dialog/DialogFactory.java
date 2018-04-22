@@ -48,4 +48,26 @@ public class DialogFactory {
         });
         return dialog;
     }
+
+    public static DialogChoice build (final Context ctrx, final String msg, final boolean showConfirm,
+                                      final boolean showCancel, final Class sendClass) {
+        final DialogAlert dialog = DialogAlert.newInstance (msg, showConfirm, showCancel);
+        dialog.setDialogActions (new DialogActions () {
+            @Override
+            public void Confirm (Object... params) {
+                dialog.dismiss ();
+
+                Intent intent = new Intent (ctrx, sendClass);
+                intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                ctrx.startActivity (intent);
+
+            }
+
+            @Override
+            public void Cancel (Object... params) {
+                dialog.dismiss ();
+            }
+        });
+        return dialog;
+    }
 }

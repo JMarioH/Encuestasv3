@@ -6,6 +6,7 @@ import com.popgroup.encuestasv3.Base.IView;
 
 /**
  * Created by JMario. on 18/4/2018.
+ * mainpresenter
  */
 
 public class MainPresenter extends BasePresenter implements IMainPresenter, IMainCallback {
@@ -14,7 +15,7 @@ public class MainPresenter extends BasePresenter implements IMainPresenter, IMai
 
     public MainPresenter (MainInteractor mBaseInteractor) {
         super (mBaseInteractor);
-        this.mainInteractor = (MainInteractor) mBaseInteractor;
+        this.mainInteractor = mBaseInteractor;
         mBaseInteractor.attachCallBack (this);
     }
 
@@ -72,7 +73,7 @@ public class MainPresenter extends BasePresenter implements IMainPresenter, IMai
 
     @Override
     public BaseInteractor getInteractor () {
-        return mBaseInteractor != null ? mBaseInteractor : null;
+        return mBaseInteractor;
     }
 
     @Override
@@ -104,6 +105,13 @@ public class MainPresenter extends BasePresenter implements IMainPresenter, IMai
     }
 
     @Override
+    public void nextOperation () {
+        if (getView () != null) {
+            getView ().nextOperation ();
+        }
+    }
+
+    @Override
     public void onSuccess (Object result) {
         if (getView () != null) {
             getView ().showLoader (false);
@@ -117,5 +125,4 @@ public class MainPresenter extends BasePresenter implements IMainPresenter, IMai
             getView ().showError (throwable);
         }
     }
-
 }

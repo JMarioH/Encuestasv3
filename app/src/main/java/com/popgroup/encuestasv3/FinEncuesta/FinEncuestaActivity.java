@@ -27,7 +27,7 @@ public class FinEncuestaActivity extends BaseActivity implements IFinEncuestaVie
 
     @BindView (R.id.btnTerminar)
     Button btnTerminar;
-    private String idEncuesta, encuesta, idTienda, idEstablecimiento, idArchivo, usuario;
+    private String idEncuesta, encuesta, idTienda, idEstablecimiento, idArchivo;
 
     private FotoEncuesta fotoEncuesta;
     private FinEncuestaPresenter mPresenter;
@@ -43,18 +43,20 @@ public class FinEncuestaActivity extends BaseActivity implements IFinEncuestaVie
 
         Bundle extras = getIntent ().getExtras ();
         //recivimos las variables
-        idEncuesta = extras.getString ("idEncuesta").toString ();
-        encuesta = extras.getString ("encuesta").toString ();
-        idTienda = extras.getString ("idTienda").toString ();
-        idArchivo = extras.getString ("idArchivo").toString ();
-        idEstablecimiento = extras.getString ("idEstablecimiento").toString ();
-        usuario = extras.getString ("usuario").toString ();
+        if (getIntent ().getExtras () != null) {
+            idEncuesta = extras.getString ("idEncuesta");
+            encuesta = extras.getString ("encuesta");
+            idTienda = extras.getString ("idTienda");
+            idArchivo = extras.getString ("idArchivo");
+            idEstablecimiento = extras.getString ("idEstablecimiento");
+        }
+
         //envio de encuestas y fotos
         btnTerminar.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick (View view) {
                 if (NetWorkUtil.checkConnection (getBaseContext ())) {
-                    mPresenter.enviarEncuesta (idEncuesta, idEstablecimiento, idTienda, usuario);
+                    mPresenter.enviarEncuesta (idEncuesta, idEstablecimiento, idTienda, MainActivity.mUsuario);
                 } else {
                     showMessage ();
 

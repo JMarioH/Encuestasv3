@@ -4,6 +4,7 @@ import com.popgroup.encuestasv3.Base.ICallBack;
 
 /**
  * Created by Orion on 18/04/2018.
+ * interfaz main interactor
  */
 
 public interface IMainCallback extends ICallBack {
@@ -15,4 +16,6 @@ public interface IMainCallback extends ICallBack {
     void showBtnFotoPendientes (Boolean show, Integer pendientes);
 
     void showAlertDB ();
+
+    void nextOperation ();
 }

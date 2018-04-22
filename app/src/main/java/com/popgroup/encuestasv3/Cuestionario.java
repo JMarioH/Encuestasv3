@@ -23,6 +23,9 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.popgroup.encuestasv3.Base.BasePresenter;
 import com.popgroup.encuestasv3.Base.PermisionActivity;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
+import com.popgroup.encuestasv3.Dialog.DialogAlert;
+import com.popgroup.encuestasv3.Dialog.DialogChoice;
+import com.popgroup.encuestasv3.Dialog.DialogFactory;
 import com.popgroup.encuestasv3.Model.GeoEstatica;
 import com.popgroup.encuestasv3.Model.GeoLocalizacion;
 import com.popgroup.encuestasv3.Model.Preguntas;
@@ -44,7 +47,7 @@ import butterknife.BindView;
  */
 public class Cuestionario extends PermisionActivity {
 
-    public ArrayList<CharSequence> arrayOpcSelecionadas = new ArrayList<CharSequence> ();
+    public ArrayList<CharSequence> arrayOpcSelecionadas = new ArrayList<> ();
     public String respLibre = "";
     protected String arreglo[];
     String TAG = getClass ().getSimpleName ();
@@ -54,7 +57,7 @@ public class Cuestionario extends PermisionActivity {
     DBHelper mDBHelper;
     Dao dao;
     Bundle bundle;
-    String idTienda, idEncuesta, idArchivo, idEstablecimiento, usuario, encuesta, numRespuesta;
+    String idTienda, idEncuesta, idArchivo, idEstablecimiento, encuesta, numRespuesta;
     String numPregunta = "0";
     String respSpinner;
     Preguntas preguntas;
@@ -107,23 +110,24 @@ public class Cuestionario extends PermisionActivity {
         gpsTracker = new GPSTracker (this);
         geoEstatica = new GeoEstatica ().getInstance ();
         //recivimos las variables del bundle
-        Bundle extras = getIntent ().getExtras ();
-        idEncuesta = extras.getString ("idEncuesta").toString ();
-        encuesta = extras.getString ("encuesta").toString ();
-        idTienda = extras.getString ("idTienda").toString ();
-        idEstablecimiento = extras.getString ("idEstablecimiento").toString ();
-        idArchivo = extras.getString ("idArchivo").toString ();
-        usuario = extras.getString ("usuario").toString ();
-        numPregunta = extras.getString ("numPregunta").toString ();
-        numRespuesta = extras.getString ("numRespuesta").toString ();
 
+        if (getIntent ().getExtras () != null) {
+            Bundle extras = getIntent ().getExtras ();
+
+            idEncuesta = extras.getString ("idEncuesta");
+            encuesta = extras.getString ("encuesta");
+            idTienda = extras.getString ("idTienda");
+            idEstablecimiento = extras.getString ("idEstablecimiento");
+            idArchivo = extras.getString ("idArchivo");
+            numPregunta = extras.getString ("numPregunta");
+            numRespuesta = extras.getString ("numRespuesta");
+        }
         // creanos de nuevo las variables del bundle
         bundle.putString ("idEncuesta", idEncuesta);
         bundle.putString ("encuesta", encuesta);
         bundle.putString ("idTienda", idTienda);
         bundle.putString ("idEstablecimiento", idEstablecimiento);
         bundle.putString ("idArchivo", idArchivo);
-        bundle.putString ("usuario", usuario);
 
         preguntas = new Preguntas ();
         //recuperamos las fecha y tiempo al inciar la encuesta
@@ -152,14 +156,14 @@ public class Cuestionario extends PermisionActivity {
                     dao.clearObjectCache ();
 
                 } catch (SQLException e) {
-                    Log.e(TAG, "SQLException Geos " + e.getMessage());
+                    Log.e (TAG, "SQLException Geos " + e.getMessage ());
                 }
             }
         }
         if (!numPregunta.equals ("FOTO")) { // primera pregunta
             //recuperamos las preguntas
             try {
-                arrayPreguntas = new ArrayList<Preguntas> ();
+                arrayPreguntas = new ArrayList<> ();
                 dao = getmDBHelper ().getPregutasDao ();
 
                 arrayPreguntas = (ArrayList<Preguntas>) dao.queryBuilder ()
@@ -239,7 +243,7 @@ public class Cuestionario extends PermisionActivity {
             public void onClick (View view) {
                 Boolean respuestaLibre = null;
                 Boolean error = false; // validamos que tengamos una respuesta para cada opcion
-                if (tipoResp == "2") {
+                if ("2".equals (tipoResp)) {
                     if (spinnerRespuesta != true) {
                         showMessage ();
                         error = true;
@@ -248,14 +252,14 @@ public class Cuestionario extends PermisionActivity {
 
                     }
                 }
-                if (tipoResp == "3") {
+                if ("3".equals (tipoResp)) {
                     if (arrayOpcSelecionadas.isEmpty ()) {
                         showMessage ();
                         error = true;
                     }
 
                 }
-                if (tipoResp == "1") {
+                if ("1".equals (tipoResp)) {
                     if (editRespLibre.getText ().toString ().equals ("")) {
                         showMessageRespLibre ();
                         error = true;
@@ -295,6 +299,7 @@ public class Cuestionario extends PermisionActivity {
         });
     }
 
+
     @Override
     protected int setLayout () {
         return R.layout.activity_cuestionario;
@@ -326,37 +331,37 @@ public class Cuestionario extends PermisionActivity {
 
     private DBHelper getmDBHelper () {
         if (mDBHelper == null) {
-            mDBHelper = OpenHelperManager.getHelper(this, DBHelper.class);
+            mDBHelper = OpenHelperManager.getHelper (this, DBHelper.class);
         }
         return mDBHelper;
     }
 
     private void sppinerOpciones (ArrayList<String> arrayRespuestas, final int idPregSel) {
-        arrayAdapter = new ArrayAdapter<String>(this, R.layout.simple_list_item, arrayRespuestas);
-        arrayAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-        spnOpciones.setAdapter(arrayAdapter);
-        spnOpciones.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        arrayAdapter = new ArrayAdapter<> (this, R.layout.simple_list_item, arrayRespuestas);
+        arrayAdapter.setDropDownViewResource (R.layout.simple_spinner_item);
+        spnOpciones.setAdapter (arrayAdapter);
+        spnOpciones.setOnItemSelectedListener (new AdapterView.OnItemSelectedListener () {
             @Override
             public void onItemSelected (AdapterView<?> adapterView, View view, int i, long l) {
-                ArrayList<Respuestas> arrayRespSel = new ArrayList<>();
-                String value = adapterView.getAdapter().getItem(i).toString();
+                ArrayList<Respuestas> arrayRespSel;
+                String value = adapterView.getAdapter ().getItem (i).toString ();
 
                 try {
 
-                    dao = getmDBHelper().getRespuestasDao();
-                    arrayRespSel = (ArrayList<Respuestas>) dao.queryBuilder().selectColumns("idrespuesta", "respuesta", "sigPregunta", "respuestaLibre", "idEncuesta").where().eq("respuesta", value).and().eq("idpregunta", idPregSel).and().eq("idEncuesta", idEncuesta).query();
-                    dao.clearObjectCache();
+                    dao = getmDBHelper ().getRespuestasDao ();
+                    arrayRespSel = (ArrayList<Respuestas>) dao.queryBuilder ().selectColumns ("idrespuesta", "respuesta", "sigPregunta", "respuestaLibre", "idEncuesta").where ().eq ("respuesta", value).and ().eq ("idpregunta", idPregSel).and ().eq ("idEncuesta", idEncuesta).query ();
+                    dao.clearObjectCache ();
 
                     for (Respuestas itemSel : arrayRespSel) {
 
-                        bundle.putString("numPregunta", String.valueOf(itemSel.getSigPregunta()));
-                        bundle.putString("numRespuesta", String.valueOf(itemSel.getIdRespuesta()));
-                        respSpinner = String.valueOf(itemSel.getIdRespuesta());
+                        bundle.putString ("numPregunta", String.valueOf (itemSel.getSigPregunta ()));
+                        bundle.putString ("numRespuesta", String.valueOf (itemSel.getIdRespuesta ()));
+                        respSpinner = String.valueOf (itemSel.getIdRespuesta ());
 
                     }
 
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    e.printStackTrace ();
                 }
             }
 
@@ -399,48 +404,22 @@ public class Cuestionario extends PermisionActivity {
 
     //Mensajes de Validacion y Error
     public void showMessage () {
-        final AlertDialog alertD = new AlertDialog.Builder (this).create ();
-        alertD.setTitle("Mensaje");
-        alertD.setMessage("Debe seleccionar una respuesta para continuar");
-        alertD.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-            public void onClick (DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
 
-        alertD.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow (DialogInterface arg0) {
-                alertD.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+        DialogChoice dialogChoice = DialogFactory.build (getBaseContext (), "Debe seleccionar una respuesta para continuar", true, false);
+        dialogChoice.show (getSupportFragmentManager (), DialogAlert.class.getSimpleName ());
 
-            }
-        });
-
-        alertD.show();
     }
 
     // menu inferior
     public void showMessageRespLibre () {
-        final AlertDialog alertDialog = new AlertDialog.Builder (this).create ();
-        alertDialog.setTitle("Mensaje");
-        alertDialog.setMessage("Debe contestar esta pregunta");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-            public void onClick (DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow (DialogInterface arg0) {
-                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
 
-            }
-        });
-        alertDialog.show();
+        DialogChoice dialogChoice = DialogFactory.build (getBaseContext (), "Debe contestar esta pregunta", true, false);
+        dialogChoice.show (getSupportFragmentManager (), DialogAlert.class.getSimpleName ());
+
     }
 
     private void onChangeOpcSelecionada () {
-        String valSelecionado = "";
+        String valSelecionado;
         for (int i = 0; i < arrayOpcSelecionadas.size (); i++) {
             CharSequence value = arrayOpcSelecionadas.get (i);
             valSelecionado = String.valueOf (value);
@@ -459,7 +438,7 @@ public class Cuestionario extends PermisionActivity {
                         .query ();
                 dao.clearObjectCache ();
                 for (Respuestas respItem : arrayRespuestas) {
-                    pregSig = respItem.getSigPregunta ().toString ();
+                    pregSig = respItem.getSigPregunta ();
                     idResp = String.valueOf (respItem.getIdRespuesta ());
                     try {
                         dao = getmDBHelper ().getRespuestasCuestioanrioDao ();

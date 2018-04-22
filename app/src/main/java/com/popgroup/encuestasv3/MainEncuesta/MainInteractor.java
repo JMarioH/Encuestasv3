@@ -30,6 +30,7 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 /**
  * Created by JMario. on 18/4/2018.
+ * maininteractor
  */
 
 public class MainInteractor extends BaseInteractor implements IMainInteractor {
@@ -46,10 +47,10 @@ public class MainInteractor extends BaseInteractor implements IMainInteractor {
     @Override
     public void getUsuario () {
         String mUsuario = "";
-        List<User> arrayUser = new ArrayList<> ();
+        List<User> arrayUser;
         try {
             dao = getmDBHelper ().getUserDao ();
-            arrayUser = (ArrayList<User>) dao.queryForAll ();
+            arrayUser = (List<User>) dao.queryForAll ();
             for (User item : arrayUser) {
                 mUsuario = item.getNombre ();
             }
@@ -75,7 +76,7 @@ public class MainInteractor extends BaseInteractor implements IMainInteractor {
     @Override
     public void enviarFotosPendientes () {
         JSONArray jsonFotos;
-        ArrayList<NameValuePair> datosPost = null;
+        ArrayList<NameValuePair> datosPost;
         ArrayList<Fotos> fotosPendientes;
         if (NetWorkUtil.checkConnection (context)) {
             try {
@@ -103,6 +104,7 @@ public class MainInteractor extends BaseInteractor implements IMainInteractor {
                                 String.valueOf (fotosPendientes.get (x).getIdEstablecimiento ()),
                                 callBack
                         ).execute ();
+
                     }
                 } catch (JSONException e) {
                     Log.e (TAG, "jsonE -> " + e);
@@ -115,7 +117,6 @@ public class MainInteractor extends BaseInteractor implements IMainInteractor {
                     deleteBuilder.delete ();
                     dao.clearObjectCache ();
 
-                    //btnFotosPendientes.setVisibility(View.GONE);
                 }
 
                 dao.clearObjectCache ();
@@ -130,7 +131,7 @@ public class MainInteractor extends BaseInteractor implements IMainInteractor {
 
     @Override
     public void validateEncPendientes () {
-        List<RespuestasCuestionario> respuestas = new ArrayList<> ();
+        List<RespuestasCuestionario> respuestas;
         try {
             dao = getmDBHelper ().getRespuestasCuestioanrioDao ();
             respuestas = (ArrayList<RespuestasCuestionario>) dao.queryBuilder ().distinct ()
@@ -146,7 +147,7 @@ public class MainInteractor extends BaseInteractor implements IMainInteractor {
 
     @Override
     public void validateFotosPendientes () {
-        List<Fotos> fotosPendientes = new ArrayList<> ();
+        List<Fotos> fotosPendientes;
         try {
 
             dao = getmDBHelper ().getFotosDao ();
@@ -170,8 +171,10 @@ public class MainInteractor extends BaseInteractor implements IMainInteractor {
             for (User item : arrayUser) {
                 mUsuario = item.getNombre ();
             }
-            if (mUsuario != "") {
+            if (arrayUser != null && mUsuario != "") {
                 callBack.showAlertDB ();
+            } else {
+                callBack.nextOperation ();
             }
             dao.clearObjectCache ();
 

@@ -6,12 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,8 +18,9 @@ import android.widget.TextView;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.popgroup.encuestasv3.Base.BaseActivity;
+import com.popgroup.encuestasv3.Base.BasePresenter;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
-import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.Preguntas;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
@@ -33,203 +30,185 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by jesus.hernandez on 14/12/16.
  */
-public class Encuestas extends AppCompatActivity {
-    String TAG = getClass().getSimpleName();
+public class Encuestas extends BaseActivity {
+    String TAG = getClass ().getSimpleName ();
     Bundle bundle;
     DBHelper mDBHelper;
-    Dao dao ;
-    Toolbar toolbar;
-    @BindView(R.id.txtTitle)
+    Dao dao;
+    @BindView (R.id.txtTitle)
     TextView txtTitle;
     ArrayList<CatMaster> arrayCatmaster;
     ListView listEncuestas;
     ArrayAdapter<String> adapter;
     ArrayList<String> arrayEnc;
     ArrayList<Preguntas> arrayPreguntas;
-    String idArchivoSel,idEncuesta, idTienda,usuario;
+    String idArchivoSel, idEncuesta, idTienda;
 
     String idpregunta = "0";
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ini_encuestas);
-        ButterKnife.bind(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        if (getSupportActionBar() != null) // Habilitar up button
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        txtTitle.setText("Encuestas");
-        txtTitle.setTextSize(18);
-        txtTitle.setTextColor(getBaseContext().getResources().getColor(R.color.colorTextPrimary));
-        setSupportActionBar(toolbar);
+    protected void onCreate (@Nullable Bundle savedInstanceState) {
+        super.onCreate (savedInstanceState);
+        bundle = new Bundle ();
+        Bundle extras = getIntent ().getExtras ();
 
-        bundle = new Bundle();
-        Bundle extras = getIntent().getExtras();
-
-        idArchivoSel = extras.getString("idArchivo");
-        idEncuesta = extras.getString("idEncuesta");
-        idTienda = extras.getString("idTienda");
-        usuario = extras.getString("usuario");
-        arrayEnc = new ArrayList<>();
+        idArchivoSel = extras.getString ("idArchivo");
+        idEncuesta = extras.getString ("idEncuesta");
+        idTienda = extras.getString ("idTienda");
+        arrayEnc = new ArrayList<> ();
         try {
-            dao = getmDBHelper().getCatMasterDao();
-            arrayCatmaster = (ArrayList<CatMaster>) dao.queryBuilder().distinct().selectColumns("nombre")
-                    .where().eq("idArchivo",idArchivoSel).and().eq("flag",true).query();
 
-            for(CatMaster item:arrayCatmaster){
+            dao = getmDBHelper ().getCatMasterDao ();
+            arrayCatmaster = (ArrayList<CatMaster>) dao.queryBuilder ().distinct ().selectColumns ("nombre")
+                    .where ().eq ("idArchivo", idArchivoSel).and ().eq ("flag", true).query ();
 
-                arrayEnc.add(item.getNombre());
+            for (CatMaster item : arrayCatmaster) {
+
+                arrayEnc.add (item.getNombre ());
             }
 
-            arrayPreguntas = new ArrayList<>();
-            dao = getmDBHelper().getPregutasDao();
+            arrayPreguntas = new ArrayList<> ();
+            dao = getmDBHelper ().getPregutasDao ();
 
-            arrayPreguntas = (ArrayList<Preguntas>) dao.queryBuilder().where().eq("idEncuesta",idEncuesta).and().eq("orden",1).query();
+            arrayPreguntas = (ArrayList<Preguntas>) dao.queryBuilder ().where ().eq ("idEncuesta", idEncuesta).and ().eq ("orden", 1).query ();
 
-            for (Preguntas preguntas: arrayPreguntas){
-                idpregunta = String.valueOf(preguntas.getIdPregunta());
+            for (Preguntas preguntas : arrayPreguntas) {
+                idpregunta = String.valueOf (preguntas.getIdPregunta ());
 
             }
-            dao.clearObjectCache();
+            dao.clearObjectCache ();
 
-            dao.clearObjectCache();
+            dao.clearObjectCache ();
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
 
-        if(arrayCatmaster.size()>0) {
-            adapter = new ArrayAdapter<String>(this, R.layout.simple_list_item, arrayEnc) {
+        if (arrayCatmaster != null && arrayCatmaster.size () > 0) {
+            adapter = new ArrayAdapter<String> (this, R.layout.simple_list_item, arrayEnc) {
                 @NonNull
                 @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    View view = super.getView(position, convertView, parent);
-                    TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-                    textView.setGravity(Gravity.CENTER);
+                public View getView (int position, View convertView, ViewGroup parent) {
+                    View view = super.getView (position, convertView, parent);
+                    TextView textView = (TextView) view.findViewById (android.R.id.text1);
+                    textView.setTextSize (TypedValue.COMPLEX_UNIT_DIP, 16);
+                    textView.setGravity (Gravity.CENTER);
                     return view;
                 }
             };
-            listEncuestas = (ListView) findViewById(R.id.listEncuestas);
-            listEncuestas.setAdapter(adapter);
-            listEncuestas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            listEncuestas = (ListView) findViewById (R.id.listEncuestas);
+            listEncuestas.setAdapter (adapter);
+            listEncuestas.setOnItemClickListener (new AdapterView.OnItemClickListener () {
                 @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    String value = adapterView.getAdapter().getItem(i).toString();
+                public void onItemClick (AdapterView<?> adapterView, View view, int i, long l) {
+                    String value = adapterView.getAdapter ().getItem (i).toString ();
                     String id = null;
                     String idArchivo = null;
                     try {
-                        dao = getmDBHelper().getCatMasterDao();
-                        arrayCatmaster = (ArrayList<CatMaster>) dao.queryBuilder().distinct().selectColumns("idTienda", "idArchivo").where().in("idArchivo", idArchivoSel).and().eq("nombre", value).query();
+                        dao = getmDBHelper ().getCatMasterDao ();
+                        arrayCatmaster = (ArrayList<CatMaster>) dao.queryBuilder ().distinct ().selectColumns ("idTienda", "idArchivo").where ().in ("idArchivo", idArchivoSel).and ().eq ("nombre", value).query ();
                         for (CatMaster item : arrayCatmaster) {
-                            id = item.getIdTienda();
-                            idArchivo = item.getIdArchivo();
+                            id = item.getIdTienda ();
+                            idArchivo = item.getIdArchivo ();
                         }
-                        dao.clearObjectCache();
+                        dao.clearObjectCache ();
 
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        e.printStackTrace ();
                     }
-                    bundle.putString("usuario", usuario);
-                    bundle.putString("idEncuesta", idEncuesta);
-                    bundle.putString("encuesta", value);
-                    bundle.putString("idEstablecimiento", id);
-                    bundle.putString("idTienda", idTienda);
-                    bundle.putString("idArchivo", idArchivo);
-                    bundle.putString("numPregunta", idpregunta);
-                    bundle.putString("numRespuesta", "0");
+                    bundle.putString ("idEncuesta", idEncuesta);
+                    bundle.putString ("encuesta", value);
+                    bundle.putString ("idEstablecimiento", id);
+                    bundle.putString ("idTienda", idTienda);
+                    bundle.putString ("idArchivo", idArchivo);
+                    bundle.putString ("numPregunta", idpregunta);
+                    bundle.putString ("numRespuesta", "0");
                     //limpiemoas la base de deregistros antes de usarla
                     try {
-                        dao = getmDBHelper().getRespuestasCuestioanrioDao();
-                        DeleteBuilder<RespuestasCuestionario, Integer> deleteBuilder = dao.deleteBuilder();
-                        deleteBuilder.where().eq("idEstablecimiento", id).and().eq("idTienda", idTienda);
-                        deleteBuilder.delete();
-                        dao.clearObjectCache();
+                        dao = getmDBHelper ().getRespuestasCuestioanrioDao ();
+                        DeleteBuilder<RespuestasCuestionario, Integer> deleteBuilder = dao.deleteBuilder ();
+                        deleteBuilder.where ().eq ("idEstablecimiento", id).and ().eq ("idTienda", idTienda);
+                        deleteBuilder.delete ();
+                        dao.clearObjectCache ();
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        e.printStackTrace ();
                     }
-                    Intent intent = new Intent(Encuestas.this, Cuestionario.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    Intent intent = new Intent (Encuestas.this, Cuestionario.class);
+                    intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    intent.putExtras (bundle);
+                    startActivity (intent);
                 }
             });
-        }else{
-            showMessage();
+        } else {
+            showMessage ();
         }
 
 
     }
-    private DBHelper getmDBHelper() {
+
+    private DBHelper getmDBHelper () {
         if (mDBHelper == null) {
-            mDBHelper = OpenHelperManager.getHelper(this, DBHelper.class);
+            mDBHelper = OpenHelperManager.getHelper (this, DBHelper.class);
         }
         return mDBHelper;
     }
 
     public void showMessage () {
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Mensaje");
-        alertDialog.setMessage("No hay encuestas disponibles.. ");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+        AlertDialog alertDialog = new AlertDialog.Builder (this).create ();
+        alertDialog.setTitle ("Mensaje");
+        alertDialog.setMessage ("No hay encuestas disponibles.. ");
+        alertDialog.setButton (AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener () {
 
             public void onClick (DialogInterface dialog, int which) {
-                dialog.dismiss();
-                Intent intent = new Intent(Encuestas.this, Proyectos.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                dialog.dismiss ();
+                Intent intent = new Intent (Encuestas.this, Proyectos.class);
+                intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                intent.putExtras (bundle);
+                startActivity (intent);
             }
         });
 
-        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        alertDialog.setOnDismissListener (new DialogInterface.OnDismissListener () {
             @Override
             public void onDismiss (DialogInterface dialogInterface) {
-                Intent intent = new Intent(Encuestas.this, Proyectos.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                Intent intent = new Intent (Encuestas.this, Proyectos.class);
+                intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                intent.putExtras (bundle);
+                startActivity (intent);
             }
         });
-        alertDialog.show();
+        alertDialog.show ();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected int setLayout () {
+        return R.layout.activity_ini_encuestas;
+    }
+
+    @Override
+    protected String setTitleToolBar () {
+        return "Encuestas";
+    }
+
+    @Override
+    protected void createPresenter () {
+
+    }
+
+    @Override
+    protected void onDestroy () {
+        super.onDestroy ();
         if (mDBHelper != null) {
-            OpenHelperManager.releaseHelper();
+            OpenHelperManager.releaseHelper ();
             mDBHelper = null;
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu);
-        return true;
+    protected BasePresenter getmPresenter () {
+        return null;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-        if (id == R.id.menuInicio) {
-            //Display Toast
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(intent);
-        }else if(id== R.id.menuSalir){
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
-        return super.onOptionsItemSelected(item);
-
-    }
-
 }

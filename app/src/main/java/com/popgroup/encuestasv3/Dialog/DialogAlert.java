@@ -18,6 +18,7 @@ public class DialogAlert extends DialogChoice {
         args.putBoolean(KEY_SHOW_CONFIRM, showConfirm);
         args.putBoolean(KEY_SHOW_CANCEL, showCancel);
         DialogAlert fragment = new DialogAlert();
+        fragment.setCancelable (false);
         fragment.setArguments(args);
         return fragment;
     }

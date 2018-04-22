@@ -12,17 +12,16 @@ import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Dialog.DialogAlert;
 import com.popgroup.encuestasv3.Dialog.DialogChoice;
 import com.popgroup.encuestasv3.Dialog.DialogFactory;
+import com.popgroup.encuestasv3.Login.LoginActivity;
 import com.popgroup.encuestasv3.Proyectos.Proyectos;
 import com.popgroup.encuestasv3.R;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-
-import static com.popgroup.encuestasv3.AsynckTask.Constantes.ENC_USER;
 
 
 public class MainActivity extends BaseActivity implements IMainView, View.OnClickListener {
 
+    public static String mUsuario;
     @BindView (R.id.btnCambiarUser)
     Button btnCambiarUser;
     @BindView (R.id.btnInicio)
@@ -37,14 +36,12 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
     TextView txtUser;
     private String TAG = getClass ().getSimpleName ();
     private int encuestasPendientes;
-    private String mUsuario;
     private DBHelper mDBHelper;
     private MainPresenter mPresenter;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
-        ButterKnife.bind (this);
         mLoader.setTextLoader ("Enviando Datos..");
         mLoader.disableTouch (true);
         mLoader.initUI ();
@@ -95,6 +92,27 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
     }
 
     @Override
+    public void showUsuario (Boolean show, String usuario) {
+        this.mUsuario = usuario;
+        txtUser.setVisibility (show ? View.VISIBLE : View.GONE);
+        txtUser.setText (usuario);
+    }
+
+    @Override
+    public void showAlert () {
+        final DialogChoice dialogAlert = DialogFactory.build (this, "Cambiar de usuario borrara los datos existentes",
+                true, false, mPresenter);
+        dialogAlert.show (getSupportFragmentManager (), DialogAlert.class.getSimpleName ());
+    }
+
+    @Override
+    public void nextOperation () {
+        Intent intent = new Intent (MainActivity.this, LoginActivity.class);
+        intent.addFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity (intent);
+    }
+
+    @Override
     public void onClick (View view) {
         if (view.getId () == R.id.btnInicio) {
             iniciarProceso ();
@@ -106,21 +124,7 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
     }
 
     @Override
-    public void showUsuario (Boolean show, String usuario) {
-        mUsuario = usuario;
-        txtUser.setVisibility (show ? View.VISIBLE : View.GONE);
-        txtUser.setText (usuario);
-    }
 
-    @Override
-    public void showAlert () {
-
-        final DialogChoice dialogAlert = DialogFactory.build (this, "Cambiar de usuario borrara los datos existentes",
-                true, false, mPresenter);
-        dialogAlert.show (getSupportFragmentManager (), DialogAlert.class.getSimpleName ());
-    }
-
-    @Override
     public void showButtonEncuestasPendientes (Boolean show, Integer pendientes) {
         if (btnEncPendientes != null) {
             encuestasPendientes = pendientes;
@@ -159,9 +163,9 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         startActivity (a);
     }
 
+
     public void iniciarProceso () {
         Intent i = new Intent (MainActivity.this, Proyectos.class);
-        i.putExtra (ENC_USER, mUsuario);
         i.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity (i);
 

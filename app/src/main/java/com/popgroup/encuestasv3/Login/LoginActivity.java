@@ -23,15 +23,14 @@ import cz.msebera.android.httpclient.NameValuePair;
 
 /**
  * Created by jesus.hernandez on 07/12/16.
+ * loginActivity
  */
 
 public class LoginActivity extends BaseActivity implements ILoginView {
 
     public String usuario;
-    public String URL;
     public ArrayList<NameValuePair> data;
 
-    String TAG = getClass ().getSimpleName ();
     @BindView (R.id.editUser)
     EditText editUser;
     @BindView (R.id.editPassword)
