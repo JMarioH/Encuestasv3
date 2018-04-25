@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -48,10 +47,8 @@ import butterknife.BindView;
 public class Cuestionario extends PermisionActivity {
 
     public ArrayList<CharSequence> arrayOpcSelecionadas = new ArrayList<> ();
-    public String respLibre = "";
     protected String arreglo[];
     String TAG = getClass ().getSimpleName ();
-    Toolbar toolbar;
     @BindView (R.id.txtTitle)
     TextView txtTitle;
     DBHelper mDBHelper;
@@ -61,7 +58,6 @@ public class Cuestionario extends PermisionActivity {
     String numPregunta = "0";
     String respSpinner;
     Preguntas preguntas;
-    Respuestas respuestas;
     //opciones para preguntas
     ArrayList<Preguntas> arrayPreguntas;
     ArrayList<Respuestas> arrayRespuestas;
@@ -149,7 +145,7 @@ public class Cuestionario extends PermisionActivity {
                     geoLocalizacion = new GeoLocalizacion ();
                     geoLocalizacion.setFecha (fecha);
                     geoLocalizacion.setIdEncuesta (Integer.parseInt (idEncuesta));
-                    geoLocalizacion.setIdTienda (idTienda);
+                    geoLocalizacion.setIdTienda (idEstablecimiento);
                     geoLocalizacion.setLatitud (String.valueOf (latitud));
                     geoLocalizacion.setLongitud (String.valueOf (longitud));
                     dao.create (geoLocalizacion);
@@ -476,17 +472,18 @@ public class Cuestionario extends PermisionActivity {
 
     public boolean onKeyDown (int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Bundle extras = getIntent ().getExtras ();
-            numPregunta = extras.getString ("numPregunta");
-
-            try {
-                dao = getmDBHelper ().getRespuestasCuestioanrioDao ();
-                DeleteBuilder<RespuestasCuestionario, Integer> deleteBuilder = dao.deleteBuilder ();
-                deleteBuilder.where ().eq ("idPregunta", numPregunta).and ().eq ("idEstablecimiento", idEstablecimiento);
-                deleteBuilder.delete ();
-                dao.clearObjectCache ();
-            } catch (SQLException e) {
-                e.printStackTrace ();
+            if (getIntent ().getExtras () != null) {
+                Bundle extras = getIntent ().getExtras ();
+                numPregunta = extras.getString ("numPregunta");
+                try {
+                    dao = getmDBHelper ().getRespuestasCuestioanrioDao ();
+                    DeleteBuilder<RespuestasCuestionario, Integer> deleteBuilder = dao.deleteBuilder ();
+                    deleteBuilder.where ().eq ("idPregunta", numPregunta).and ().eq ("idEstablecimiento", idEstablecimiento);
+                    deleteBuilder.delete ();
+                    dao.clearObjectCache ();
+                } catch (SQLException e) {
+                    Log.e (TAG, "SqlException onBackPress" + e.getMessage ());
+                }
             }
         }
         super.onKeyDown (keyCode, event);

@@ -104,8 +104,11 @@ public class LoginAsynck extends AsyncTask<String, String, String> {
             new AsynckCatMaster ().executeOnExecutor (AppEnc.getInstance ().getExecutor (), usuario);
             new AsynckPreguntas ().executeOnExecutor (AppEnc.getInstance ().getExecutor (), usuario);
             new AsynckRespuestas ().executeOnExecutor (AppEnc.getInstance ().getExecutor (), usuario);
-
+            iCallBack.onSuccess (res);
+        } else {
+            iCallBack.onFailed (new Throwable ("Usuario no existente"));
+            ;
         }
-        iCallBack.onSuccess (res);
+
     }
 }

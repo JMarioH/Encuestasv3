@@ -22,6 +22,7 @@ import com.popgroup.encuestasv3.Base.BaseActivity;
 import com.popgroup.encuestasv3.Base.BasePresenter;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Model.CatMaster;
+import com.popgroup.encuestasv3.Model.GeoEstatica;
 import com.popgroup.encuestasv3.Model.Preguntas;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
 import com.popgroup.encuestasv3.Proyectos.Proyectos;
@@ -136,6 +137,7 @@ public class Encuestas extends BaseActivity {
                     } catch (SQLException e) {
                         e.printStackTrace ();
                     }
+                    GeoEstatica.getInstance ().reset ();
                     Intent intent = new Intent (Encuestas.this, Cuestionario.class);
                     intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     intent.putExtras (bundle);

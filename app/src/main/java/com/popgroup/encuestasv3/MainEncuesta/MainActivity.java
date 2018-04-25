@@ -101,7 +101,7 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
     @Override
     public void showAlert () {
         final DialogChoice dialogAlert = DialogFactory.build (this, "Cambiar de usuario borrara los datos existentes",
-                true, false, mPresenter);
+                true, true, mPresenter);
         dialogAlert.show (getSupportFragmentManager (), DialogAlert.class.getSimpleName ());
     }
 
