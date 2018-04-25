@@ -25,6 +25,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
@@ -47,7 +48,7 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
     JSONArray jsonArray;
     String mUsuario;
     int numeroReg;
-    ArrayList<RespuestasCuestionario> arrayEnc;
+    List<RespuestasCuestionario> arrayEnc;
     ArrayList<GeoLocalizacion> arrayGeos;
     private String TAG = getClass ().getSimpleName ();
     //  private ProgressDialog progressDialog;
@@ -74,12 +75,12 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
             arrayGeos = new ArrayList<>();
             jsonArray = new JSONArray();
             dao = getmDBHelper().getRespuestasCuestioanrioDao();
-            arrayEnc = (ArrayList<RespuestasCuestionario>) dao.queryBuilder().where().eq("flag",true).query();
+            arrayEnc = dao.queryBuilder ().where ().eq (RespuestasCuestionario.FLAG, true).query ();
             for(RespuestasCuestionario resp : arrayEnc){
 
                 dao = getmDBHelper().getGeosDao();
-                arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder().selectColumns("latitud","longitud")
-                        .where ().eq ("idEncuesta", resp.getIdTienda ()).and ().eq ("idEstablecimiento", resp.getIdEstablecimiento ()).query ();
+                arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder ().selectColumns (GeoLocalizacion.LATITUD, GeoLocalizacion.LONGITUD)
+                        .where ().eq ("idEncuesta", resp.getIdEncuesta ()).and ().eq ("idEstablecimiento", resp.getIdEstablecimiento ()).query ();
 
                 for(GeoLocalizacion item :arrayGeos){
                     latitud =  item.getLatitud();
@@ -122,22 +123,10 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
         return success;
     }
 
-    @Override
-    protected void onPreExecute () {
-        super.onPreExecute ();
-     /*   progressDialog = new ProgressDialog (mContext);
-        progressDialog.setProgressStyle (ProgressDialog.STYLE_SPINNER);
-        progressDialog.setMessage ("Enviando..." + numeroReg + " datos pendientes .");
-        progressDialog.setIndeterminate (true);
-        progressDialog.setCancelable (false);
-        progressDialog.show ();*/
-    }
 
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-      /*  progressDialog.dismiss();
-        progressDialog.hide();*/
         Log.e(TAG,"onpostExecute : " +s);
         if(s.equals("1")){
             try { // borramos las encuestas enviada
