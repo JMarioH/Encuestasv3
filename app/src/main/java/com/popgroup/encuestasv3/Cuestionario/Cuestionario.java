@@ -92,7 +92,6 @@ public class Cuestionario extends PermisionActivity implements ICuestionarioView
         super.onCreate (savedInstanceState);
         checkPermissions ();
         bundle = new Bundle ();
-        getmPresenter ().setGeo (idEncuesta, idEstablecimiento);
 
         if (getIntent ().getExtras () != null) {
             Bundle extras = getIntent ().getExtras ();
@@ -112,6 +111,7 @@ public class Cuestionario extends PermisionActivity implements ICuestionarioView
         bundle.putString ("idEstablecimiento", idEstablecimiento);
         bundle.putString ("idArchivo", idArchivo);
 
+        getmPresenter ().setGeo (idEncuesta, idEstablecimiento);
         preguntas = new Preguntas ();
 
         if (!numPregunta.equals ("FOTO")) { // primera pregunta
