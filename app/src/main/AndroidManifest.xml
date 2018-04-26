@@ -37,7 +37,9 @@
             android:name=".TipoEncuesta.TipoEncuestas"
             android:screenOrientation="portrait" />
         <activity android:name=".Encuestas" android:screenOrientation="portrait"/>
-        <activity android:name=".Cuestionario" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Cuestionario.Cuestionario"
+            android:screenOrientation="portrait" />
         <activity android:name=".Fotografia" android:screenOrientation="portrait"/>
         <activity
             android:name=".FinEncuesta.FinEncuestaActivity"

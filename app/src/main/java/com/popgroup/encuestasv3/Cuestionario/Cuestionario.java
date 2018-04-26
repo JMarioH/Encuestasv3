@@ -1,4 +1,4 @@
-package com.popgroup.encuestasv3;
+package com.popgroup.encuestasv3.Cuestionario;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,24 +19,19 @@ import android.widget.TextView;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
-import com.popgroup.encuestasv3.Base.BasePresenter;
 import com.popgroup.encuestasv3.Base.PermisionActivity;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Dialog.DialogAlert;
 import com.popgroup.encuestasv3.Dialog.DialogChoice;
 import com.popgroup.encuestasv3.Dialog.DialogFactory;
-import com.popgroup.encuestasv3.Model.GeoEstatica;
-import com.popgroup.encuestasv3.Model.GeoLocalizacion;
+import com.popgroup.encuestasv3.Fotografia;
 import com.popgroup.encuestasv3.Model.Preguntas;
 import com.popgroup.encuestasv3.Model.Respuestas;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
-import com.popgroup.encuestasv3.Utility.GPSTracker;
+import com.popgroup.encuestasv3.R;
 
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import butterknife.BindView;
 
@@ -44,7 +39,7 @@ import butterknife.BindView;
  * Created by jesus.hernandez on 14/12/16.
  * clase principal para responder el cuestionario y recorrer las preguntas
  */
-public class Cuestionario extends PermisionActivity {
+public class Cuestionario extends PermisionActivity implements ICuestionarioView {
 
     public ArrayList<CharSequence> arrayOpcSelecionadas = new ArrayList<> ();
     protected String arreglo[];
@@ -72,20 +67,15 @@ public class Cuestionario extends PermisionActivity {
     Button btnOpciones;
     @BindView (R.id.spnOpciones)
     Spinner spnOpciones;
-    @BindView (R.id.LblMensaje)
-    TextView textMensaje;
-    double longitud = 0.0, latitud = 0.0;
     private ArrayAdapter arrayAdapter;
     // localizacion
-    private GPSTracker gpsTracker;
-    private GeoEstatica geoEstatica;
-    private GeoLocalizacion geoLocalizacion;
     private RespuestasCuestionario respCuestionario;
     private StringBuilder stringBuilder = new StringBuilder ();
     private Boolean spinnerRespuesta = false;
     private String tipoResp = "";
     private String fecha = "";
     private int idpregunta = 0;
+    private CuestionarioPresenter mPresenter;
     // validamos una seleccion sobre el spinner
     private View.OnTouchListener spinnerOnTouch = new View.OnTouchListener () {
         public boolean onTouch (View v, MotionEvent event) {
@@ -102,10 +92,7 @@ public class Cuestionario extends PermisionActivity {
         super.onCreate (savedInstanceState);
         checkPermissions ();
         bundle = new Bundle ();
-
-        gpsTracker = new GPSTracker (this);
-        geoEstatica = new GeoEstatica ().getInstance ();
-        //recivimos las variables del bundle
+        getmPresenter ().setGeo (idEncuesta, idEstablecimiento);
 
         if (getIntent ().getExtras () != null) {
             Bundle extras = getIntent ().getExtras ();
@@ -126,36 +113,7 @@ public class Cuestionario extends PermisionActivity {
         bundle.putString ("idArchivo", idArchivo);
 
         preguntas = new Preguntas ();
-        //recuperamos las fecha y tiempo al inciar la encuesta
-        DateFormat dateFormat = new SimpleDateFormat ("yyyy/MM/dd HH:mm:ss");
-        Date dt = new Date ();
-        fecha = dateFormat.format (dt);
-        // validamos que exista una ubicacion dsiponible
-        if (!geoEstatica.ismEstatus ()) {
 
-            longitud = gpsTracker.getLongitude ();
-            latitud = gpsTracker.getLatitude ();
-            if (longitud != 0.0 && latitud != 0.0) {
-                geoEstatica.setmEstatus (true);
-                geoEstatica.setsLatitud (gpsTracker.getLatitude ());
-                geoEstatica.setsLongitud (gpsTracker.getLongitude ());
-                // guardamos la geolocalizacion en la base de datos
-                try {
-                    dao = getmDBHelper ().getGeosDao ();
-                    geoLocalizacion = new GeoLocalizacion ();
-                    geoLocalizacion.setFecha (fecha);
-                    geoLocalizacion.setIdEncuesta (Integer.parseInt (idEncuesta));
-                    geoLocalizacion.setIdTienda (idEstablecimiento);
-                    geoLocalizacion.setLatitud (String.valueOf (latitud));
-                    geoLocalizacion.setLongitud (String.valueOf (longitud));
-                    dao.create (geoLocalizacion);
-                    dao.clearObjectCache ();
-
-                } catch (SQLException e) {
-                    Log.e (TAG, "SQLException Geos " + e.getMessage ());
-                }
-            }
-        }
         if (!numPregunta.equals ("FOTO")) { // primera pregunta
             //recuperamos las preguntas
             try {
@@ -169,7 +127,7 @@ public class Cuestionario extends PermisionActivity {
                         .query ();
                 dao.clearObjectCache ();
 
-                //recuperamos las preguntas para este cuestionario
+                //recuperamos las preguntas para esta pregunta
                 for (Preguntas item : arrayPreguntas) {
 
                     String pregunta = item.getPregunta ();
@@ -269,8 +227,7 @@ public class Cuestionario extends PermisionActivity {
                     if (!arrayOpcSelecionadas.isEmpty ()) {
                         onChangeOpcSelecionada ();
                     }
-                    try {
-                        dao = getmDBHelper ().getRespuestasCuestioanrioDao ();
+
                         respCuestionario = new RespuestasCuestionario ();
                         respCuestionario.setIdEncuesta (Integer.parseInt (idEncuesta));
                         respCuestionario.setFecha (fecha);
@@ -280,11 +237,7 @@ public class Cuestionario extends PermisionActivity {
                         respCuestionario.setIdTienda (idTienda);
                         respCuestionario.setIdEstablecimiento (idEstablecimiento);
                         respCuestionario.setRespuestLibre (respuestaLibre);
-                        dao.create (respCuestionario);
-                        dao.clearObjectCache ();
-                    } catch (SQLException e) {
-                        e.printStackTrace ();
-                    }
+                    getmPresenter ().setRespuestaCuestionario (respCuestionario);
 
                     Intent intent = new Intent (getBaseContext (), Cuestionario.class);
                     intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -308,7 +261,8 @@ public class Cuestionario extends PermisionActivity {
 
     @Override
     protected void createPresenter () {
-
+        mPresenter = new CuestionarioPresenter (new CuestionarioInteractor (this));
+        mPresenter.attachView (this);
     }
 
     @Override
@@ -321,8 +275,18 @@ public class Cuestionario extends PermisionActivity {
     }
 
     @Override
-    protected BasePresenter getmPresenter () {
-        return null;
+    protected CuestionarioPresenter getmPresenter () {
+        return mPresenter;
+    }
+
+    @Override
+    public void showLoader (boolean show) {
+
+    }
+
+    @Override
+    public void showError (Throwable throwable) {
+
     }
 
     private DBHelper getmDBHelper () {

@@ -19,6 +19,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.popgroup.encuestasv3.Base.BaseActivity;
 import com.popgroup.encuestasv3.Base.BasePresenter;
+import com.popgroup.encuestasv3.Cuestionario.Cuestionario;
 import com.popgroup.encuestasv3.FinEncuesta.FinEncuestaActivity;
 import com.popgroup.encuestasv3.Model.FotoEncuesta;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;

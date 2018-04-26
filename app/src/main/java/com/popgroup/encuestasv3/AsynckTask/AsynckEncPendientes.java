@@ -80,7 +80,7 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
 
                 dao = getmDBHelper().getGeosDao();
                 arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder ().selectColumns (GeoLocalizacion.LATITUD, GeoLocalizacion.LONGITUD)
-                        .where ().eq ("idEncuesta", resp.getIdEncuesta ()).and ().eq ("idEstablecimiento", resp.getIdEstablecimiento ()).query ();
+                        .where ().eq (GeoLocalizacion.IDENCUESTA, resp.getIdEncuesta ()).and ().eq (GeoLocalizacion.IDESTABLECIMIENTO, resp.getIdEstablecimiento ()).query ();
 
                 for(GeoLocalizacion item :arrayGeos){
                     latitud =  item.getLatitud();
