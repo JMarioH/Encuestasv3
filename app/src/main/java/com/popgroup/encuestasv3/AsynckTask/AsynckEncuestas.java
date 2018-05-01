@@ -62,7 +62,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
     private ArrayList<NameValuePair> datosPost;
     private JSONArray jsonFotos;
 
-    private IMainCallback iCallBack;
+    private ICallBack iCallBack;
 
     public AsynckEncuestas (Context context, String idEncuesta, String idEstablecimiento,
                             String idTienda, String usuario, IMainCallback iCallBack) {
@@ -81,9 +81,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
         this.mTienda = idTienda;
         this.mUsuario = usuario;
         this.mEstablecimiento = idEstablecimiento;
-        if (iCallBack instanceof ICallBack) {
-            this.iCallBack = (IMainCallback) iCallBack;
-        }
+        this.iCallBack = iCallBack;
     }
 
     @Override

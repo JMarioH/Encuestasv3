@@ -48,7 +48,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         txtTitle = (TextView) toolbar.findViewById (R.id.txtTitle);
         txtTitle.setText (setTitleToolBar ());
         txtTitle.setTextSize (18);
-        txtTitle.setTextColor (getBaseContext ().getResources ().getColor (R.color.colorTextPrimary));
+        txtTitle.setTextColor(getBaseContext().getResources().getColor(R.color.colorBackgroundTxt));
         setSupportActionBar (toolbar);
         createPresenter ();
         initLoader ();

@@ -1,11 +1,9 @@
 package com.popgroup.encuestasv3;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -22,6 +20,9 @@ import com.popgroup.encuestasv3.Base.BaseActivity;
 import com.popgroup.encuestasv3.Base.BasePresenter;
 import com.popgroup.encuestasv3.Cuestionario.Cuestionario;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
+import com.popgroup.encuestasv3.Dialog.DialogAlert;
+import com.popgroup.encuestasv3.Dialog.DialogChoice;
+import com.popgroup.encuestasv3.Dialog.DialogFactory;
 import com.popgroup.encuestasv3.Model.CatMaster;
 import com.popgroup.encuestasv3.Model.GeoEstatica;
 import com.popgroup.encuestasv3.Model.Preguntas;
@@ -160,6 +161,10 @@ public class Encuestas extends BaseActivity {
     }
 
     public void showMessage () {
+        final DialogChoice dialogAlert = DialogFactory.build(this, "No hay encuestas disponibles..", true, false, Proyectos.class, bundle);
+
+        dialogAlert.show(getSupportFragmentManager(), DialogAlert.class.getSimpleName());
+        /*
         AlertDialog alertDialog = new AlertDialog.Builder (this).create ();
         alertDialog.setTitle ("Mensaje");
         alertDialog.setMessage ("No hay encuestas disponibles.. ");
@@ -183,7 +188,7 @@ public class Encuestas extends BaseActivity {
                 startActivity (intent);
             }
         });
-        alertDialog.show ();
+        alertDialog.show ();*/
     }
 
     @Override

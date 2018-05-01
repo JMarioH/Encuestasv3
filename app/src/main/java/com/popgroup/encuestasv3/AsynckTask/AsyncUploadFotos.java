@@ -8,6 +8,7 @@ import android.util.Log;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.popgroup.encuestasv3.Base.ICallBack;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.MainEncuesta.IMainCallback;
 import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
@@ -37,7 +38,7 @@ public class AsyncUploadFotos extends AsyncTask<Void, Void, Boolean> {
 
     private String mEncuesta;
     private String mEstablecimiento;
-    private IMainCallback callback;
+    private ICallBack callback;
 
     public AsyncUploadFotos (Context context, ArrayList<NameValuePair> data, String encuesta, String establecimiento, IMainCallback iMainCallback) {
         this.context = context;
@@ -48,6 +49,15 @@ public class AsyncUploadFotos extends AsyncTask<Void, Void, Boolean> {
         mDBHelper = OpenHelperManager.getHelper (context, DBHelper.class);
     }
 
+
+    public AsyncUploadFotos (Context context, ArrayList<NameValuePair> data, String encuesta, String establecimiento, ICallBack iMainCallback) {
+        this.context = context;
+        this.data = data;
+        this.mEncuesta = encuesta;
+        this.mEstablecimiento = establecimiento;
+        this.callback = iMainCallback;
+        mDBHelper = OpenHelperManager.getHelper(context, DBHelper.class);
+    }
     @Override
     protected Boolean doInBackground (Void... params) {
         Boolean respuesta = false;

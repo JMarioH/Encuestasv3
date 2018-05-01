@@ -25,7 +25,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
@@ -37,21 +36,20 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 public class AsynckEncPendientes extends AsyncTask<String,String,String> {
 
-    Dao dao;
-    Context mContext;
-    Constantes constantes;
-    String URL ;
-    String success;
-    String latitud;
-    String longitud;
-    JSONObject jsonObject;
-    JSONArray jsonArray;
-    String mUsuario;
-    int numeroReg;
-    List<RespuestasCuestionario> arrayEnc;
-    ArrayList<GeoLocalizacion> arrayGeos;
+    private Dao dao;
+    private Context mContext;
+    private Constantes constantes;
+    private String URL;
+    private String success;
+    private String latitud;
+    private String longitud;
+    private JSONObject jsonObject;
+    private JSONArray jsonArray;
+    private String mUsuario;
+    private int numeroReg;
+    private ArrayList<RespuestasCuestionario> arrayEnc;
+    private ArrayList<GeoLocalizacion> arrayGeos;
     private String TAG = getClass ().getSimpleName ();
-    //  private ProgressDialog progressDialog;
     private DBHelper mDBHelper;
     private ArrayList<NameValuePair> data;
     private IMainCallback iMainCallback;
@@ -75,12 +73,11 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
             arrayGeos = new ArrayList<>();
             jsonArray = new JSONArray();
             dao = getmDBHelper().getRespuestasCuestioanrioDao();
-            arrayEnc = dao.queryBuilder ().where ().eq (RespuestasCuestionario.FLAG, true).query ();
+            arrayEnc = (ArrayList<RespuestasCuestionario>) dao.queryBuilder().where().eq(RespuestasCuestionario.FLAG, true).query();
             for(RespuestasCuestionario resp : arrayEnc){
 
                 dao = getmDBHelper().getGeosDao();
-                arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder ().selectColumns (GeoLocalizacion.LATITUD, GeoLocalizacion.LONGITUD)
-                        .where ().eq (GeoLocalizacion.IDENCUESTA, resp.getIdEncuesta ()).and ().eq (GeoLocalizacion.IDESTABLECIMIENTO, resp.getIdEstablecimiento ()).query ();
+                arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder().selectColumns(GeoLocalizacion.LATITUD, GeoLocalizacion.LONGITUD).where().eq(GeoLocalizacion.IDENCUESTA, resp.getIdTienda()).and().eq(GeoLocalizacion.IDESTABLECIMIENTO, resp.getIdEstablecimiento()).query();
 
                 for(GeoLocalizacion item :arrayGeos){
                     latitud =  item.getLatitud();
@@ -103,7 +100,7 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
 
 
             }
-            grabar(jsonArray.toString());
+            // grabar(jsonArray.toString());
             data.add(new BasicNameValuePair("setEncuestas",jsonArray.toString()));
             ServiceHandler serviceHandler = new ServiceHandler();
             String response = serviceHandler.makeServiceCall(URL, ServiceHandler.POST, data);
@@ -123,11 +120,9 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
         return success;
     }
 
-
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        Log.e(TAG,"onpostExecute : " +s);
         if(s.equals("1")){
             try { // borramos las encuestas enviada
                 dao = getmDBHelper().getRespuestasCuestioanrioDao();

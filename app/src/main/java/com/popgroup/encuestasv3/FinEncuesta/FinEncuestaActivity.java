@@ -1,16 +1,16 @@
 package com.popgroup.encuestasv3.FinEncuesta;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.popgroup.encuestasv3.Base.BaseActivity;
 import com.popgroup.encuestasv3.Base.BasePresenter;
+import com.popgroup.encuestasv3.Dialog.DialogAlert;
+import com.popgroup.encuestasv3.Dialog.DialogChoice;
+import com.popgroup.encuestasv3.Dialog.DialogFactory;
 import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.Model.FotoEncuesta;
 import com.popgroup.encuestasv3.R;
@@ -89,6 +89,12 @@ public class FinEncuestaActivity extends BaseActivity implements IFinEncuestaVie
     }
 
     public void showMessage () {
+
+
+        final DialogChoice dialogAlert = DialogFactory.build(this, "No cuentas con internet.\nLos datos se guardaran localmente.", true, true, mPresenter, idEstablecimiento, idEncuesta, fotoEncuesta);
+
+        dialogAlert.show(getSupportFragmentManager(), DialogAlert.class.getSimpleName());
+/*
         final AlertDialog alertD = new AlertDialog.Builder (this).create ();
         alertD.setTitle ("Mensaje");
         alertD.setMessage ("No cuentas con internet.\nLos datos se guardaran localmente. ");
@@ -112,7 +118,7 @@ public class FinEncuestaActivity extends BaseActivity implements IFinEncuestaVie
             }
         });
 
-        alertD.show ();
+        alertD.show (); */
     }
 
     @Override

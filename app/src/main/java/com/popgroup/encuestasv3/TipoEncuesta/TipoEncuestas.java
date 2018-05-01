@@ -13,10 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.j256.ormlite.dao.Dao;
 import com.popgroup.encuestasv3.Base.BaseActivity;
 import com.popgroup.encuestasv3.Base.BasePresenter;
-import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Dialog.DialogAlert;
 import com.popgroup.encuestasv3.Dialog.DialogChoice;
 import com.popgroup.encuestasv3.Dialog.DialogFactory;
@@ -29,26 +27,17 @@ import com.popgroup.encuestasv3.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 /**
  * Created by jesus.hernandez on 14/12/16.
  * Selecciona tipo de encuesta
  */
 public class TipoEncuestas extends BaseActivity implements ITipoEncView {
-
-    @BindView (R.id.txtTitle)
-    TextView txtTitle;
-
     private String TAG = getClass ().getSimpleName ();
     private String idproyecto;
     private Bundle bundle;
-    private ArrayList<TipoEncuesta> arrayTipoEnc;
     private List<TipoEncuesta> arrayEncuestas;
     private ArrayAdapter<TipoEncuesta> adapter;
     private ListView listView;
-    private DBHelper mDBHelper;
-    private Dao dao;
     private TipoEncPresenter mPresenter;
 
     @Override
@@ -102,8 +91,7 @@ public class TipoEncuestas extends BaseActivity implements ITipoEncView {
     }
 
     public void showMessage () {
-        final DialogChoice dialogAlert = DialogFactory.build (this, "No hay encuestas disponibles.",
-                true, false, Proyectos.class);
+        final DialogChoice dialogAlert = DialogFactory.build (this, "No hay encuestas disponibles.", true, false, Proyectos.class, null);
         dialogAlert.show (getSupportFragmentManager (), DialogAlert.class.getSimpleName ());
     }
 

@@ -2,6 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
 android {
+    signingConfigs {
+        config {
+            storeFile file('PopEncuestas.jks')
+            keyAlias 'encuestasKey'
+            keyPassword 'admin**'
+            storePassword 'admin**'
+        }
+    }
+
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
@@ -16,8 +25,13 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+            buildConfigField "String", "USER", '""'
+            buildConfigField "String", "PASS", '""'
+            debuggable true
         }
         debug{
+            signingConfig signingConfigs.config
             // usuario desarrollo
             buildConfigField "String", "USER", '"5560860001"'
             buildConfigField "String", "PASS", '"foo"'

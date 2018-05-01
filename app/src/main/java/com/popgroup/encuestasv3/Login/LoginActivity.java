@@ -1,9 +1,7 @@
 package com.popgroup.encuestasv3.Login;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +11,9 @@ import com.popgroup.encuestasv3.AdminActivity;
 import com.popgroup.encuestasv3.Base.BaseActivity;
 import com.popgroup.encuestasv3.Base.BasePresenter;
 import com.popgroup.encuestasv3.BuildConfig;
+import com.popgroup.encuestasv3.Dialog.DialogAlert;
+import com.popgroup.encuestasv3.Dialog.DialogChoice;
+import com.popgroup.encuestasv3.Dialog.DialogFactory;
 import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.R;
 
@@ -47,7 +48,7 @@ public class LoginActivity extends BaseActivity implements ILoginView {
         mLoader.setTextLoader ("Validando Datos..");
         mLoader.disableTouch (true);
         mLoader.initUI ();
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG && BuildConfig.USER != "" && BuildConfig.PASS != "") {
             editUser.setText (BuildConfig.USER);
             editPassword.setText (BuildConfig.PASS);
         }
@@ -90,21 +91,9 @@ public class LoginActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void showError (Throwable throwable) {
-        final AlertDialog alertDialog = new AlertDialog.Builder (this).create ();
-        alertDialog.setTitle ("Mensaje");
-        alertDialog.setMessage (throwable.getMessage ());
-        alertDialog.setButton (AlertDialog.BUTTON_POSITIVE, "Aceptar", new DialogInterface.OnClickListener () {
-            public void onClick (DialogInterface dialog, int which) {
-                dialog.dismiss ();
-            }
-        });
-        alertDialog.setOnShowListener (new DialogInterface.OnShowListener () {
-            @Override
-            public void onShow (DialogInterface arg0) {
-                alertDialog.getButton (AlertDialog.BUTTON_POSITIVE).setTextColor (getResources ().getColor (R.color.colorPrimary));
-            }
-        });
-        alertDialog.show ();
+
+        final DialogChoice dialogAlert = DialogFactory.build(this, throwable.getMessage(), true, true);
+        dialogAlert.show(getSupportFragmentManager(), DialogAlert.class.getSimpleName());
     }
 
     @Override

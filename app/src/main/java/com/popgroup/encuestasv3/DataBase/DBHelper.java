@@ -24,10 +24,9 @@ import java.sql.SQLException;
 
 public class DBHelper extends OrmLiteSqliteOpenHelper {
 
-    String TAG = getClass().getSimpleName();
     private static final String DB_NAME = "Encuestas.db";
     private static final int DB_VERSION = 1;
-
+    String TAG = getClass().getSimpleName();
     private Dao<User, Integer> userDao = null;
     private Dao<Cliente, Integer> clienteDao = null;
     private Dao<Proyecto, Integer> proyectoDao = null;
@@ -51,10 +50,17 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
     private RuntimeExceptionDao<GeoLocalizacion,Integer> geosRuntime = null;
     private RuntimeExceptionDao<Fotos,Integer> fotosRuntime = null;
 
-
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
+
+    public Dao<User, Integer> getUserDao () throws SQLException {
+        if (userDao == null) {
+            userDao = getDao(User.class);
+        }
+        return userDao;
+    }
+
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
@@ -75,6 +81,14 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         }
 
     }
+
+    public RuntimeExceptionDao<User, Integer> getsimpleUserDao () {
+        if (userRuntime == null) {
+            userRuntime = getRuntimeExceptionDao(User.class);
+        }
+        return userRuntime;
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
       try {
@@ -97,20 +111,6 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
 
         }
     }
-    public Dao<User, Integer> getUserDao() throws SQLException {
-        if (userDao == null) {
-            userDao = getDao(User.class);
-        }
-        return userDao;
-    }
-
-
-    public RuntimeExceptionDao<User, Integer> getsimpleUserDao() {
-        if (userRuntime == null) {
-            userRuntime = getRuntimeExceptionDao(User.class);
-        }
-        return userRuntime;
-    }
 
     public Dao<Cliente, Integer> getClienteDao()  throws SQLException{
         if(clienteDao == null){
@@ -119,6 +119,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         }
         return clienteDao;
     }
+
     public RuntimeExceptionDao<Cliente, Integer> getClienteRuntimeDao() {
         if (clienteRuntime == null) {
             clienteRuntime = getRuntimeExceptionDao(Cliente.class);
@@ -133,6 +134,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         }
         return proyectoDao;
     }
+
     public RuntimeExceptionDao<Proyecto, Integer> getProyectoRuntime() {
         if (proyectoRuntime == null) {
             proyectoRuntime = getRuntimeExceptionDao(Proyecto.class);
@@ -147,6 +149,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         }
         return tipoEncDao;
     }
+
     public RuntimeExceptionDao<TipoEncuesta, Integer> getTipoEncRuntimeDao() {
         if (tipoEncRuntime == null) {
             tipoEncRuntime = getRuntimeExceptionDao(TipoEncuesta.class);
@@ -161,12 +164,14 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         }
         return catMastersDao;
     }
+
     public RuntimeExceptionDao<CatMaster, Integer> getCatMastersRuntime() {
         if (catMastersRuntime == null) {
             catMastersRuntime = getRuntimeExceptionDao(CatMaster.class);
         }
         return catMastersRuntime;
     }
+
     public Dao<Preguntas, Integer> getPregutasDao()  throws SQLException{
         if(pregutasDao == null){
             pregutasDao = getDao(Preguntas.class);
@@ -174,12 +179,14 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         }
         return pregutasDao;
     }
+
     public RuntimeExceptionDao<Preguntas, Integer> getPreguntasRuntime() {
         if (preguntasRuntime == null) {
             preguntasRuntime = getRuntimeExceptionDao(Preguntas.class);
         }
         return preguntasRuntime;
     }
+
     public Dao<Respuestas, Integer> getRespuestasDao()  throws SQLException{
         if(respuestasDao == null){
             respuestasDao = getDao(Respuestas.class);
@@ -187,6 +194,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         }
         return respuestasDao;
     }
+
     public RuntimeExceptionDao<Respuestas, Integer> getRespuestasRuntime() {
         if (respuestasRuntime == null) {
             respuestasRuntime = getRuntimeExceptionDao(Respuestas.class);
@@ -200,6 +208,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         }
         return respuestasCuestioanrioDao;
     }
+
     public RuntimeExceptionDao<RespuestasCuestionario,Integer> getRespuestasCuestionaroiRuntime(){
         if (respuestasCuestionaroiRuntime == null){
             respuestasCuestionaroiRuntime = getRuntimeExceptionDao(RespuestasCuestionario.class);
@@ -234,6 +243,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         }
         return fotosRuntime;
     }
+
 
     @Override
     public void close() {

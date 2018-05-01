@@ -31,7 +31,7 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
  * Created by Orion on 14/04/2018.
  */
 public class LoginAsynck extends AsyncTask<String, String, String> {
-    String success = "0";
+
     private String TAG = LoginAsynck.class.getSimpleName ();
     private String usuario;
     private String password;
@@ -54,7 +54,7 @@ public class LoginAsynck extends AsyncTask<String, String, String> {
     @SuppressWarnings ("WrongThread")
     @Override
     protected String doInBackground (String... params) {
-
+        String success = "0";
         data = new ArrayList<> ();
         data.add (new BasicNameValuePair ("f", "login"));
         data.add (new BasicNameValuePair ("usuario", usuario));
@@ -72,6 +72,7 @@ public class LoginAsynck extends AsyncTask<String, String, String> {
 
             } catch (JSONException e) {
                 Log.e (TAG, "JSONException" + e);
+                success = "0";
             }
         }
         return success;

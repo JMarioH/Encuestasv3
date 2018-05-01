@@ -5,7 +5,6 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_selector"
     tools:context="com.popgroup.encuestasv3.MainEncuesta.MainActivity">
 
     <include layout="@layout/layout_loader"></include>
@@ -110,7 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:textColor="@color/colorTextPrimary"
+            android:textColor="@color/colorBackgroundTxt"
          />
     </android.support.v7.widget.Toolbar>
 </RelativeLayout>

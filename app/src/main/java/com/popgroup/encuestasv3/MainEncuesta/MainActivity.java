@@ -6,9 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.popgroup.encuestasv3.Base.BaseActivity;
-import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Dialog.DialogAlert;
 import com.popgroup.encuestasv3.Dialog.DialogChoice;
 import com.popgroup.encuestasv3.Dialog.DialogFactory;
@@ -36,7 +34,6 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
     TextView txtUser;
     private String TAG = getClass ().getSimpleName ();
     private int encuestasPendientes;
-    private DBHelper mDBHelper;
     private MainPresenter mPresenter;
 
     @Override
@@ -79,14 +76,6 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
     }
 
     @Override
-    protected void onDestroy () {
-        super.onDestroy ();
-        if (mDBHelper != null) {
-            OpenHelperManager.releaseHelper ();
-            mDBHelper = null;
-        }
-    }
-    @Override
     protected MainPresenter getmPresenter () {
         return mPresenter != null ? (MainPresenter) mPresenter : null;
     }
@@ -113,6 +102,16 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
     }
 
     @Override
+
+    public void showButtonEncuestasPendientes (Boolean show, Integer pendientes) {
+        if (btnEncPendientes != null) {
+            encuestasPendientes = pendientes;
+            btnEncPendientes.setVisibility(show ? View.VISIBLE : View.GONE);
+            btnEncPendientes.setText("Encuestas Pendientes " + " ( " + pendientes + " )");
+        }
+    }
+
+    @Override
     public void onClick (View view) {
         if (view.getId () == R.id.btnInicio) {
             iniciarProceso ();
@@ -120,16 +119,6 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
             mPresenter.enviarEncuestaPendientes (mUsuario, encuestasPendientes);
         } else if (view.getId () == R.id.btnFotosPendientes) {
             mPresenter.enviarFotosPendientes ();
-        }
-    }
-
-    @Override
-
-    public void showButtonEncuestasPendientes (Boolean show, Integer pendientes) {
-        if (btnEncPendientes != null) {
-            encuestasPendientes = pendientes;
-            btnEncPendientes.setVisibility (show ? View.VISIBLE : View.GONE);
-            btnEncPendientes.setText ("Encuestas Pendientes " + " ( " + pendientes + " )");
         }
     }
 

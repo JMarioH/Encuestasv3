@@ -32,6 +32,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:textColor="@color/colorTextPrimary" />
+            android:textColor="@color/colorBackgroundTxt" />
     </LinearLayout>
 </com.popgroup.encuestasv3.Loader>

@@ -75,7 +75,7 @@
 
         <Button
             android:id="@+id/btnLogin"
-            style="@style/mButtonCuestionario"
+            style="@style/mButton"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

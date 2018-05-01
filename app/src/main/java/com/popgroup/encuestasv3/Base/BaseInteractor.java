@@ -1,6 +1,5 @@
 package com.popgroup.encuestasv3.Base;
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
 
 /**
@@ -25,10 +24,6 @@ public abstract class BaseInteractor<T> implements LifeCycle {
 
     @Override
     public void onDestroy () {
-        if (mDBHelper != null) {
-            OpenHelperManager.releaseHelper ();
-            mDBHelper = null;
-        }
     }
 
     public abstract void attachCallBack (final ICallBack<T> callBack);

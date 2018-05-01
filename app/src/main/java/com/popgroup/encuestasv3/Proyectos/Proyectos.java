@@ -23,8 +23,6 @@ import com.popgroup.encuestasv3.Model.Proyecto;
 import com.popgroup.encuestasv3.R;
 import com.popgroup.encuestasv3.TipoEncuesta.TipoEncuestas;
 
-import butterknife.BindView;
-
 /**
  * Created by jesus.hernandez on 13/12/16.
  * Selecciona el proyecto
@@ -36,8 +34,6 @@ public class Proyectos extends BaseActivity implements IProyectoView {
     public ArrayAdapter<Proyecto> adapter;
     public DBHelper mDBHelper;
     public ListView listProyectos;
-    @BindView (R.id.txtTitle)
-    TextView txtTitle;
     private Bundle bundle;
     private ProyectosPresenter mPresenter;
 
