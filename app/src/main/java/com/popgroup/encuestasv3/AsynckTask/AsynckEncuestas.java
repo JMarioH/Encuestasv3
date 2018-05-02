@@ -95,8 +95,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
 
         try {
             dao = getmDBHelper().getGeosDao();
-            arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder().selectColumns("latitud", "longitud")
-                    .where().eq("idEncuesta", mEncuesta).and().eq("idEstablecimiento", mTienda).query();
+            arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder().selectColumns("latitud", "longitud").where().eq("idEncuesta", mEncuesta).and().eq("idEstablecimiento", mEstablecimiento).query();
             if (arrayGeos != null && arrayGeos.size() > 0) {
                 for (GeoLocalizacion item : arrayGeos) {
                     latitud = item.getLatitud();

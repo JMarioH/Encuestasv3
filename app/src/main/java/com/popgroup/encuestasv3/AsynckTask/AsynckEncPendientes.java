@@ -78,12 +78,15 @@ public class AsynckEncPendientes extends AsyncTask<String,String,String> {
 
                 dao = getmDBHelper().getGeosDao();
                 arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder().selectColumns(GeoLocalizacion.LATITUD, GeoLocalizacion.LONGITUD).where().eq(GeoLocalizacion.IDENCUESTA, resp.getIdTienda()).and().eq(GeoLocalizacion.IDESTABLECIMIENTO, resp.getIdEstablecimiento()).query();
-
-                for(GeoLocalizacion item :arrayGeos){
-                    latitud =  item.getLatitud();
-                    longitud = item.getLongitud();
+                if (arrayGeos != null) {
+                    for (GeoLocalizacion item : arrayGeos) {
+                        latitud = item.getLatitud();
+                        longitud = item.getLongitud();
+                    }
+                } else {
+                    latitud = "0.0";
+                    longitud = "0.0";
                 }
-
                 dao.clearObjectCache();
                 jsonObject = new JSONObject();
                 jsonObject.put("idEncuesta",resp.getIdEncuesta());
