@@ -36,6 +36,11 @@ public class AsynckRespuestas extends AsyncTask<String,String,String>{
     private ArrayList<NameValuePair> data;
     private String telefono;
     private DBHelper mDBHelper;
+    private ICallbackAsyncktask iCallbackAsyncktask;
+
+    public AsynckRespuestas (ICallbackAsyncktask iCallbackAsyncktask) {
+        this.iCallbackAsyncktask = iCallbackAsyncktask;
+    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -63,14 +68,14 @@ public class AsynckRespuestas extends AsyncTask<String,String,String>{
                     respuestas.setIdEncuesta(jsonObject.getInt("idEncuesta"));
                     dao = getmDBHelper().getRespuestasDao();
                     dao.create(respuestas);
-
+                    success = "1";
                 } catch (SQLException e) {
+                    success = "0";
                     e.printStackTrace();
                     Log.d (TAG, "SqlException " + e.getMessage ());
                 }
 
             }
-            return success;
         }catch (JSONException e) {
             e.printStackTrace();
         }
@@ -85,6 +90,7 @@ public class AsynckRespuestas extends AsyncTask<String,String,String>{
     @Override
     protected void onPostExecute (String s) {
         super.onPostExecute (s);
+        iCallbackAsyncktask.onFinish(s);
     }
 
     private DBHelper getmDBHelper(){

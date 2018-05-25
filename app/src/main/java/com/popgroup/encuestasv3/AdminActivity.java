@@ -1,10 +1,7 @@
 package com.popgroup.encuestasv3;
 
 import android.app.ProgressDialog;
-import android.content.ClipData;
 import android.content.Context;
-import android.content.Intent;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,9 +20,7 @@ import android.widget.TextView;
 
 import com.popgroup.encuestasv3.AsynckTask.Constantes;
 import com.popgroup.encuestasv3.AsynckTask.ServiceHandler;
-import com.popgroup.encuestasv3.Model.Respuestas;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
-import com.popgroup.encuestasv3.Model.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,27 +28,14 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
-
-import static android.R.attr.id;
-import static android.R.attr.value;
-import static android.R.attr.x;
-import static android.R.attr.y;
-import static com.popgroup.encuestasv3.R.id.add;
-import static com.popgroup.encuestasv3.R.id.contenido;
 
 /**
  * Created by jesus.hernandez on 25/01/17.
@@ -61,22 +43,21 @@ import static com.popgroup.encuestasv3.R.id.contenido;
 public class AdminActivity extends AppCompatActivity {
     public String TAG = getClass().getSimpleName();
     public String path = "";
-    ArrayList<String> arrayList;
-    ArrayList<RespuestasCuestionario> arrayResp;
-    ArrayList<String> item;
-    String dataString;
-    JSONArray jsonArrayitem;
-    String strContent;
-
     @BindView(R.id.listTxt)
     ListView listView;
     @BindView(R.id.txtContenido)
     TextView txtContenido;
     @BindView(R.id.btnEnviar)
     Button btnEnviar;
-    ArrayAdapter adapter;
-    ArrayList<String> contenido;
-    String itemtxt;
+    private ArrayList<String> arrayList;
+    private ArrayList<RespuestasCuestionario> arrayResp;
+    private ArrayList<String> item;
+    private String dataString;
+    private JSONArray jsonArrayitem;
+    private String strContent;
+    private ArrayAdapter adapter;
+    private ArrayList<String> contenido;
+    private String itemtxt;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,8 +67,6 @@ public class AdminActivity extends AppCompatActivity {
         path = String.valueOf(Environment.getExternalStorageDirectory().getAbsolutePath());
         File filepath = new File(path);
         File[] files = filepath.listFiles();
-
-        Log.e(TAG, "files  size " + files.length);
         arrayList = new ArrayList<>();
         item = new ArrayList<>();
         arrayResp = new ArrayList<>();
@@ -161,33 +140,20 @@ public class AdminActivity extends AppCompatActivity {
 
     public class AsynckEncuestasTxt extends AsyncTask<String, String, String> {
 
-        private String stringTxt;
-        private ProgressDialog pDialog;
-        private String URL;
         String success;
         Constantes rutas;
         Context mContext;
-        private ArrayList<NameValuePair> data;
-
         JSONArray jsonArray ;
         JSONObject rJson;
+        private String stringTxt;
+        private ProgressDialog pDialog;
+        private String URL;
+        private ArrayList<NameValuePair> data;
 
         public AsynckEncuestasTxt(Context context, String item) {
             this.stringTxt = item;
             this.mContext = context;
         }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pDialog = new ProgressDialog(mContext);
-            pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            pDialog.setMessage("Enviando datos");
-            pDialog.setIndeterminate(true);
-            pDialog.setCancelable(false);
-            pDialog.show();
-        }
-
 
         @Override
         protected String doInBackground(String... strings) {
@@ -229,6 +195,17 @@ public class AdminActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             return success;
+        }
+
+        @Override
+        protected void onPreExecute () {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(mContext);
+            pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            pDialog.setMessage("Enviando datos");
+            pDialog.setIndeterminate(true);
+            pDialog.setCancelable(false);
+            pDialog.show();
         }
 
         @Override

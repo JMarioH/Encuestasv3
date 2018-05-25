@@ -84,8 +84,6 @@ public class Encuestas extends BaseActivity {
 
             }
             dao.clearObjectCache ();
-
-            dao.clearObjectCache ();
         } catch (SQLException e) {
             e.printStackTrace ();
         }

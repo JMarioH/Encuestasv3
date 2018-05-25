@@ -36,6 +36,11 @@ public class AsynckCatMaster extends AsyncTask<String,String,String>{
     private ArrayList<NameValuePair> data ;
     private String telefono;
     private DBHelper mDBHelper;
+    private ICallbackAsyncktask iCallbackAsyncktask;
+
+    public AsynckCatMaster (ICallbackAsyncktask iCallbackAsyncktask) {
+        this.iCallbackAsyncktask = iCallbackAsyncktask;
+    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -65,13 +70,13 @@ public class AsynckCatMaster extends AsyncTask<String,String,String>{
                     catMaster.setFlag(true);
                     dao = getmDBHelper().getCatMasterDao();
                     dao.create(catMaster);
-
+                    success = "1";
                 } catch (SQLException e) {
                     e.printStackTrace();
+                    success = "0";
                 }
 
             }
-            return success;
         }catch (JSONException e) {
             e.printStackTrace();
         }
@@ -81,11 +86,13 @@ public class AsynckCatMaster extends AsyncTask<String,String,String>{
     @Override
     protected void onPreExecute () {
         super.onPreExecute ();
+
     }
 
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+        iCallbackAsyncktask.onFinish(s);
     }
     private DBHelper getmDBHelper(){
         if (mDBHelper == null){

@@ -29,7 +29,7 @@ import com.popgroup.encuestasv3.TipoEncuesta.TipoEncuestas;
  */
 public class Proyectos extends BaseActivity implements IProyectoView {
 
-    public String TAG = getClass ().getSimpleName ();
+    public String TAG = getClass().getSimpleName();
 
     public ArrayAdapter<Proyecto> adapter;
     public DBHelper mDBHelper;
@@ -39,39 +39,42 @@ public class Proyectos extends BaseActivity implements IProyectoView {
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
-        super.onCreate (savedInstanceState);
-        bundle = new Bundle ();
+        super.onCreate(savedInstanceState);
+        bundle = new Bundle();
+        if (mPresenter.getListProyectos() != null && mPresenter.getListProyectos().size() > 0) {
+            adapter = new ArrayAdapter<Proyecto>(this, R.layout.simple_list_item, mPresenter.getListProyectos()) {
 
-        adapter = new ArrayAdapter<Proyecto> (this, R.layout.simple_list_item, mPresenter.getListProyectos ()) {
+                @Override
+                public View getView (int position, View convertView, ViewGroup parent) {
 
-            @Override
-            public View getView (int position, View convertView, ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+                    textView.setText(mPresenter.getListProyectos().get(position).getNombre());
+                    textView.setGravity(Gravity.CENTER);
+                    return view;
+                }
+            };
+            listProyectos = (ListView) findViewById(R.id.listProyectos);
+            listProyectos.setAdapter(adapter);
 
-                View view = super.getView (position, convertView, parent);
-                TextView textView = (TextView) view.findViewById (android.R.id.text1);
-                textView.setTextSize (TypedValue.COMPLEX_UNIT_DIP, 16);
-                textView.setText (mPresenter.getListProyectos ().get (position).getNombre ());
-                textView.setGravity (Gravity.CENTER);
-                return view;
-            }
-        };
-        listProyectos = (ListView) findViewById (R.id.listProyectos);
-        listProyectos.setAdapter (adapter);
+            listProyectos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick (AdapterView<?> adapterView, View view, int i, long l) {
+                    Proyecto proyecto = (Proyecto) adapterView.getAdapter().getItem(i);
 
-        listProyectos.setOnItemClickListener (new AdapterView.OnItemClickListener () {
-            @Override
-            public void onItemClick (AdapterView<?> adapterView, View view, int i, long l) {
-                Proyecto proyecto = (Proyecto) adapterView.getAdapter ().getItem (i);
+                    bundle.putString("cliente", mPresenter.getCliente());
+                    bundle.putString("idproyecto", proyecto.getIdproyecto());
 
-                bundle.putString ("cliente", mPresenter.getCliente ());
-                bundle.putString ("idproyecto", proyecto.getIdproyecto ());
-
-                Intent intent = new Intent (Proyectos.this, TipoEncuestas.class);
-                intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                intent.putExtras (bundle);
-                startActivity (intent);
-            }
-        });
+                    Intent intent = new Intent(Proyectos.this, TipoEncuestas.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+        } else {
+            showError(new Throwable("Sin proyectos disponibles"));
+        }
     }
 
     @Override
@@ -86,8 +89,8 @@ public class Proyectos extends BaseActivity implements IProyectoView {
 
     @Override
     protected void createPresenter () {
-        mPresenter = new ProyectosPresenter (new ProyectosInteractor (this));
-        mPresenter.attachView (this);
+        mPresenter = new ProyectosPresenter(new ProyectosInteractor(this));
+        mPresenter.attachView(this);
     }
 
     @Override
@@ -101,17 +104,16 @@ public class Proyectos extends BaseActivity implements IProyectoView {
 
     @Override
     public void showError (Throwable throwable) {
-        final DialogChoice dialogAlert = DialogFactory.build (this, throwable.getMessage (),
-                true, false);
-        dialogAlert.show (getSupportFragmentManager (), DialogAlert.class.getSimpleName ());
+        final DialogChoice dialogAlert = DialogFactory.build(this, throwable.getMessage(), true, false);
+        dialogAlert.show(getSupportFragmentManager(), DialogAlert.class.getSimpleName());
     }
 
     public boolean onKeyDown (int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent = new Intent (this, MainActivity.class);
-            startActivity (intent);
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
-        super.onKeyDown (keyCode, event);
+        super.onKeyDown(keyCode, event);
         return true;
     }
 

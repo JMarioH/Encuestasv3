@@ -37,6 +37,11 @@ public class AsynckProyecto extends AsyncTask<String,String,String> {
     private ArrayList<NameValuePair> data ;
     private String telefono;
     private DBHelper mDBHelper;
+    private ICallbackAsyncktask iCallbackAsyncktask;
+
+    public AsynckProyecto (ICallbackAsyncktask ICallBack) {
+        this.iCallbackAsyncktask = ICallBack;
+    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -64,8 +69,9 @@ public class AsynckProyecto extends AsyncTask<String,String,String> {
                 try {
                     dao = getmDBHelper().getProyectoDao();
                     dao.create(proyecto);
+                    success = "1";
                 }catch (SQLException e ){
-
+                    success = "0";
                     e.printStackTrace();
                 }
             }
@@ -75,12 +81,18 @@ public class AsynckProyecto extends AsyncTask<String,String,String> {
 
             e.printStackTrace();
         }
-        return null;
+        return success;
     }
 
     @Override
     protected void onPreExecute () {
         super.onPreExecute ();
+    }
+
+    @Override
+    protected void onPostExecute (String s) {
+        super.onPostExecute(s);
+        iCallbackAsyncktask.onFinish(s);
     }
 
     @Override

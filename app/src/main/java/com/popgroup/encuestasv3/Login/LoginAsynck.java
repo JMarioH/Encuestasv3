@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
-import com.popgroup.encuestasv3.AppEnc;
 import com.popgroup.encuestasv3.AsynckTask.AsynckCatMaster;
 import com.popgroup.encuestasv3.AsynckTask.AsynckCliente;
 import com.popgroup.encuestasv3.AsynckTask.AsynckPreguntas;
@@ -13,6 +12,7 @@ import com.popgroup.encuestasv3.AsynckTask.AsynckProyecto;
 import com.popgroup.encuestasv3.AsynckTask.AsynckRespuestas;
 import com.popgroup.encuestasv3.AsynckTask.AsynckTipoEnc;
 import com.popgroup.encuestasv3.AsynckTask.Constantes;
+import com.popgroup.encuestasv3.AsynckTask.ICallbackAsyncktask;
 import com.popgroup.encuestasv3.AsynckTask.ServiceHandler;
 import com.popgroup.encuestasv3.Base.ICallBack;
 import com.popgroup.encuestasv3.DataBase.DBHelper;
@@ -32,6 +32,7 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
  */
 public class LoginAsynck extends AsyncTask<String, String, String> {
 
+    public static Boolean bandera = false;
     private String TAG = LoginAsynck.class.getSimpleName ();
     private String usuario;
     private String password;
@@ -40,7 +41,6 @@ public class LoginAsynck extends AsyncTask<String, String, String> {
     private ArrayList<NameValuePair> data;
     private Dao dao;
     private DBHelper dbHelper;
-
 
     public LoginAsynck (Context ctx, String user, String password, ICallBack mCallBack, Dao dao, DBHelper dbHelper) {
         this.context = ctx;
@@ -84,7 +84,7 @@ public class LoginAsynck extends AsyncTask<String, String, String> {
     }
 
     @Override
-    protected void onPostExecute (String res) {
+    protected void onPostExecute (final String res) {
         super.onPostExecute (res);
 
 
@@ -96,19 +96,58 @@ public class LoginAsynck extends AsyncTask<String, String, String> {
                 user.setNombre (usuario);
                 dao.create (user);
             } catch (SQLException e) {
-                Log.e (TAG, "sql" + e);
+                Log.e(TAG, "SQLEXception" + e);
             }
+            new AsynckCliente(new ICallbackAsyncktask() {
+                @Override
+                public void onFinish (String result) {
+                    if ("1".equals(result)) {
+                        new AsynckProyecto(new ICallbackAsyncktask() {
+                            @Override
+                            public void onFinish (String result) {
+                                if ("1".equals(result)) {
+                                    new AsynckTipoEnc(new ICallbackAsyncktask() {
+                                        @Override
+                                        public void onFinish (String result) {
+                                            if ("1".equals(result)) {
+                                                new AsynckCatMaster(new ICallbackAsyncktask() {
+                                                    @Override
+                                                    public void onFinish (String result) {
+                                                        if ("1".equals(result)) {
+                                                            new AsynckPreguntas(new ICallbackAsyncktask() {
+                                                                @Override
+                                                                public void onFinish (String result) {
+                                                                    if ("1".equals(result)) {
+                                                                        new AsynckRespuestas(new ICallbackAsyncktask() {
+                                                                            @Override
+                                                                            public void onFinish (String result) {
+                                                                                if ("1".equals(result)) {
 
-            new AsynckCliente ().executeOnExecutor (AppEnc.getInstance ().getExecutor (), usuario);
-            new AsynckProyecto ().executeOnExecutor (AppEnc.getInstance ().getExecutor (), usuario);
-            new AsynckTipoEnc ().executeOnExecutor (AppEnc.getInstance ().getExecutor (), usuario);
-            new AsynckCatMaster ().executeOnExecutor (AppEnc.getInstance ().getExecutor (), usuario);
-            new AsynckPreguntas ().executeOnExecutor (AppEnc.getInstance ().getExecutor (), usuario);
-            new AsynckRespuestas ().executeOnExecutor (AppEnc.getInstance ().getExecutor (), usuario);
-            iCallBack.onSuccess (res);
+                                                                                    iCallBack.onSuccess(res);
+                                                                                }
+                                                                            }
+                                                                        }).execute(usuario);
+
+                                                                    }
+                                                                }
+                                                            }).execute(usuario);
+                                                        }
+                                                    }
+                                                }).execute(usuario);
+
+                                            }
+                                        }
+                                    }).execute(usuario);
+                                }
+                            }
+                        }).execute(usuario);
+                    }
+                }
+            }).execute(usuario);
+
         } else {
             iCallBack.onFailed (new Throwable ("Usuario no existente"));
-            ;
+
         }
 
     }

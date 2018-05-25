@@ -34,6 +34,11 @@ public class AsynckCliente extends AsyncTask<String, String, String> {
     private ArrayList<NameValuePair> data;
     private String telefono;
     private DBHelper mDBHelper;
+    private ICallbackAsyncktask iCallBack;
+
+    public AsynckCliente (ICallbackAsyncktask iCallBack) {
+        this.iCallBack = iCallBack;
+    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -70,12 +75,12 @@ public class AsynckCliente extends AsyncTask<String, String, String> {
     @Override
     protected void onPreExecute () {
         super.onPreExecute ();
-
     }
 
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+        iCallBack.onFinish(s);
     }
 
     private DBHelper getmDBHelper() {

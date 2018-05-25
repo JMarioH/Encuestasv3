@@ -34,6 +34,11 @@ public class AsynckPreguntas extends AsyncTask<String, String, String> {
     private ArrayList<NameValuePair> data;
     private String telefono;
     private DBHelper mDBHelper;
+    private ICallbackAsyncktask iCallbackAsyncktask;
+
+    public AsynckPreguntas (ICallbackAsyncktask iCallbackAsyncktask) {
+        this.iCallbackAsyncktask = iCallbackAsyncktask;
+    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -63,11 +68,12 @@ public class AsynckPreguntas extends AsyncTask<String, String, String> {
                     dao = getmDBHelper().getPregutasDao();
                     dao.create(preguntas);
                     dao.clearObjectCache();
+                    success = "1";
                 } catch (SQLException e) {
                     e.printStackTrace();
+                    success = "0";
                 }
             }
-            return success;
         }catch (JSONException e) {
             e.printStackTrace();
         }
@@ -82,6 +88,7 @@ public class AsynckPreguntas extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+        iCallbackAsyncktask.onFinish(s);
     }
     private DBHelper getmDBHelper(){
         if (mDBHelper == null){

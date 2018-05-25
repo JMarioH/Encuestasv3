@@ -36,6 +36,11 @@ public class AsynckTipoEnc  extends AsyncTask<String,String,String> {
     private ArrayList<NameValuePair> data ;
     private String telefono;
     private DBHelper mDBHelper;
+    private ICallbackAsyncktask iCallbackAsyncktask;
+
+    public AsynckTipoEnc (ICallbackAsyncktask iCallbackAsyncktask) {
+        this.iCallbackAsyncktask = iCallbackAsyncktask;
+    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -67,13 +72,13 @@ public class AsynckTipoEnc  extends AsyncTask<String,String,String> {
                 tipoEncuesta.setIdestablecimiento(jsonObject.getString("ESTABLECIMIENTO"));
                 dao = getmDBHelper().getTipoEncDao();
                 dao.create(tipoEncuesta);
-
+                    success = "1";
                 } catch (SQLException e) {
                     e.printStackTrace();
+                    success = "0";
                 }
 
             }
-            return success;
         }catch (JSONException e) {
             e.printStackTrace();
         }
@@ -88,6 +93,7 @@ public class AsynckTipoEnc  extends AsyncTask<String,String,String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+        iCallbackAsyncktask.onFinish(s);
         // TODO agregamos el cliente a la base de dato
 
     }
