@@ -162,31 +162,6 @@ public class Encuestas extends BaseActivity {
         final DialogChoice dialogAlert = DialogFactory.build(this, "No hay encuestas disponibles..", true, false, Proyectos.class, bundle);
 
         dialogAlert.show(getSupportFragmentManager(), DialogAlert.class.getSimpleName());
-        /*
-        AlertDialog alertDialog = new AlertDialog.Builder (this).create ();
-        alertDialog.setTitle ("Mensaje");
-        alertDialog.setMessage ("No hay encuestas disponibles.. ");
-        alertDialog.setButton (AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener () {
-
-            public void onClick (DialogInterface dialog, int which) {
-                dialog.dismiss ();
-                Intent intent = new Intent (Encuestas.this, Proyectos.class);
-                intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                intent.putExtras (bundle);
-                startActivity (intent);
-            }
-        });
-
-        alertDialog.setOnDismissListener (new DialogInterface.OnDismissListener () {
-            @Override
-            public void onDismiss (DialogInterface dialogInterface) {
-                Intent intent = new Intent (Encuestas.this, Proyectos.class);
-                intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                intent.putExtras (bundle);
-                startActivity (intent);
-            }
-        });
-        alertDialog.show ();*/
     }
 
     @Override

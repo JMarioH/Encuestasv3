@@ -445,7 +445,6 @@ public class Cuestionario extends PermisionActivity implements ICuestionarioView
                 }
             }
         }
-        super.onKeyDown(keyCode, event);
         return true;
     }
 

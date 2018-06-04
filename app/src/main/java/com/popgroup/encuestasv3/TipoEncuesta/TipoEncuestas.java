@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -32,7 +31,7 @@ import java.util.List;
  * Selecciona tipo de encuesta
  */
 public class TipoEncuestas extends BaseActivity implements ITipoEncView {
-    private String TAG = getClass ().getSimpleName ();
+    private String TAG = getClass().getSimpleName();
     private String idproyecto;
     private Bundle bundle;
     private List<TipoEncuesta> arrayEncuestas;
@@ -42,57 +41,57 @@ public class TipoEncuestas extends BaseActivity implements ITipoEncView {
 
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState) {
-        super.onCreate (savedInstanceState);
+        super.onCreate(savedInstanceState);
 
-        bundle = new Bundle ();
-        if (getIntent ().getExtras () != null) {
-            idproyecto = getIntent ().getStringExtra ("idproyecto");
+        bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            idproyecto = getIntent().getStringExtra("idproyecto");
         }
-        arrayEncuestas = new ArrayList<> ();
-        arrayEncuestas = mPresenter.getLisNomEncuesta (MainActivity.mUsuario, idproyecto);
+        arrayEncuestas = new ArrayList<>();
+        arrayEncuestas = mPresenter.getLisNomEncuesta(MainActivity.mUsuario, idproyecto);
 
 
-        if (arrayEncuestas != null && arrayEncuestas.size () > 0) {
-            adapter = new ArrayAdapter<TipoEncuesta> (this, R.layout.simple_list_item, arrayEncuestas) {
+        if (arrayEncuestas != null && arrayEncuestas.size() > 0) {
+            adapter = new ArrayAdapter<TipoEncuesta>(this, R.layout.simple_list_item, arrayEncuestas) {
                 @Override
                 public View getView (int position, View convertView, ViewGroup parent) {
-                    View view = super.getView (position, convertView, parent);
-                    TextView textView = (TextView) view.findViewById (android.R.id.text1);
-                    textView.setTextSize (TypedValue.COMPLEX_UNIT_DIP, 16);
-                    textView.setText (arrayEncuestas.get (position).getEncuesta ());
-                    textView.setGravity (Gravity.CENTER);
+                    View view = super.getView(position, convertView, parent);
+                    TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+                    textView.setText(arrayEncuestas.get(position).getEncuesta());
+                    textView.setGravity(Gravity.CENTER);
                     return view;
 
                 }
             };
 
-            listView = (ListView) findViewById (R.id.listTipoEnc);
-            listView.setAdapter (adapter);
-            listView.setOnItemClickListener (new AdapterView.OnItemClickListener () {
+            listView = (ListView) findViewById(R.id.listTipoEnc);
+            listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick (AdapterView<?> adapterView, View view, int i, long l) {
-                    List<TipoEncuesta> arrayList = new ArrayList<> ();
-                    TipoEncuesta tipoEncuesta = (TipoEncuesta) adapterView.getAdapter ().getItem (i);
-                    arrayList = mPresenter.getListTipoEnc (MainActivity.mUsuario, idproyecto, tipoEncuesta.getEncuesta ());
+                    List<TipoEncuesta> arrayList = new ArrayList<>();
+                    TipoEncuesta tipoEncuesta = (TipoEncuesta) adapterView.getAdapter().getItem(i);
+                    arrayList = mPresenter.getListTipoEnc(MainActivity.mUsuario, idproyecto, tipoEncuesta.getEncuesta());
                     for (TipoEncuesta encuesta : arrayList) {
-                        bundle.putString ("idArchivo", encuesta.getIdArchivo ());
-                        bundle.putString ("idEncuesta", encuesta.getIdEncuesta ());
-                        bundle.putString ("idTienda", encuesta.getIdTienda ());
+                        bundle.putString("idArchivo", encuesta.getIdArchivo());
+                        bundle.putString("idEncuesta", encuesta.getIdEncuesta());
+                        bundle.putString("idTienda", encuesta.getIdTienda());
                     }
-                    Intent intent = new Intent (TipoEncuestas.this, Encuestas.class);
-                    intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    intent.putExtras (bundle);
-                    startActivity (intent);
+                    Intent intent = new Intent(TipoEncuestas.this, Encuestas.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
             });
         } else {
-            showMessage ();
+            showMessage();
         }
     }
 
     public void showMessage () {
-        final DialogChoice dialogAlert = DialogFactory.build (this, "No hay encuestas disponibles.", true, false, Proyectos.class, null);
-        dialogAlert.show (getSupportFragmentManager (), DialogAlert.class.getSimpleName ());
+        final DialogChoice dialogAlert = DialogFactory.build(this, "No hay encuestas disponibles.", true, false, Proyectos.class, null);
+        dialogAlert.show(getSupportFragmentManager(), DialogAlert.class.getSimpleName());
     }
 
     @Override
@@ -107,8 +106,8 @@ public class TipoEncuestas extends BaseActivity implements ITipoEncView {
 
     @Override
     protected void createPresenter () {
-        mPresenter = new TipoEncPresenter (new TipoEncInteractor (this));
-        mPresenter.attachView (this);
+        mPresenter = new TipoEncPresenter(new TipoEncInteractor(this));
+        mPresenter.attachView(this);
     }
 
     @Override
@@ -125,7 +124,7 @@ public class TipoEncuestas extends BaseActivity implements ITipoEncView {
     public void showError (Throwable throwable) {
 
     }
-
+/*
     public boolean onKeyDown (int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent intent = new Intent (this, Proyectos.class);
@@ -134,5 +133,5 @@ public class TipoEncuestas extends BaseActivity implements ITipoEncView {
         super.onKeyDown (keyCode, event);
         return true;
     }
-
+*/
 }

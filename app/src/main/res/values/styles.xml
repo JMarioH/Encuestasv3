@@ -9,7 +9,7 @@
     </style>
     <style name="textTittle">
         <item name="android:textColor">@color/colorTextPrimary</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">20sp</item>
     </style>
     <style name="textNormal">
         <item name="android:textColor">@color/colorTextPrimary</item>

@@ -37,7 +37,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate (savedInstanceState);
         setContentView (setLayout ());
         ButterKnife.bind (this);
-
         toolbar = (Toolbar) findViewById (R.id.toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setTitle ("");

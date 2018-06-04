@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">EncuestasV3</string>
-    <string name="btnInicio">Inicio</string>
+    <string name="app_name">EncuestasV3.1</string>
+    <string name="btnInicio">Iniciar Encuesta</string>
     <string name="salir">Salir</string>
     <string name="EncPendientes">Encuestas Pendientes</string>
     <string name="FotosPendientes">Fotos Pendientes</string>
     <string name="limpiar">Limpiar</string>
     <string name="cambiarUser">Cambiar Usuario</string>
-    <string name="tipoEncuestas">Tipo de Encuesta</string>
-    <string name="proyecto">Proyecto</string>
+    <string name="tipoEncuestas">Seleccione un \nTipo de Encuesta</string>
+    <string name="proyecto">Seleccione un Proyecto:</string>
     <string name="seleccione">Seleccione</string>
     <string name="siguiente">Siguiente</string>
     <string name="pregunta">¿Pregunta.?</string>
@@ -17,4 +17,6 @@
     <string name="tomarFoto">Tomar Foto</string>
     <string name="terminarEnc">¿Terminar la encuesta?</string>
     <string name="seleccioneTxt">Seleccione un Archivo</string>
+    <string name="login">Login</string>
+    <string name="Encuestas">Seleccione una Encuesta</string>
 </resources>

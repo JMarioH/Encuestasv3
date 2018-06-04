@@ -45,7 +45,7 @@ public class LoginActivity extends BaseActivity implements ILoginView {
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
         mPresenter.isRegisterUser ();
-        mLoader.setTextLoader ("Validando Datos..");
+        mLoader.setTextLoader("Validando usuario..");
         mLoader.disableTouch (true);
         mLoader.initUI ();
         if (BuildConfig.DEBUG && BuildConfig.USER != "" && BuildConfig.PASS != "") {

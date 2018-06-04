@@ -20,13 +20,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Login.LoginActivity"
+            android:name=".SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Login.LoginActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainEncuesta.MainActivity"
             android:screenOrientation="portrait" />
