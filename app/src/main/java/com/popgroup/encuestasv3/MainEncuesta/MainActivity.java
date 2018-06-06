@@ -166,7 +166,7 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         Dao dao;
         try {
             dao = getmDBHelper ().getPregutasDao ();
-            arrayPreguntas = (ArrayList<Preguntas>) dao.queryBuilder ().where ().eq ("idEncuesta", "13").and ().eq ("orden", 1).query ();
+            arrayPreguntas = (ArrayList<Preguntas>) dao.queryBuilder ().where ().eq ("idEncuesta", getEncuesta ()).and ().eq ("orden", 1).query ();
             for (Preguntas preguntas : arrayPreguntas) {
                 idpregunta = String.valueOf (preguntas.getIdPregunta ());
             }
@@ -241,7 +241,7 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         Bundle bundle = new Bundle ();
         Intent i = new Intent (MainActivity.this, Cuestionario.class);
         i.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        bundle.putString ("idEncuesta", "13");
+        bundle.putString ("idEncuesta", idEncuesta);
         bundle.putString ("numPregunta", idpregunta);
         bundle.putString ("numRespuesta", "0");
         i.putExtras (bundle);
