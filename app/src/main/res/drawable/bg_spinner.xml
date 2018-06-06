@@ -19,7 +19,7 @@
 
             <item android:right="5dp">
 
-                <bitmap android:gravity="center_vertical|right" android:src="@drawable/ic_spinner_down" />
+                <bitmap android:gravity="center_vertical|right" android:src="@drawable/ic_camara" />
 
             </item>
 

@@ -92,7 +92,8 @@ public class LoginActivity extends BaseActivity implements ILoginView {
     @Override
     public void showError (Throwable throwable) {
 
-        final DialogChoice dialogAlert = DialogFactory.build(this, throwable.getMessage(), true, true);
+        final DialogChoice dialogAlert = DialogFactory.build (this, throwable.getMessage (), true, false);
+        dialogAlert.setCancelable (false);
         dialogAlert.show(getSupportFragmentManager(), DialogAlert.class.getSimpleName());
     }
 

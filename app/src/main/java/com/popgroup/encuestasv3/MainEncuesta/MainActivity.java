@@ -2,17 +2,28 @@ package com.popgroup.encuestasv3.MainEncuesta;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
 import com.popgroup.encuestasv3.Base.BaseActivity;
+import com.popgroup.encuestasv3.Cuestionario.Cuestionario;
+import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Dialog.DialogAlert;
 import com.popgroup.encuestasv3.Dialog.DialogChoice;
 import com.popgroup.encuestasv3.Dialog.DialogFactory;
 import com.popgroup.encuestasv3.Login.LoginActivity;
-import com.popgroup.encuestasv3.Proyectos.Proyectos;
+import com.popgroup.encuestasv3.Model.Preguntas;
+import com.popgroup.encuestasv3.Model.Proyecto;
+import com.popgroup.encuestasv3.Model.TipoEncuesta;
 import com.popgroup.encuestasv3.R;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -32,9 +43,12 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
     TextView txtLog;
     @BindView (R.id.txtUsuario)
     TextView txtUser;
+    DBHelper mDBHelper;
     private String TAG = getClass ().getSimpleName ();
     private int encuestasPendientes;
     private MainPresenter mPresenter;
+    private String idEncuesta;
+    private String idpregunta;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -53,7 +67,9 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
                 mPresenter.nextLoginOperation ();
             }
         });
-
+        getProyecto ();
+        getEncuesta ();
+        getPregrunta ();
         btnInicio.setOnClickListener (this);
         btnEncPendientes.setOnClickListener (this);
         btnFotosPendientes.setOnClickListener (this);
@@ -76,8 +92,34 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
     }
 
     @Override
+    protected void onDestroy () {
+        super.onDestroy ();
+        if (mDBHelper != null) {
+            OpenHelperManager.releaseHelper ();
+            mDBHelper = null;
+        }
+    }
+
+    @Override
     protected MainPresenter getmPresenter () {
         return mPresenter != null ? (MainPresenter) mPresenter : null;
+    }
+
+    private String getProyecto () {
+        String idproyecto = null;
+        long max = 0;
+        Dao dao;
+        try {
+            dao = getmDBHelper ().getProyectoDao ();
+            max = dao.queryRawValue ("SELECT max(idproyecto) from proyecto");
+            Proyecto proyecto = (Proyecto) dao.queryBuilder ().where ().eq ("idproyecto", max).queryForFirst ();
+            idproyecto = String.valueOf (proyecto.getIdproyecto ());
+            dao.clearObjectCache ();
+            Log.e (TAG, "idproyecto" + idproyecto);
+        } catch (SQLException e) {
+            e.printStackTrace ();
+        }
+        return idproyecto;
     }
 
     @Override
@@ -87,11 +129,29 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         txtUser.setText (usuario);
     }
 
-    @Override
-    public void showAlert () {
-        final DialogChoice dialogAlert = DialogFactory.build (this, "Cambiar de usuario borrara los datos existentes",
-                true, true, mPresenter);
-        dialogAlert.show (getSupportFragmentManager (), DialogAlert.class.getSimpleName ());
+    private DBHelper getmDBHelper () {
+        if (mDBHelper == null) {
+            mDBHelper = OpenHelperManager.getHelper (this, DBHelper.class);
+        }
+        return mDBHelper;
+    }
+
+    private String getEncuesta () {
+        long max = 0;
+        Dao dao;
+        try {
+            dao = getmDBHelper ().getTipoEncDao ();
+            max = dao.queryRawValue ("SELECT max(idencuesta) from tipoencuesta");
+            Log.e (TAG, "max idencuesta" + max);
+            TipoEncuesta tipoEncuesta = (TipoEncuesta) dao.queryBuilder ().where ()
+                    .eq ("idencuesta", max).and ().eq ("idproyecto", getProyecto ()).queryForFirst ();
+            idEncuesta = String.valueOf (tipoEncuesta.getIdEncuesta ());
+            dao.clearObjectCache ();
+            Log.e (TAG, "idencuesta" + idEncuesta);
+        } catch (SQLException e) {
+            e.printStackTrace ();
+        }
+        return idEncuesta;
     }
 
     @Override
@@ -101,25 +161,22 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         startActivity (intent);
     }
 
-    @Override
-
-    public void showButtonEncuestasPendientes (Boolean show, Integer pendientes) {
-        if (btnEncPendientes != null) {
-            encuestasPendientes = pendientes;
-            btnEncPendientes.setVisibility(show ? View.VISIBLE : View.GONE);
-            btnEncPendientes.setText("Encuestas Pendientes " + " ( " + pendientes + " )");
+    private String getPregrunta () {
+        List<Preguntas> arrayPreguntas = new ArrayList<> ();
+        Dao dao;
+        try {
+            dao = getmDBHelper ().getPregutasDao ();
+            arrayPreguntas = (ArrayList<Preguntas>) dao.queryBuilder ().where ().eq ("idEncuesta", "13").and ().eq ("orden", 1).query ();
+            for (Preguntas preguntas : arrayPreguntas) {
+                idpregunta = String.valueOf (preguntas.getIdPregunta ());
+            }
+            dao.clearObjectCache ();
+        } catch (SQLException e) {
+            e.printStackTrace ();
         }
-    }
 
-    @Override
-    public void onClick (View view) {
-        if (view.getId () == R.id.btnInicio) {
-            iniciarProceso ();
-        } else if (view.getId () == R.id.btnEncPnedientes) {
-            mPresenter.enviarEncuestaPendientes (mUsuario, encuestasPendientes);
-        } else if (view.getId () == R.id.btnFotosPendientes) {
-            mPresenter.enviarFotosPendientes ();
-        }
+
+        return idpregunta;
     }
 
     @Override
@@ -152,16 +209,45 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         startActivity (a);
     }
 
+    @Override
+    public void showAlert () {
+        final DialogChoice dialogAlert = DialogFactory.build (this, "Cambiar de usuario borrara los datos existentes",
+                true, true, mPresenter);
+        dialogAlert.show (getSupportFragmentManager (), DialogAlert.class.getSimpleName ());
+    }
+
+    @Override
+
+    public void showButtonEncuestasPendientes (Boolean show, Integer pendientes) {
+        if (btnEncPendientes != null) {
+            encuestasPendientes = pendientes;
+            btnEncPendientes.setVisibility (show ? View.VISIBLE : View.GONE);
+            btnEncPendientes.setText ("Encuestas Pendientes " + " ( " + pendientes + " )");
+        }
+    }
+
+    @Override
+    public void onClick (View view) {
+        if (view.getId () == R.id.btnInicio) {
+            iniciarProceso ();
+        } else if (view.getId () == R.id.btnEncPnedientes) {
+            mPresenter.enviarEncuestaPendientes (mUsuario, encuestasPendientes);
+        } else if (view.getId () == R.id.btnFotosPendientes) {
+            mPresenter.enviarFotosPendientes ();
+        }
+    }
 
     public void iniciarProceso () {
-        Intent i = new Intent (MainActivity.this, Proyectos.class);
+        Bundle bundle = new Bundle ();
+        Intent i = new Intent (MainActivity.this, Cuestionario.class);
         i.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        bundle.putString ("idEncuesta", "13");
+        bundle.putString ("numPregunta", idpregunta);
+        bundle.putString ("numRespuesta", "0");
+        i.putExtras (bundle);
         startActivity (i);
 
     }
-
-
-
 
 
 

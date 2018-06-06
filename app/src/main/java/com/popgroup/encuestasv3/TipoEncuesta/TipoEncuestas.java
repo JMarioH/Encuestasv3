@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -124,7 +125,7 @@ public class TipoEncuestas extends BaseActivity implements ITipoEncView {
     public void showError (Throwable throwable) {
 
     }
-/*
+
     public boolean onKeyDown (int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent intent = new Intent (this, Proyectos.class);
@@ -133,5 +134,5 @@ public class TipoEncuestas extends BaseActivity implements ITipoEncView {
         super.onKeyDown (keyCode, event);
         return true;
     }
-*/
+
 }

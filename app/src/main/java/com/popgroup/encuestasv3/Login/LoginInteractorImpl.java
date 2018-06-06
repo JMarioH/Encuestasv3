@@ -25,7 +25,7 @@ public class LoginInteractorImpl extends BaseInteractor implements LoginInteract
     private Context context;
     private ArrayList<User> arrayUser;
 
-    public LoginInteractorImpl (Context ctx) {
+    public LoginInteractorImpl (LoginActivity ctx) {
         this.context = ctx;
 
     }
