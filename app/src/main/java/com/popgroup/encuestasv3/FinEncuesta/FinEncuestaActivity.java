@@ -90,35 +90,8 @@ public class FinEncuestaActivity extends BaseActivity implements IFinEncuestaVie
 
     public void showMessage () {
 
-
         final DialogChoice dialogAlert = DialogFactory.build(this, "No cuentas con internet.\nLos datos se guardaran localmente.", true, true, mPresenter, idEstablecimiento, idEncuesta, fotoEncuesta);
-
         dialogAlert.show(getSupportFragmentManager(), DialogAlert.class.getSimpleName());
-/*
-        final AlertDialog alertD = new AlertDialog.Builder (this).create ();
-        alertD.setTitle ("Mensaje");
-        alertD.setMessage ("No cuentas con internet.\nLos datos se guardaran localmente. ");
-        alertD.setButton (AlertDialog.BUTTON_POSITIVE, "Aceptar", new DialogInterface.OnClickListener () {
-            public void onClick (DialogInterface dialog, int which) {
-                dialog.dismiss ();
-                mPresenter.saveEncuesta (idEstablecimiento, idEncuesta);
-                mPresenter.saveFotosEnc (fotoEncuesta, idEstablecimiento, idEncuesta);
-                Intent i = new Intent (FinEncuestaActivity.this, MainActivity.class);
-                i.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                startActivity (i);
-
-            }
-        });
-
-        alertD.setOnShowListener (new DialogInterface.OnShowListener () {
-            @Override
-            public void onShow (DialogInterface arg0) {
-                alertD.getButton (AlertDialog.BUTTON_POSITIVE).setTextColor (getResources ().getColor (R.color.colorPrimary));
-
-            }
-        });
-
-        alertD.show (); */
     }
 
     @Override

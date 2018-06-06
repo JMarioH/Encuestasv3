@@ -50,6 +50,22 @@
         android:gravity="center"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/txtEncPendientes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="Encuestas Pendientes"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/txtEncTerminadas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:hint="Encuestas Terminadas"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/btnInicio"
@@ -57,7 +73,7 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="24dp"
             android:drawableLeft="@drawable/ic_proyecto"
             android:paddingLeft="12dp"
             android:paddingRight="24dp"

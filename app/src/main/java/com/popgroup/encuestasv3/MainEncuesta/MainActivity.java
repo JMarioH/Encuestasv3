@@ -43,6 +43,11 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
     TextView txtLog;
     @BindView (R.id.txtUsuario)
     TextView txtUser;
+    @BindView (R.id.txtEncPendientes)
+    TextView txtPendientes;
+    @BindView (R.id.txtEncTerminadas)
+    TextView txtTerminadas;
+
     DBHelper mDBHelper;
     private String TAG = getClass ().getSimpleName ();
     private int encuestasPendientes;
@@ -67,12 +72,16 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
                 mPresenter.nextLoginOperation ();
             }
         });
+        getEncPendientes();
+        getEncTerminada();
         getProyecto ();
         getEncuesta ();
         getPregrunta ();
         btnInicio.setOnClickListener (this);
         btnEncPendientes.setOnClickListener (this);
         btnFotosPendientes.setOnClickListener (this);
+        txtTerminadas.setText("Encuestas Terminadas " + getEncTerminada());
+        txtPendientes.setText("Encuestas Pendientes " + getEncPendientes());
     }
 
     @Override
@@ -129,6 +138,37 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         txtUser.setText (usuario);
     }
 
+    @Override
+    public void showAlert () {
+        final DialogChoice dialogAlert = DialogFactory.build(this, "Cambiar de usuario borrara los datos existentes", true, true, mPresenter);
+        dialogAlert.show(getSupportFragmentManager(), DialogAlert.class.getSimpleName());
+    }
+
+    @Override
+    public void nextOperation () {
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Override
+
+    public void showButtonEncuestasPendientes (Boolean show, Integer pendientes) {
+        if (btnEncPendientes != null) {
+            encuestasPendientes = pendientes;
+            btnEncPendientes.setVisibility(show ? View.VISIBLE : View.GONE);
+            btnEncPendientes.setText("Encuestas Pendientes " + " ( " + pendientes + " )");
+        }
+    }
+
+    @Override
+    public void showButtonFotosPendientes (Boolean show, Integer pendientes) {
+        if (btnFotosPendientes != null) {
+            btnFotosPendientes.setVisibility(show ? View.VISIBLE : View.GONE);
+            btnFotosPendientes.setText("Fotos Pendientes " + " ( " + pendientes + " )");
+        }
+    }
+
     private DBHelper getmDBHelper () {
         if (mDBHelper == null) {
             mDBHelper = OpenHelperManager.getHelper (this, DBHelper.class);
@@ -154,11 +194,33 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         return idEncuesta;
     }
 
-    @Override
-    public void nextOperation () {
-        Intent intent = new Intent (MainActivity.this, LoginActivity.class);
-        intent.addFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity (intent);
+    private int getEncPendientes () {
+        Dao dao;
+        int encuestas = 0;
+        try {
+            dao = getmDBHelper().getCatMasterDao();
+            encuestas = (int) dao.queryRawValue("SELECT COUNT(*) FROM catmaster WHERE flag = 1 ; ");
+            Log.e(TAG, "encuestas " + encuestas);
+            dao.clearObjectCache();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return encuestas;
+    }
+
+    private int getEncTerminada () {
+        Dao dao;
+        int encuestas = 0;
+        try {
+            dao = getmDBHelper().getCatMasterDao();
+            encuestas = (int) dao.queryRawValue("SELECT COUNT(*) FROM catmaster WHERE flag = 0 ; ");
+            Log.e(TAG, "encuestas " + encuestas);
+            dao.clearObjectCache();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return encuestas;
     }
 
     private String getPregrunta () {
@@ -174,17 +236,7 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         } catch (SQLException e) {
             e.printStackTrace ();
         }
-
-
         return idpregunta;
-    }
-
-    @Override
-    public void showButtonFotosPendientes (Boolean show, Integer pendientes) {
-        if (btnFotosPendientes != null) {
-            btnFotosPendientes.setVisibility (show ? View.VISIBLE : View.GONE);
-            btnFotosPendientes.setText ("Fotos Pendientes " + " ( " + pendientes + " )");
-        }
     }
 
     @Override
@@ -207,23 +259,6 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         a.addCategory (Intent.CATEGORY_HOME);
         a.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity (a);
-    }
-
-    @Override
-    public void showAlert () {
-        final DialogChoice dialogAlert = DialogFactory.build (this, "Cambiar de usuario borrara los datos existentes",
-                true, true, mPresenter);
-        dialogAlert.show (getSupportFragmentManager (), DialogAlert.class.getSimpleName ());
-    }
-
-    @Override
-
-    public void showButtonEncuestasPendientes (Boolean show, Integer pendientes) {
-        if (btnEncPendientes != null) {
-            encuestasPendientes = pendientes;
-            btnEncPendientes.setVisibility (show ? View.VISIBLE : View.GONE);
-            btnEncPendientes.setText ("Encuestas Pendientes " + " ( " + pendientes + " )");
-        }
     }
 
     @Override

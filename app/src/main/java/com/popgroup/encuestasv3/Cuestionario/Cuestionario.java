@@ -25,6 +25,7 @@ import com.popgroup.encuestasv3.Dialog.DialogAlert;
 import com.popgroup.encuestasv3.Dialog.DialogChoice;
 import com.popgroup.encuestasv3.Dialog.DialogFactory;
 import com.popgroup.encuestasv3.Fotografia;
+import com.popgroup.encuestasv3.Model.GeoLocalizacion;
 import com.popgroup.encuestasv3.Model.Preguntas;
 import com.popgroup.encuestasv3.Model.Respuestas;
 import com.popgroup.encuestasv3.Model.RespuestasCuestionario;
@@ -442,6 +443,18 @@ public class Cuestionario extends PermisionActivity implements ICuestionarioView
                     dao.clearObjectCache ();
                 } catch (SQLException e) {
                     Log.e (TAG, "SqlException onBackPress" + e.getMessage ());
+                }
+
+                try {
+
+                    dao = getmDBHelper().getGeosDao();
+                    DeleteBuilder<GeoLocalizacion, Integer> deleteBuilder = dao.deleteBuilder();
+                    deleteBuilder.where().eq("idEstablecimiento", idEstablecimiento).and().eq("idEncuesta", idEncuesta);
+                    deleteBuilder.delete();
+                    dao.clearObjectCache();
+
+                } catch (SQLException e) {
+
                 }
             }
         }
