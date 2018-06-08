@@ -99,6 +99,8 @@
             android:layout_gravity="center"
             android:layout_marginTop="12dp"
             android:drawableLeft="@drawable/ic_encuesta"
+            android:paddingLeft="12dp"
+            android:paddingRight="24dp"
             android:text="@string/EncPendientes"
             android:visibility="invisible" />
 
@@ -110,6 +112,8 @@
             android:layout_gravity="center"
             android:layout_marginTop="12dp"
             android:drawableLeft="@drawable/ic_camara"
+            android:paddingLeft="12dp"
+            android:paddingRight="24dp"
             android:text="@string/FotosPendientes"
             android:visibility="invisible" />
 

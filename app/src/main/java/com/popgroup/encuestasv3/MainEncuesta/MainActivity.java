@@ -53,6 +53,7 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
     private int encuestasPendientes;
     private MainPresenter mPresenter;
     private String idEncuesta;
+    private String idEstablecimiento;
     private String idpregunta;
 
     @Override
@@ -77,6 +78,7 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         getProyecto ();
         getEncuesta ();
         getPregrunta ();
+        getCatMaster ();
         btnInicio.setOnClickListener (this);
         btnEncPendientes.setOnClickListener (this);
         btnFotosPendientes.setOnClickListener (this);
@@ -181,7 +183,7 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         Dao dao;
         try {
             dao = getmDBHelper ().getTipoEncDao ();
-            max = dao.queryRawValue ("SELECT max(idencuesta) from tipoencuesta");
+            max = dao.queryRawValue ("SELECT max(idencuesta) FROM tipoencuesta");
             Log.e (TAG, "max idencuesta" + max);
             TipoEncuesta tipoEncuesta = (TipoEncuesta) dao.queryBuilder ().where ()
                     .eq ("idencuesta", max).and ().eq ("idproyecto", getProyecto ()).queryForFirst ();
@@ -194,12 +196,27 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         return idEncuesta;
     }
 
+    public void getCatMaster () {
+        long maxEstablecimiento = 0;
+        Dao dao;
+        try {
+            dao = getmDBHelper ().getCatMasterDao ();
+            maxEstablecimiento = dao.queryRawValue ("SELECT min(idTienda) FROM catmaster WHERE flag = 1 AND idEncuesta = " + idEncuesta + ";");
+            idEstablecimiento = String.valueOf (maxEstablecimiento);
+            Log.e (TAG, "maxEstablecimiento " + maxEstablecimiento);
+            dao.clearObjectCache ();
+
+        } catch (SQLException e) {
+            e.printStackTrace ();
+        }
+    }
+
     private int getEncPendientes () {
         Dao dao;
         int encuestas = 0;
         try {
             dao = getmDBHelper().getCatMasterDao();
-            encuestas = (int) dao.queryRawValue("SELECT COUNT(*) FROM catmaster WHERE flag = 1 ; ");
+            encuestas = (int) dao.queryRawValue ("SELECT COUNT(*) FROM catmaster WHERE flag = 1 AND idEncuesta = " + idEncuesta + " ; ");
             Log.e(TAG, "encuestas " + encuestas);
             dao.clearObjectCache();
         } catch (SQLException e) {
@@ -213,7 +230,7 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         int encuestas = 0;
         try {
             dao = getmDBHelper().getCatMasterDao();
-            encuestas = (int) dao.queryRawValue("SELECT COUNT(*) FROM catmaster WHERE flag = 0 ; ");
+            encuestas = (int) dao.queryRawValue ("SELECT COUNT(*) FROM catmaster WHERE flag = 0 AND idEncuesta = " + idEncuesta + "; ");
             Log.e(TAG, "encuestas " + encuestas);
             dao.clearObjectCache();
         } catch (SQLException e) {
@@ -237,6 +254,19 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
             e.printStackTrace ();
         }
         return idpregunta;
+    }
+
+    public void iniciarProceso () {
+        Bundle bundle = new Bundle ();
+        Intent i = new Intent (MainActivity.this, Cuestionario.class);
+        i.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        bundle.putString ("idEncuesta", idEncuesta);
+        bundle.putString ("idEstablecimiento", idEstablecimiento);
+        bundle.putString ("numPregunta", idpregunta);
+        bundle.putString ("numRespuesta", "0");
+        i.putExtras (bundle);
+        startActivity (i);
+
     }
 
     @Override
@@ -272,17 +302,7 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         }
     }
 
-    public void iniciarProceso () {
-        Bundle bundle = new Bundle ();
-        Intent i = new Intent (MainActivity.this, Cuestionario.class);
-        i.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        bundle.putString ("idEncuesta", idEncuesta);
-        bundle.putString ("numPregunta", idpregunta);
-        bundle.putString ("numRespuesta", "0");
-        i.putExtras (bundle);
-        startActivity (i);
 
-    }
 
 
 

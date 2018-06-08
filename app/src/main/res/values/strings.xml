@@ -2,8 +2,8 @@
     <string name="app_name">EncuestasV3.1</string>
     <string name="btnInicio">Iniciar Encuesta</string>
     <string name="salir">Salir</string>
-    <string name="EncPendientes">Encuestas Pendientes</string>
-    <string name="FotosPendientes">Fotos Pendientes</string>
+    <string name="EncPendientes">Pendientes por Sinc</string>
+    <string name="FotosPendientes">Fotos Pendientes por Sinc</string>
     <string name="limpiar">Limpiar</string>
     <string name="cambiarUser">Cambiar Usuario</string>
     <string name="tipoEncuestas">Seleccione un \nTipo de Encuesta</string>

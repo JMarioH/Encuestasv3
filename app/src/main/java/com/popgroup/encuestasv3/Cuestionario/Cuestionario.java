@@ -101,19 +101,19 @@ public class Cuestionario extends PermisionActivity implements ICuestionarioView
             Bundle extras = getIntent ().getExtras ();
 
             idEncuesta = extras.getString ("idEncuesta");
-            // encuesta = extras.getString("encuesta");
-            // idTienda = extras.getString("idTienda");
-            // idEstablecimiento = extras.getString("idEstablecimiento");
-            //idArchivo = extras.getString("idArchivo");
+            encuesta = extras.getString ("encuesta");
+            idTienda = extras.getString ("idTienda");
+            idEstablecimiento = extras.getString ("idEstablecimiento");
+            idArchivo = extras.getString ("idArchivo");
             numPregunta = extras.getString ("numPregunta");
             numRespuesta = extras.getString ("numRespuesta");
         }
         // creanos de nuevo las variables del bundle
         bundle.putString ("idEncuesta", idEncuesta);
-        //  bundle.putString("encuesta", encuesta);
-        //  bundle.putString("idTienda", idTienda);
-        //bundle.putString("idEstablecimiento", idEstablecimiento);
-        //bundle.putString("idArchivo", idArchivo);
+        bundle.putString ("encuesta", encuesta);
+        bundle.putString ("idTienda", idTienda);
+        bundle.putString ("idEstablecimiento", idEstablecimiento);
+        bundle.putString ("idArchivo", idArchivo);
 
         getmPresenter ().setGeo (idEncuesta, idEstablecimiento);
         preguntas = new Preguntas ();
