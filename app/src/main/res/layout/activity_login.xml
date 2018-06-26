@@ -92,7 +92,6 @@
             android:id="@+id/editPassword"
             android:layout_width="384dp"
             android:layout_height="wrap_content"
-
             android:drawablePadding="6dp"
             android:ems="10"
             android:hint="Password"
