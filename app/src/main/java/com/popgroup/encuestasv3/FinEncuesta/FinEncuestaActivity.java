@@ -2,6 +2,7 @@ package com.popgroup.encuestasv3.FinEncuesta;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -41,7 +42,7 @@ public class FinEncuestaActivity extends BaseActivity implements IFinEncuestaVie
 
         fotoEncuesta = new FotoEncuesta ().getInstace ();
 
-        Bundle extras = getIntent ().getExtras ();
+        final Bundle extras = getIntent ().getExtras ();
         //recivimos las variables
         if (getIntent ().getExtras () != null) {
             idEncuesta = extras.getString ("idEncuesta");
@@ -56,6 +57,7 @@ public class FinEncuestaActivity extends BaseActivity implements IFinEncuestaVie
             @Override
             public void onClick (View view) {
                 if (NetWorkUtil.checkConnection (getBaseContext ())) {
+                    Log.e (TAG, "bundle");
                     mPresenter.enviarEncuesta (idEncuesta, idEstablecimiento, idTienda, MainActivity.mUsuario);
                 } else {
                     showMessage ();

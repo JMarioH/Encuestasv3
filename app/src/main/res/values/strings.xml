@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EncuestasV3.1</string>
+    <string name="app_name">AppEncuestas</string>
     <string name="btnInicio">Iniciar Encuesta</string>
     <string name="salir">Salir</string>
     <string name="EncPendientes">Pendientes por Sinc</string>

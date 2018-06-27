@@ -74,8 +74,8 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
                 mPresenter.nextLoginOperation ();
             }
         });
-        getEncPendientes();
-        getEncTerminada();
+        getEncPendientes ();
+        getEncTerminada ();
         getProyecto ();
         getEncuesta ();
         getPregrunta ();
@@ -83,8 +83,8 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         btnInicio.setOnClickListener (this);
         btnEncPendientes.setOnClickListener (this);
         btnFotosPendientes.setOnClickListener (this);
-        txtTerminadas.setText("Encuestas Terminadas " + getEncTerminada());
-        txtPendientes.setText("Encuestas Pendientes " + getEncPendientes());
+        txtTerminadas.setText ("Encuestas Terminadas " + getEncTerminada ());
+        txtPendientes.setText ("Encuestas Pendientes " + getEncPendientes ());
     }
 
     @Override
@@ -141,44 +141,6 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         txtUser.setText (usuario);
     }
 
-    @Override
-    public void showAlert () {
-        final DialogChoice dialogAlert = DialogFactory.build(this, "Cambiar de usuario borrara los datos existentes", true, true, mPresenter);
-        dialogAlert.show(getSupportFragmentManager(), DialogAlert.class.getSimpleName());
-    }
-
-    @Override
-    public void nextOperation () {
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
-    @Override
-
-    public void showButtonEncuestasPendientes (Boolean show, Integer pendientes) {
-        if (btnEncPendientes != null) {
-            encuestasPendientes = pendientes;
-            btnEncPendientes.setVisibility(show ? View.VISIBLE : View.GONE);
-            btnEncPendientes.setText("Encuestas Pendientes " + " ( " + pendientes + " )");
-        }
-    }
-
-    @Override
-    public void showButtonFotosPendientes (Boolean show, Integer pendientes) {
-        if (btnFotosPendientes != null) {
-            btnFotosPendientes.setVisibility(show ? View.VISIBLE : View.GONE);
-            btnFotosPendientes.setText("Fotos Pendientes " + " ( " + pendientes + " )");
-        }
-    }
-
-    private DBHelper getmDBHelper () {
-        if (mDBHelper == null) {
-            mDBHelper = OpenHelperManager.getHelper (this, DBHelper.class);
-        }
-        return mDBHelper;
-    }
-
     private String getEncuesta () {
         long max = 0;
         Dao dao;
@@ -189,13 +151,62 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
             TipoEncuesta tipoEncuesta = (TipoEncuesta) dao.queryBuilder ().where ()
                     .eq ("idencuesta", max).and ().eq ("idproyecto", getProyecto ()).queryForFirst ();
             idEncuesta = String.valueOf (tipoEncuesta.getIdEncuesta ());
-            idTienda = String.valueOf(tipoEncuesta.getIdTienda());
+            idTienda = String.valueOf (tipoEncuesta.getIdTienda ());
             dao.clearObjectCache ();
             Log.e (TAG, "idencuesta" + idEncuesta);
         } catch (SQLException e) {
             e.printStackTrace ();
         }
         return idEncuesta;
+    }
+
+    private int getEncPendientes () {
+        Dao dao;
+        int encuestas = 0;
+        try {
+            dao = getmDBHelper ().getCatMasterDao ();
+            encuestas = (int) dao.queryRawValue ("SELECT COUNT(*) FROM catmaster WHERE flag = 1 AND idEncuesta = " + idEncuesta + " ; ");
+            Log.e (TAG, "encuestas " + encuestas);
+            dao.clearObjectCache ();
+        } catch (SQLException e) {
+            e.printStackTrace ();
+        }
+        return encuestas;
+    }
+
+    private int getEncTerminada () {
+        Dao dao;
+        int encuestas = 0;
+        try {
+            dao = getmDBHelper ().getCatMasterDao ();
+            encuestas = (int) dao.queryRawValue ("SELECT COUNT(*) FROM catmaster WHERE flag = 0 AND idEncuesta = " + idEncuesta + "; ");
+            Log.e (TAG, "encuestas " + encuestas);
+            dao.clearObjectCache ();
+        } catch (SQLException e) {
+            e.printStackTrace ();
+        }
+
+        return encuestas;
+    }
+
+    @Override
+    public void showAlert () {
+        final DialogChoice dialogAlert = DialogFactory.build (this, "Cambiar de usuario borrara los datos existentes", true, true, mPresenter);
+        dialogAlert.show (getSupportFragmentManager (), DialogAlert.class.getSimpleName ());
+    }
+
+    private DBHelper getmDBHelper () {
+        if (mDBHelper == null) {
+            mDBHelper = OpenHelperManager.getHelper (this, DBHelper.class);
+        }
+        return mDBHelper;
+    }
+
+    @Override
+    public void nextOperation () {
+        Intent intent = new Intent (MainActivity.this, LoginActivity.class);
+        intent.addFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity (intent);
     }
 
     public void getCatMaster () {
@@ -213,33 +224,22 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         }
     }
 
-    private int getEncPendientes () {
-        Dao dao;
-        int encuestas = 0;
-        try {
-            dao = getmDBHelper().getCatMasterDao();
-            encuestas = (int) dao.queryRawValue ("SELECT COUNT(*) FROM catmaster WHERE flag = 1 AND idEncuesta = " + idEncuesta + " ; ");
-            Log.e(TAG, "encuestas " + encuestas);
-            dao.clearObjectCache();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    @Override
+
+    public void showButtonEncuestasPendientes (Boolean show, Integer pendientes) {
+        if (btnEncPendientes != null) {
+            encuestasPendientes = pendientes;
+            btnEncPendientes.setVisibility (show ? View.VISIBLE : View.GONE);
+            btnEncPendientes.setText ("Encuestas Pendientes " + " ( " + pendientes + " )");
         }
-        return encuestas;
     }
 
-    private int getEncTerminada () {
-        Dao dao;
-        int encuestas = 0;
-        try {
-            dao = getmDBHelper().getCatMasterDao();
-            encuestas = (int) dao.queryRawValue ("SELECT COUNT(*) FROM catmaster WHERE flag = 0 AND idEncuesta = " + idEncuesta + "; ");
-            Log.e(TAG, "encuestas " + encuestas);
-            dao.clearObjectCache();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    @Override
+    public void showButtonFotosPendientes (Boolean show, Integer pendientes) {
+        if (btnFotosPendientes != null) {
+            btnFotosPendientes.setVisibility (show ? View.VISIBLE : View.GONE);
+            btnFotosPendientes.setText ("Fotos Pendientes " + " ( " + pendientes + " )");
         }
-
-        return encuestas;
     }
 
     private String getPregrunta () {
@@ -261,22 +261,8 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
     @Override
     public void showLoader (boolean show) {
         if (mLoader != null) {
-            mLoader.setVisibility(show ? View.VISIBLE : View.GONE);
+            mLoader.setVisibility (show ? View.VISIBLE : View.GONE);
         }
-    }
-
-    public void iniciarProceso () {
-        Bundle bundle = new Bundle ();
-        Intent i = new Intent (MainActivity.this, Cuestionario.class);
-        i.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        bundle.putString ("idEncuesta", idEncuesta);
-        bundle.putString ("idEstablecimiento", idEstablecimiento);
-        bundle.putString("idTienda", idTienda);
-        bundle.putString ("numPregunta", idpregunta);
-        bundle.putString ("numRespuesta", "0");
-        i.putExtras (bundle);
-        startActivity (i);
-
     }
 
     @Override
@@ -294,6 +280,20 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         startActivity (a);
     }
 
+    public void iniciarProceso () {
+        Bundle bundle = new Bundle ();
+
+        Intent i = new Intent (MainActivity.this, Cuestionario.class);
+        i.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        bundle.putString ("idEncuesta", idEncuesta);
+        bundle.putString ("idEstablecimiento", idEstablecimiento);
+        bundle.putString ("idTienda", idTienda);
+        bundle.putString ("numPregunta", idpregunta);
+        bundle.putString ("numRespuesta", "0");
+        i.putExtras (bundle);
+        startActivity (i);
+
+    }
 
     @Override
     public void onClick (View view) {
@@ -305,11 +305,6 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
             mPresenter.enviarFotosPendientes ();
         }
     }
-
-
-
-
-
 
 
 }

@@ -24,7 +24,7 @@ import com.popgroup.encuestasv3.DataBase.DBHelper;
 import com.popgroup.encuestasv3.Dialog.DialogAlert;
 import com.popgroup.encuestasv3.Dialog.DialogChoice;
 import com.popgroup.encuestasv3.Dialog.DialogFactory;
-import com.popgroup.encuestasv3.Fotografia;
+import com.popgroup.encuestasv3.FinEncuesta.FinEncuestaActivity;
 import com.popgroup.encuestasv3.Model.GeoLocalizacion;
 import com.popgroup.encuestasv3.Model.Preguntas;
 import com.popgroup.encuestasv3.Model.Respuestas;
@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import butterknife.BindView;
+
 
 /**
  * Created by jesus.hernandez on 14/12/16.
@@ -99,7 +100,6 @@ public class Cuestionario extends PermisionActivity implements ICuestionarioView
 
         if (getIntent ().getExtras () != null) {
             Bundle extras = getIntent ().getExtras ();
-
             idEncuesta = extras.getString ("idEncuesta");
             encuesta = extras.getString ("encuesta");
             idTienda = extras.getString ("idTienda");
@@ -184,7 +184,7 @@ public class Cuestionario extends PermisionActivity implements ICuestionarioView
         } else {
 
             bundle.putString ("numPregunta", numPregunta);
-            Intent intent = new Intent (getBaseContext (), Fotografia.class);
+            Intent intent = new Intent (getBaseContext (), FinEncuestaActivity.class);
             intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
             intent.putExtras (bundle);
             startActivity (intent);
