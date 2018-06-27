@@ -55,6 +55,7 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
     private String idEncuesta;
     private String idEstablecimiento;
     private String idpregunta;
+    private String idTienda;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -188,6 +189,7 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
             TipoEncuesta tipoEncuesta = (TipoEncuesta) dao.queryBuilder ().where ()
                     .eq ("idencuesta", max).and ().eq ("idproyecto", getProyecto ()).queryForFirst ();
             idEncuesta = String.valueOf (tipoEncuesta.getIdEncuesta ());
+            idTienda = String.valueOf(tipoEncuesta.getIdTienda());
             dao.clearObjectCache ();
             Log.e (TAG, "idencuesta" + idEncuesta);
         } catch (SQLException e) {
@@ -256,24 +258,25 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         return idpregunta;
     }
 
+    @Override
+    public void showLoader (boolean show) {
+        if (mLoader != null) {
+            mLoader.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+
     public void iniciarProceso () {
         Bundle bundle = new Bundle ();
         Intent i = new Intent (MainActivity.this, Cuestionario.class);
         i.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
         bundle.putString ("idEncuesta", idEncuesta);
         bundle.putString ("idEstablecimiento", idEstablecimiento);
+        bundle.putString("idTienda", idTienda);
         bundle.putString ("numPregunta", idpregunta);
         bundle.putString ("numRespuesta", "0");
         i.putExtras (bundle);
         startActivity (i);
 
-    }
-
-    @Override
-    public void showLoader (boolean show) {
-        if (mLoader != null) {
-            mLoader.setVisibility (show ? View.VISIBLE : View.GONE);
-        }
     }
 
     @Override
@@ -290,6 +293,7 @@ public class MainActivity extends BaseActivity implements IMainView, View.OnClic
         a.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity (a);
     }
+
 
     @Override
     public void onClick (View view) {
