@@ -8,7 +8,7 @@ import com.popgroup.encuestasv3.Base.IView;
 
 public interface ILoginView extends IView {
 
-    void nextAction (Object result);
+    void nextAction (String result);
 
     void actionMenu ();
 }

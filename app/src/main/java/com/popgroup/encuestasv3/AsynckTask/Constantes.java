@@ -11,10 +11,10 @@ public class Constantes {
     public static String IPWBService = "http://popresearch8.cloudapp.net/b/acces2.php";
     public static String IPSetFoto = "http://popresearch8.cloudapp.net/b/fotosws.php";
     public static String IPSetEncuesta = "http://popresearch8.cloudapp.net/b/setEncuesta.php"; // todo solo prubea
-
-*/  public static String IPWBService = "http://info-sat.com.mx/b/acces2.php";
-    public static String IPSetFoto = "http://info-sat.com.mx/b/fotosws.php";
-    public static String IPSetEncuesta = "http://info-sat.com.mx/b/setEncuesta.php";
+*/
+    public static String IPWBService = "http://104.215.75.134/b/acces2.php";
+    public static String IPSetFoto = "http://104.215.75.134/b/fotosws.php";
+    public static String IPSetEncuesta = "http://104.215.75.134/b/setEncuesta.php";
 
     public static String getIPWBService () {
         return IPWBService;

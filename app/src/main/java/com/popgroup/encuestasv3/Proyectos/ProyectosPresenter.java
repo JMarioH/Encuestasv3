@@ -22,7 +22,7 @@ public class ProyectosPresenter extends BasePresenter implements IProyectoPresen
     }
 
     @Override
-    public void onSuccess (Object result) {
+    public void onSuccess (String result) {
 
     }
 

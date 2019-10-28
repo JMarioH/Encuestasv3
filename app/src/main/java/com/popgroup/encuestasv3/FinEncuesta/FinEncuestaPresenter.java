@@ -66,7 +66,7 @@ public class FinEncuestaPresenter extends BasePresenter implements IFinEncPresen
     }
 
     @Override
-    public void onSuccess (Object result) {
+    public void onSuccess (String result) {
         if (getView () != null) {
             getView ().showLoader (false);
         }

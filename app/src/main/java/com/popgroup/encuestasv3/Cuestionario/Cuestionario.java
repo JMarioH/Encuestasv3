@@ -299,7 +299,8 @@ public class Cuestionario extends PermisionActivity implements ICuestionarioView
                 try {
 
                     dao = getmDBHelper ().getRespuestasDao ();
-                    arrayRespSel = (ArrayList<Respuestas>) dao.queryBuilder ().selectColumns ("idrespuesta", "respuesta", "sigPregunta", "respuestaLibre", "idEncuesta").where ().eq ("respuesta", value).and ().eq ("idpregunta", idPregSel).and ().eq ("idEncuesta", idEncuesta).query ();
+                    arrayRespSel = (ArrayList<Respuestas>) dao.queryBuilder ().selectColumns ("idrespuesta", "respuesta", "sigPregunta", "respuestaLibre", "idEncuesta")
+                            .where ().eq ("respuesta", value).and ().eq ("idpregunta", idPregSel).and ().eq ("idEncuesta", idEncuesta).query ();
                     dao.clearObjectCache ();
 
                     for (Respuestas itemSel : arrayRespSel) {
@@ -381,7 +382,10 @@ public class Cuestionario extends PermisionActivity implements ICuestionarioView
             String idResp = null;
             try {
                 dao = getmDBHelper ().getRespuestasDao ();
-                arrayRespuestas = (ArrayList<Respuestas>) dao.queryBuilder ().selectColumns ("idpregunta", "idrespuesta", "sigPregunta", "respuesta").where ().eq ("respuesta", valSelecionado).and ().eq ("idEncuesta", idEncuesta).query ();
+                arrayRespuestas = (ArrayList<Respuestas>) dao.queryBuilder ().selectColumns ("idpregunta", "idrespuesta", "sigPregunta", "respuesta")
+                        .where ().eq ("respuesta", valSelecionado)
+                        .and().eq("idpregunta",idpregunta)
+                        .and ().eq ("idEncuesta", idEncuesta).query ();
                 dao.clearObjectCache ();
                 for (Respuestas respItem : arrayRespuestas) {
                     pregSig = respItem.getSigPregunta ();

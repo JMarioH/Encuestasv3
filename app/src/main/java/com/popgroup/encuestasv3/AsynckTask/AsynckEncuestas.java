@@ -43,11 +43,11 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
     Dao dao;
     Context mContext;
     Constantes constantes;
-    String URL;
-    String success;
-    String latitud = null, longitud = null;
-    FotoEncuesta fotoEncuesta = new FotoEncuesta ().getInstace ();
-    private String TAG = getClass ().getSimpleName ();
+    FotoEncuesta fotoEncuesta = new FotoEncuesta().getInstace();
+    private String URL;
+    private String success;
+    private String latitud = null, longitud = null;
+    private String TAG = getClass().getSimpleName();
     private DBHelper mDBHelper;
     private JSONObject jsonObject;
     private ArrayList<RespuestasCuestionario> arrayResultados;
@@ -64,8 +64,8 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
 
     private ICallBack iCallBack;
 
-    public AsynckEncuestas (Context context, String idEncuesta, String idEstablecimiento,
-                            String idTienda, String usuario, IMainCallback iCallBack) {
+    public AsynckEncuestas(Context context, String idEncuesta, String idEstablecimiento,
+                           String idTienda, String usuario, IMainCallback iCallBack) {
         this.mContext = context;
         this.mEncuesta = idEncuesta;
         this.mTienda = idTienda;
@@ -74,8 +74,8 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
         this.iCallBack = iCallBack;
     }
 
-    public AsynckEncuestas (Context ctx, String idEncuesta, String idEstablecimiento,
-                            String idTienda, String usuario, ICallBack iCallBack) {
+    public AsynckEncuestas(Context ctx, String idEncuesta, String idEstablecimiento,
+                           String idTienda, String usuario, ICallBack iCallBack) {
         this.mContext = ctx;
         this.mEncuesta = idEncuesta;
         this.mTienda = idTienda;
@@ -138,31 +138,34 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
 
             }
 
-            // grabar(jsonArray.toString());
-            //  grabaJson(jsonArray.toString());
+            grabar(jsonArray.toString());
+            grabaJson(jsonArray.toString());
             data.add(new BasicNameValuePair("setEncuestas", jsonArray.toString()));
-                try {
-                    ServiceHandler serviceHandler = new ServiceHandler();
-                    String response = serviceHandler.makeServiceCall(URL, ServiceHandler.POST, data);
-                    JSONObject jsonObject = new JSONObject(response);
-                    JSONObject result = jsonObject.getJSONObject("result");
-                    success = result.getString("success").toString();
+            try {
+                ServiceHandler serviceHandler = new ServiceHandler();
+                String response = serviceHandler.makeServiceCall(URL, ServiceHandler.POST, data);
+                JSONObject jsonObject = new JSONObject(response);
+                JSONObject result = jsonObject.getJSONObject("result");
+                success = result.getString("success").toString();
 
-                    return success;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    success = "0";
-                }
+                return success;
+            } catch (Exception e) {
+                e.printStackTrace();
+                success = "0";
+            }
 
         } catch (SQLException e) {
+
+            success = "0";
             e.printStackTrace();
         } catch (JSONException e) {
+
+            success = "0";
             e.printStackTrace();
         }
 
         return success;
     }
-
 
 
     @Override
@@ -178,12 +181,12 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             updateBuilder.update();
             dao.clearObjectCache();
 
-            dao = getmDBHelper ().getGeosDao ();
-            DeleteBuilder<GeoLocalizacion, Integer> deleteBuilder = dao.deleteBuilder ();
-            deleteBuilder.where ().eq ("idEncuesta", mEncuesta)
-                    .and ().eq ("idEstablecimiento", mTienda);
-            deleteBuilder.delete ();
-            dao.clearObjectCache ();
+            dao = getmDBHelper().getGeosDao();
+            DeleteBuilder<GeoLocalizacion, Integer> deleteBuilder = dao.deleteBuilder();
+            deleteBuilder.where().eq("idEncuesta", mEncuesta)
+                    .and().eq("idEstablecimiento", mTienda);
+            deleteBuilder.delete();
+            dao.clearObjectCache();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -201,18 +204,23 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            enviaFotos();
-            iCallBack.onSuccess (s);
+            if (fotoEncuesta.getArrayFotos() != null && fotoEncuesta.getArrayFotos().size() > 0) {
+                enviaFotos();
+            }
+            iCallBack.onSuccess(s);
             Intent i = new Intent(mContext, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             mContext.startActivity(i);
         } else {
-            guardaFotos();
-            iCallBack.onFailed (new Throwable ("Error al enviar encuestas"));
+            if (fotoEncuesta.getArrayFotos() != null && fotoEncuesta.getArrayFotos().size() > 0) {
+                guardaFotos();
+            }
+            iCallBack.onFailed(new Throwable("Error al enviar encuestas"));
         }
     }
 
-    public void enviaFotos() { //  preparamos las fotos para enviarlas
+    public void enviaFotos() {
+        //  preparamos las fotos para enviarlas
         // iniciamos el envio de las fotos
         int x;
         arrayNomFoto = new ArrayList<>();
@@ -243,12 +251,12 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             }
             datosPost.add(new BasicNameValuePair("subeFotos", jsonFotos.toString()));
             // envio de fotos
-            new AsyncUploadFotos (mContext, datosPost, mEncuesta, mEstablecimiento, iCallBack).execute ();
+            new AsyncUploadFotos(mContext, datosPost, mEncuesta, mEstablecimiento, iCallBack).execute();
 
         }
     }
 
-    public void guardaFotos () {
+    public void guardaFotos() {
         int x = 0;
         ArrayList<String> arrayBase64;
         if (fotoEncuesta.getNombre() != null) {
@@ -275,9 +283,9 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
         }
     }
 
-    private DBHelper getmDBHelper () {
+    private DBHelper getmDBHelper() {
         if (mDBHelper == null) {
-            mDBHelper = OpenHelperManager.getHelper (mContext, DBHelper.class);
+            mDBHelper = OpenHelperManager.getHelper(mContext, DBHelper.class);
         }
         return mDBHelper;
     }
@@ -295,7 +303,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
             }
         }
         try {
-          //  Log.e(TAG, "llena txt");
+            //  Log.e(TAG, "llena txt");
             BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
             buf.append(contenido.toString());
             buf.close();
@@ -305,11 +313,11 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
 
     }
 
-    public void grabaJson(String data){
+    public void grabaJson(String data) {
 
         try {
             File ubicacion = Environment.getExternalStorageDirectory();
-            FileWriter file = new FileWriter(ubicacion.getAbsolutePath()+"/"+mUsuario+"_test.json");
+            FileWriter file = new FileWriter(ubicacion.getAbsolutePath() + "/" + mUsuario + "_JSON.json");
             file.write(data);
             file.flush();
             file.close();

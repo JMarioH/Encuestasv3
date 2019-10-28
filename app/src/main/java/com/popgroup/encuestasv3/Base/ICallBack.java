@@ -5,7 +5,7 @@ package com.popgroup.encuestasv3.Base;
  */
 
 public interface ICallBack<T> {
-    void onSuccess (T result);
+    void onSuccess (String result);
 
     void onFailed (Throwable throwable);
 }

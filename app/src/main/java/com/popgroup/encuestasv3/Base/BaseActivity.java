@@ -2,7 +2,6 @@ package com.popgroup.encuestasv3.Base;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -11,12 +10,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.popgroup.encuestasv3.Loader;
-import com.popgroup.encuestasv3.MainEncuesta.MainActivity;
 import com.popgroup.encuestasv3.R;
 
 import butterknife.ButterKnife;
@@ -42,7 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             toolbar.setTitle ("");
         }
         if (getSupportActionBar () != null) // Habilitar up button
-            getSupportActionBar ().setDisplayHomeAsUpEnabled (true);
+            getSupportActionBar ().setDisplayHomeAsUpEnabled (false);
 
         txtTitle = (TextView) toolbar.findViewById (R.id.txtTitle);
         txtTitle.setText (setTitleToolBar ());
@@ -128,7 +125,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         getMenuInflater ().inflate (R.menu.menu, menu);
         return true;
     }
-
+/*
     @Override
     public boolean onOptionsItemSelected (MenuItem item) {
         int id = item.getItemId ();
@@ -146,5 +143,5 @@ public abstract class BaseActivity extends AppCompatActivity {
         return super.onOptionsItemSelected (item);
 
     }
-
+*/
 }

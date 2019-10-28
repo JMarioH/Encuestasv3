@@ -35,7 +35,7 @@ class CuestionarioPresenter extends BasePresenter implements ICuestionarioPresen
     }
 
     @Override
-    public void onSuccess (Object result) {
+    public void onSuccess (String result) {
 
     }
 

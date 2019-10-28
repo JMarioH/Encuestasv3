@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.popgroup.encuestasv3.AdminActivity;
@@ -38,7 +39,8 @@ public class LoginActivity extends BaseActivity implements ILoginView {
     EditText editPassword;
     @BindView (R.id.btnLogin)
     Button btnLogin;
-
+    @BindView(R.id.txtVersion)
+    TextView txtVersion;
     private LoginPresenterImpl mPresenter;
 
     @Override
@@ -48,6 +50,7 @@ public class LoginActivity extends BaseActivity implements ILoginView {
         mLoader.setTextLoader("Validando usuario..");
         mLoader.disableTouch (true);
         mLoader.initUI ();
+        txtVersion.setText(BuildConfig.VERSION_APP);
         if (BuildConfig.DEBUG && BuildConfig.USER != "" && BuildConfig.PASS != "") {
             editUser.setText (BuildConfig.USER);
             editPassword.setText (BuildConfig.PASS);
@@ -98,7 +101,7 @@ public class LoginActivity extends BaseActivity implements ILoginView {
     }
 
     @Override
-    public void nextAction (Object result) {
+    public void nextAction (String result) {
         if (result.equals ("1")) {
             Intent intent = new Intent (this, MainActivity.class);
             intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);

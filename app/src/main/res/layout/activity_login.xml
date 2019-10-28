@@ -40,7 +40,14 @@
         android:background="@color/colorBackgoundHeader"
         android:gravity="center"
         android:orientation="vertical">
-
+        <TextView
+            android:id="@+id/txtVersion"
+            style="@style/textTittle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textStyle="bold" />
         <TextView
             style="@style/textTittle"
             android:layout_width="match_parent"

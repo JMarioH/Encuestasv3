@@ -64,7 +64,7 @@ public class LoginPresenterImpl extends BasePresenter implements LoginPresenter 
     }
 
     @Override
-    public void onSuccess (Object result) {
+    public void onSuccess (String result) {
         if (getView () != null) {
             getView ().showLoader (false);
             getView ().nextAction (result);

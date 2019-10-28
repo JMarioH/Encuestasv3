@@ -24,7 +24,7 @@ public class TipoEncPresenter extends BasePresenter implements ITipoEncPresenter
     }
 
     @Override
-    public void onSuccess (Object result) {
+    public void onSuccess (String result) {
 
     }
 

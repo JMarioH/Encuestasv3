@@ -83,11 +83,11 @@ public class AsyncUploadFotos extends AsyncTask<Void, Void, Boolean> {
 
 
     @Override
-    protected void onPostExecute (Boolean s) {
-        super.onPostExecute (s);
+    protected void onPostExecute (Boolean result) {
+        super.onPostExecute (result);
 
-        if (s) {
-            callback.onSuccess (s);
+        if (result) {
+            callback.onSuccess ("1");
             Intent i = new Intent (context, MainActivity.class);
             i.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
             context.startActivity (i);

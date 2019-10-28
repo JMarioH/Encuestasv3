@@ -18,7 +18,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName "1.02"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -28,6 +28,7 @@ android {
             signingConfig signingConfigs.config
             buildConfigField "String", "USER", '""'
             buildConfigField "String", "PASS", '""'
+            buildConfigField "String", "VERSION_APP", '"Version 1.2"'
             debuggable true
         }
         debug{
@@ -35,6 +36,7 @@ android {
             // usuario desarrollo
             buildConfigField "String", "USER", '"5560860001"'
             buildConfigField "String", "PASS", '"foo"'
+            buildConfigField "String", "VERSION_APP", '"Version 1.2"'
         }
     }
 }
