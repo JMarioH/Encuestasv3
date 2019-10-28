@@ -388,7 +388,6 @@ public class Cuestionario extends PermisionActivity implements ICuestionarioView
                         .and().eq("idEncuesta", idEncuesta).query();
                 dao.clearObjectCache();
                 for (Respuestas respItem : arrayRespuestas) {
-                    if (respItem.getRespLibre().equals("0")) {
                         pregSig = respItem.getSigPregunta();
                         idResp = String.valueOf(respItem.getIdRespuesta());
                         try {
@@ -408,7 +407,7 @@ public class Cuestionario extends PermisionActivity implements ICuestionarioView
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
-                    }
+
                 }
 
             } catch (SQLException e) {
