@@ -25,8 +25,7 @@ class CuestionarioPresenter extends BasePresenter implements ICuestionarioPresen
     }
 
     @Override
-    public IView getView () {
-        return null;
+    public IView getView (){return mView != null ? (ICuestionarioView) mView : null;
     }
 
     @Override
@@ -36,11 +35,16 @@ class CuestionarioPresenter extends BasePresenter implements ICuestionarioPresen
 
     @Override
     public void onSuccess (String result) {
-
+        if (getView () != null) {
+            getView ().showLoader (false);
+        }
     }
 
     @Override
     public void onFailed (Throwable throwable) {
-
+        if (getView () != null) {
+            getView ().showLoader (false);
+            getView ().showError (throwable);
+        }
     }
 }

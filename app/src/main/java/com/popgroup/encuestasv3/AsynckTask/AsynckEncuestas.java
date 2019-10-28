@@ -95,7 +95,9 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
 
         try {
             dao = getmDBHelper().getGeosDao();
-            arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder().selectColumns("latitud", "longitud").where().eq("idEncuesta", mEncuesta).and().eq("idEstablecimiento", mEstablecimiento).query();
+            arrayGeos = (ArrayList<GeoLocalizacion>) dao.queryBuilder().selectColumns("latitud", "longitud")
+                    .where().eq("idEncuesta", mEncuesta)
+                    .and().eq("idEstablecimiento", mEstablecimiento).query();
             if (arrayGeos != null && arrayGeos.size() > 0) {
                 for (GeoLocalizacion item : arrayGeos) {
                     latitud = item.getLatitud();
@@ -219,7 +221,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
         }
     }
 
-    public void enviaFotos() {
+    private void enviaFotos() {
         //  preparamos las fotos para enviarlas
         // iniciamos el envio de las fotos
         int x;
@@ -256,7 +258,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
         }
     }
 
-    public void guardaFotos() {
+    private void guardaFotos() {
         int x = 0;
         ArrayList<String> arrayBase64;
         if (fotoEncuesta.getNombre() != null) {
@@ -290,7 +292,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
         return mDBHelper;
     }
 
-    public void grabar(String contenido) {
+    private void grabar(String contenido) {
         File ubicacion = Environment.getExternalStorageDirectory();
         File logFile = new File(ubicacion.getAbsolutePath(), mUsuario + ".txt");
 
@@ -313,7 +315,7 @@ public class AsynckEncuestas extends AsyncTask<String, String, String> {
 
     }
 
-    public void grabaJson(String data) {
+    private  void grabaJson(String data) {
 
         try {
             File ubicacion = Environment.getExternalStorageDirectory();
